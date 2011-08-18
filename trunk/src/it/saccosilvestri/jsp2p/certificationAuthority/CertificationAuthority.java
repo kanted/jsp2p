@@ -1,7 +1,6 @@
 package it.saccosilvestri.jsp2p.certificationAuthority;
 
-import it.saccosilvestri.jsp2p.exceptions.UnreachableCAConfigurationFileException;
-import it.saccosilvestri.jsp2p.exceptions.WrongCAConfigurationFileSyntaxException;
+import it.saccosilvestri.jsp2p.exceptions.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -114,8 +113,8 @@ public class CertificationAuthority {
 
 	public static void initialization()
 			throws UnreachableCAConfigurationFileException,
-			FileNotFoundException, IOException,
-			WrongCAConfigurationFileSyntaxException {
+			FileNotFoundException, IOException, WrongCAConfigurationFileSyntaxException
+			{
 
 		String configurationFilePath = new String("CA.conf");
 		Properties configFile = new Properties();
