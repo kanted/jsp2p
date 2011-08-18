@@ -30,14 +30,14 @@ import javax.crypto.NoSuchPaddingException;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
-public class Protocol {
+public class BobProtocol {
 	
 	Socket clientSocket;
 	KeyPair keyPair;
 	X509Certificate cert;
 	PublicKey caPublicKey;
 	
-	public Protocol(Socket cs, KeyPair kp, X509Certificate c, PublicKey capk) {
+	public BobProtocol(Socket cs, KeyPair kp, X509Certificate c, PublicKey capk) {
 		clientSocket = cs;
 		keyPair = kp;
 		cert = c;
