@@ -91,7 +91,7 @@ public class CertificationAuthority {
 												// authority (ca) certificate
 		// Building keys
 		System.out.println("Building keys...");
-		KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
+		KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA","BC");
 		keyPairGen.initialize(1024);
 		KeyPair keyPair = keyPairGen.generateKeyPair(); // public/private key
 														// pair that we are
@@ -147,7 +147,7 @@ public class CertificationAuthority {
 
 			// Building keys
 			System.out.println("Building keys...");
-			KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA");
+			KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA","BC");
 			keyPairGen.initialize(1024);
 			KeyPair pair = keyPairGen.generateKeyPair();
 
