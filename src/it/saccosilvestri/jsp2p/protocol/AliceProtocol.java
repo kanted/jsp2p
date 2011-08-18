@@ -164,9 +164,6 @@ public class AliceProtocol {
 		KeyAgreement ka = KeyAgreement.getInstance("DH", "BC");
 		ka.init(keyPair.getPrivate());
 		ka.doPhase(pKey, true);
-		// Receive the initialization vector
-		byte[] iv = new byte[8];
-		in.read(iv);
 		// Generate a DES key
 		byte[] sessionKeyBytes = ka.generateSecret();
 		// Create the session key
