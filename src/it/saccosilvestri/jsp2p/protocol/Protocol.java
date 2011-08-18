@@ -69,7 +69,6 @@ public class Protocol {
 			PublicKey pKey = retrievedCert.getPublicKey();
 			
 			// (3) Invio di un nonce cifrato con pKey
-			
 			// Create a secure random number generator
 			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG","BC");
 			// Get 1024 random bits
@@ -82,7 +81,7 @@ public class Protocol {
 			cipherText = cipher.doFinal(nonceA);
 			out.write(cipherText);
 			
-			// (4) Ricezione di (nA,nB) cifrati con la chiave pubblica
+			// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
 			byte[] nA = new byte[1024/8];
 			byte[] nB = new byte[1024/8];
 			in.read(nA);
@@ -95,6 +94,13 @@ public class Protocol {
 			plainText = cipher.doFinal(nB);
 			
 			
+			// (5) Invio di nB cifrato con la chiave pubblica di B
+			cipher.init(Cipher.ENCRYPT_MODE, pKey);
+			cipherText = cipher.doFinal(plainText);
+			out.write(cipherText);
+			
+			
+			// Chiusura degli stream.
 			out.close();
 			in.close();
 
