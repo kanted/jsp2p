@@ -1,4 +1,4 @@
-package it.saccosilvestri.jsp2p.certificateTest;
+package it.saccosilvestri.jsp2p.certificationAuthority;
 
 import it.saccosilvestri.jsp2p.exceptions.UnreachableCAConfigurationFileException;
 
@@ -37,7 +37,7 @@ import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure;
 import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
-public class Main {
+public class CertificationAuthority {
 	
 	private static int NUM_PEER;
 
@@ -132,8 +132,7 @@ public class Main {
 			
 			/* Lettura del file di configurazione */
 			System.out.println("Initialization...");
-			//initialization();
-			NUM_PEER = 2;
+			initialization();
 			
 			/* La CA si autocertifica. */
 			String filename = "./ca_certificate.crt";
