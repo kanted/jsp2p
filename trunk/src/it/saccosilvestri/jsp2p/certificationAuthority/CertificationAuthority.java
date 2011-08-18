@@ -109,6 +109,7 @@ public class CertificationAuthority {
 														// CA
 
 		return cert;
+		//TODO ritornare anche le chiavi
 	}
 
 	public static void initialization()
@@ -132,8 +133,7 @@ public class CertificationAuthority {
 		}
 	}
 
-	public static void main(String[] args) throws CertificateException,
-			IOException {
+	public static void main(String[] args)  {
 
 		try {
 

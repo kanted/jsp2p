@@ -108,11 +108,7 @@ public class BobProtocol {
 			System.out.println("Performing the KeyAgreement...");
 			KeyAgreement ka = KeyAgreement.getInstance("DH", "BC");
 			ka.init(keyPair.getPrivate());
-			ka.doPhase(pKey, true);
-			// Send the initialization vector
-			byte[] iv = new byte[8];
-			sr.nextBytes(iv);
-			out.write(iv);
+			ka.doPhase(pKey, true);		
 			// Generate a DES key
 			byte[] sessionKeyBytes = ka.generateSecret();
 			// Create the session key
