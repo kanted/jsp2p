@@ -19,23 +19,28 @@ import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.Date;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyAgreement;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESedeKeySpec;
 
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
 public class BobProtocol {
 	
-	Socket clientSocket;
-	KeyPair keyPair;
-	X509Certificate cert;
-	PublicKey caPublicKey;
+	private Socket clientSocket;
+	private KeyPair keyPair;
+	private X509Certificate cert;
+	private PublicKey caPublicKey;
 	
 	public BobProtocol(Socket cs, KeyPair kp, X509Certificate c, PublicKey capk) {
 		clientSocket = cs;
@@ -44,8 +49,8 @@ public class BobProtocol {
 		caPublicKey = capk;
 	}
 
-	public void doService()
-			throws CertificateException, IOException, SocketException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, BadNonceException {
+	public Key doService()
+			throws CertificateException, IOException, SocketException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, BadNonceException, InvalidKeySpecException {
 
 			InputStream in = clientSocket.getInputStream();
 			OutputStream out = clientSocket.getOutputStream();
@@ -98,10 +103,28 @@ public class BobProtocol {
 			if(!Arrays.equals(plainText,nonceB))
 				throw new BadNonceException();
 			
-			
+			// (6) Diffie-Helmann
+			// Perform the KeyAgreement
+			System.out.println("Performing the KeyAgreement...");
+			KeyAgreement ka = KeyAgreement.getInstance("DH", "BC");
+			ka.init(keyPair.getPrivate());
+			ka.doPhase(pKey, true);
+			// Send the initialization vector
+			byte[] iv = new byte[8];
+			sr.nextBytes(iv);
+			out.write(iv);
+			// Generate a DES key
+			byte[] sessionKeyBytes = ka.generateSecret();
+			// Create the session key
+			SecretKeyFactory skf = SecretKeyFactory.getInstance("TripleDES", "BC");
+			DESedeKeySpec tripleDesSpec = new DESedeKeySpec(sessionKeyBytes);
+			SecretKey sessionKey = skf.generateSecret(tripleDesSpec);
+
 			// Chiusura degli stream.
 			out.close();
 			in.close();
+
+			return sessionKey;
 
 	}
 
