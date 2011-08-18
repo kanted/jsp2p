@@ -1,5 +1,7 @@
 package it.saccosilvestri.jsp2p.protocol;
 
+import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,6 +19,7 @@ import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.crypto.BadPaddingException;
@@ -42,7 +45,7 @@ public class Protocol {
 	}
 
 	public void doService()
-			throws CertificateException, IOException, SocketException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+			throws CertificateException, IOException, SocketException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, BadNonceException {
 
 			InputStream in = clientSocket.getInputStream();
 			OutputStream out = clientSocket.getOutputStream();
@@ -79,8 +82,17 @@ public class Protocol {
 			cipherText = cipher.doFinal(nonceA);
 			out.write(cipherText);
 			
-			// (4) Ricezione di (Na+1,Nb) cifrati con la chiave pubblica
-			
+			// (4) Ricezione di (nA,nB) cifrati con la chiave pubblica
+			byte[] nA = new byte[1024/8];
+			byte[] nB = new byte[1024/8];
+			in.read(nA);
+			in.read(nB);
+			byte[] plainText = null;
+			cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
+			plainText = cipher.doFinal(nA);
+			if(!Arrays.equals(plainText,nonceA))
+				throw new BadNonceException();
+			plainText = cipher.doFinal(nB);
 			
 			
 			out.close();
