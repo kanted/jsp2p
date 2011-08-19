@@ -45,12 +45,11 @@ public class Peer {
 		out.write(ciphredText);
 	}
 
-	public byte[] receive(int length) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
+	public void receive(byte[] messageToBeReceived) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKey);
-		byte[] ciphredText = new byte[length];
+		byte[] ciphredText = {};
 		in.read(ciphredText);
-		byte[] plainText = cipher.doFinal(ciphredText);
-		return plainText;
+		messageToBeReceived = cipher.doFinal(ciphredText);
 	}
 
 	public Peer(boolean passive, Socket socket, KeyPair keyPair, X509Certificate peerCertificate, X509Certificate CACert) throws InvalidKeyException, CertificateException, SocketException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, IOException, BadNonceException {
