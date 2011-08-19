@@ -36,7 +36,7 @@ public class TestThread extends Thread {
 			NoSuchPaddingException, IllegalBlockSizeException,
 			BadPaddingException, InvalidKeySpecException, BadNonceException {
 		if (passive) {
-			ServerSocket server = new ServerSocket(8080);
+			ServerSocket server = new ServerSocket(port);
 			mySocket = server.accept();
 		} else
 			mySocket = new Socket("localhost", port);

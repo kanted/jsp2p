@@ -18,6 +18,8 @@ import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -39,9 +41,10 @@ import org.bouncycastle.x509.extension.SubjectKeyIdentifierStructure;
 
 public class CertificationAuthority {
 
-	private static int NUM_PEER;
+	private KeyPair pair;
+	X509Certificate caCert;
 
-	public static X509Certificate generateAutoCertificate(KeyPair pair)
+	private X509Certificate generateAutoCertificate(KeyPair pair)
 			throws InvalidKeyException, NoSuchProviderException,
 			SignatureException, NoSuchAlgorithmException,
 			CertificateEncodingException, IllegalStateException {
@@ -59,7 +62,7 @@ public class CertificationAuthority {
 		return certGen.generate(pair.getPrivate());
 	}
 
-	public static void exportCertificate(X509Certificate cert, String filename)
+	private void exportCertificate(X509Certificate cert, String filename)
 			throws CertificateEncodingException, IOException {
 		PEMWriter pemWr = new PEMWriter(new OutputStreamWriter(
 				new FileOutputStream(filename)));
@@ -67,11 +70,12 @@ public class CertificationAuthority {
 		pemWr.close();
 	}
 
-	public static X509Certificate generateCertificate(KeyPair pair,
-			X509Certificate caCert, X509Name subjectName)
-			throws NoSuchAlgorithmException, CertificateEncodingException,
-			InvalidKeyException, IllegalStateException,
-			NoSuchProviderException, SignatureException {
+	public KeyPair generateCertificate(int i)
+			throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException,
+			NoSuchProviderException, SignatureException, CertificateException, IOException {
+		String filename = ("certificate_for_peer_" + i + ".crt");
+		X509Name subjectName = new X509Name("CN=Peer" + i);
+		
 		Date startDate = new Date(System.currentTimeMillis()); // time from
 																// which
 																// certificate
@@ -108,38 +112,23 @@ public class CertificationAuthority {
 		X509Certificate cert = certGen.generate(caKey); // note: private key of
 														// CA
 
-		return cert;
-		//TODO ritornare anche le chiavi
+		// Basic validation
+		System.out.println("Validating dates...");
+		cert.checkValidity(new Date());
+		System.out.println("Verifying signature...");
+		cert.verify(cert.getPublicKey());
+		System.out.println("Dates and signature verified.");
+
+		System.out.println("Exporting certificate...");
+		exportCertificate(cert, filename);
+		System.out.println("Certificate exported.");
+		
+		return keyPair;
+		
 	}
 
-	public static void initialization()
-			throws UnreachableCAConfigurationFileException,
-			FileNotFoundException, IOException, WrongCAConfigurationFileSyntaxException
-			{
 
-		String configurationFilePath = new String("CA.conf");
-		Properties configFile = new Properties();
-		// Controllo che il file di configurazione esista e si possa aprire in
-		// lettura.
-		File file = new File(configurationFilePath);
-		if (!file.canRead()) {
-			throw new UnreachableCAConfigurationFileException();
-		}
-		configFile.load(new FileInputStream(configurationFilePath));
-		try {
-			NUM_PEER = Integer.parseInt(configFile.getProperty("NUM_PEER"));
-		} catch (Exception e) {
-			throw new WrongCAConfigurationFileSyntaxException();
-		}
-	}
-
-	public static void main(String[] args)  {
-
-		try {
-
-			/* Lettura del file di configurazione */
-			System.out.println("Initialization...");
-			initialization();
+	public CertificationAuthority() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, SignatureException, IllegalStateException, CertificateException, IOException  {
 
 			/* La CA si autocertifica. */
 			String filename = "./ca_certificate.crt";
@@ -148,21 +137,21 @@ public class CertificationAuthority {
 			System.out.println("Building keys...");
 			KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA","BC");
 			keyPairGen.initialize(1024);
-			KeyPair pair = keyPairGen.generateKeyPair();
+			pair = keyPairGen.generateKeyPair();
 
 			// Building my SelfCertificate
 			System.out.println("Building certificate...");
-			X509Certificate cert = generateAutoCertificate(pair);
+			caCert = generateAutoCertificate(pair);
 
 			// Basic validation
 			System.out.println("Validating dates...");
-			cert.checkValidity(new Date());
+			caCert.checkValidity(new Date());
 			System.out.println("Verifying signature...");
-			cert.verify(cert.getPublicKey());
+			caCert.verify(caCert.getPublicKey());
 			System.out.println("Dates and signature verified.");
 
 			System.out.println("Exporting certificate...");
-			exportCertificate(cert, filename);
+			exportCertificate(caCert, filename);
 			System.out.println("Certificate exported.");
 
 			/*
@@ -175,28 +164,6 @@ public class CertificationAuthority {
 			 * System.out.println("Chiave pubblica della Certification Authority: "
 			 * ); System.out.println(pubKey.toString());
 			 */
-
-			/* CA generates certificates. */
-			for (int i = 0; i < NUM_PEER; i++) {
-				filename = ("certificate_for_peer_" + i + ".crt");
-				X509Name name = new X509Name("CN=Peer" + i);
-				X509Certificate certificate = generateCertificate(pair, cert,
-						name);
-				// Basic validation
-				System.out.println("Validating dates...");
-				cert.checkValidity(new Date());
-				System.out.println("Verifying signature...");
-				cert.verify(cert.getPublicKey());
-				System.out.println("Dates and signature verified.");
-
-				System.out.println("Exporting certificate...");
-				exportCertificate(certificate, filename);
-				System.out.println("Certificate exported.");
-			}
-
-		} catch (Exception e) {
-			System.out.println("EXCEPTION: " + e.getMessage());
-		}
 
 	}
 
