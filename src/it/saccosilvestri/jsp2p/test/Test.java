@@ -41,7 +41,7 @@ public class Test {
 		}
 		configFile.load(new FileInputStream(configurationFilePath));
 		try {
-			NUM_PEER = Integer.parseInt(configFile.getProperty("NUM_PEER"));
+			NUM_PEER = 2;//TODO Integer.parseInt(configFile.getProperty("NUM_PEER"));
 		} catch (Exception e) {
 			throw new WrongCAConfigurationFileSyntaxException();
 		}
@@ -58,11 +58,11 @@ public class Test {
 		System.out.println("Starting simulation");
 		for(int i=0;i<NUM_PEER;i++){
 			KeyPair kp = ca.generateCertificate(i);
-			TestThread a = new TestThread ("certificate_for_peer_"+i+".crt","ca_certificate.crt",8000+i,true,kp);
+			TestThread a = new TestThread ("certificate_for_peer_"+i+".crt","ca_certificate.crt",6000+i,true,kp);
 		}
 		for(int i=0;i<NUM_PEER;i++){
 			KeyPair kp = ca.generateCertificate(i);
-			TestThread b = new TestThread ("certificate_for_peer_"+i+".crt","ca_certificate.crt",8000+i,false,kp);
+			TestThread b = new TestThread ("certificate_for_peer_"+i+".crt","ca_certificate.crt",6000+i,false,kp);
 		}
 	}
 

@@ -116,7 +116,7 @@ public class CertificationAuthority {
 		System.out.println("Validating dates...");
 		cert.checkValidity(new Date());
 		System.out.println("Verifying signature...");
-		cert.verify(cert.getPublicKey());
+		cert.verify(caCert.getPublicKey());
 		System.out.println("Dates and signature verified.");
 
 		System.out.println("Exporting certificate...");

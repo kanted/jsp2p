@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketImpl;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -26,32 +27,39 @@ import javax.crypto.NoSuchPaddingException;
 
 public class TestThread extends Thread {
 
-	Peer peer;
 	Socket mySocket;
+	private boolean passive;
+	private int port;
+	private String caPath;
+	private String myPath;
+	private KeyPair kp;
 
 	public TestThread(String myPath, String caPath, int port, boolean passive,
-			KeyPair kp) throws IOException, InvalidKeyException,
-			CertificateException, NoSuchAlgorithmException,
-			NoSuchProviderException, SignatureException,
-			NoSuchPaddingException, IllegalBlockSizeException,
-			BadPaddingException, InvalidKeySpecException, BadNonceException {
-		if (passive) {
-			ServerSocket server = new ServerSocket(port);
-			mySocket = server.accept();
-		} else
-			mySocket = new Socket("localhost", port);
-		FileInputStream f = new FileInputStream(caPath);
-		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
-		X509Certificate caCert = (X509Certificate) fact.generateCertificate(f);
-		f = new FileInputStream(myPath);
-		X509Certificate peerCert = (X509Certificate) fact
-				.generateCertificate(f);
-		peer = new Peer(passive, mySocket, kp, peerCert, caCert);
+			KeyPair kp) {
+		this.passive = passive;
+		this.caPath = caPath;
+		this.kp = kp;
+		this.myPath = myPath;
 		this.start();
 	}
 
 	public void run() {
 		try {
+			
+			System.out.println("***TEST THREAD***");
+			if (passive) {
+				ServerSocket server = new ServerSocket(port);
+				mySocket = server.accept();
+			} else
+				mySocket = new Socket("127.0.0.1", port);
+			FileInputStream f = new FileInputStream(caPath);
+			CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
+			X509Certificate caCert = (X509Certificate) fact.generateCertificate(f);
+			f = new FileInputStream(myPath);
+			X509Certificate peerCert = (X509Certificate) fact
+					.generateCertificate(f);
+			Peer peer = new Peer(passive, mySocket, kp, peerCert, caCert);
+			
 			System.out.println("Starting thread");
 			byte[] b = null;
 			String command = null;
