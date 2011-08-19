@@ -5,6 +5,8 @@ import it.saccosilvestri.jsp2p.protocol.AliceProtocol;
 import it.saccosilvestri.jsp2p.protocol.BobProtocol;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.security.InvalidKeyException;
@@ -31,23 +33,30 @@ import org.bouncycastle.x509.X509V3CertificateGenerator;
 public class Peer {
 	
 	private Socket clientSocket;
+	InputStream in;
+	OutputStream out;
 	private Cipher cipher;
 	private Key sessionKey;
 	
 
-	public void send(byte[] messageToBeSent) throws InvalidKeyException {
-
+	public void send(byte[] messageToBeSent) throws InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
 		cipher.init(Cipher.ENCRYPT_MODE, sessionKey);
+		byte[] ciphredText = cipher.doFinal(messageToBeSent);
+		out.write(ciphredText);
 	}
 
-	public byte[] receive() throws InvalidKeyException {
+	public byte[] receive(int length) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKey);
-		return null;
-
+		byte[] ciphredText = new byte[length];
+		in.read(ciphredText);
+		byte[] plainText = cipher.doFinal(ciphredText);
+		return plainText;
 	}
 
 	public Peer(boolean passive, Socket socket, KeyPair keyPair, X509Certificate peerCertificate, X509Certificate CACert) throws InvalidKeyException, CertificateException, SocketException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, IOException, BadNonceException {
 		clientSocket = socket;
+		in = clientSocket.getInputStream();
+		out = clientSocket.getOutputStream();
 		// Basic validation
 		System.out.println("CA certificate:");
 		System.out.println("Validating dates...");
@@ -71,4 +80,5 @@ public class Peer {
 				"BC");
 
 	}
+	
 }
