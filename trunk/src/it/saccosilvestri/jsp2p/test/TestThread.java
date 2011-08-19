@@ -52,6 +52,7 @@ public class TestThread extends Thread {
 				mySocket = server.accept();
 			} else
 				mySocket = new Socket("127.0.0.1", port);
+			System.out.println("****TUTTO FATTO****");
 			FileInputStream f = new FileInputStream(caPath);
 			CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 			X509Certificate caCert = (X509Certificate) fact.generateCertificate(f);
