@@ -57,12 +57,13 @@ public class Test {
 		CertificationAuthority ca = new CertificationAuthority();
 		System.out.println("Starting simulation");
 		for(int i=0;i<NUM_PEER;i++){
+			System.out.println("porta "+8000+i);
 			KeyPair kp = ca.generateCertificate(i);
-			TestThread a = new TestThread ("certificate_for_peer_"+i+".crt","ca_certificate.crt",6000+i,true,kp);
+			TestThread a = new TestThread ("certificate_for_peer_"+i+".crt","ca_certificate.crt",8000+i,true,kp);
 		}
 		for(int i=0;i<NUM_PEER;i++){
 			KeyPair kp = ca.generateCertificate(i);
-			TestThread b = new TestThread ("certificate_for_peer_"+i+".crt","ca_certificate.crt",6000+i,false,kp);
+			TestThread b = new TestThread ("certificate_for_peer_"+i+".crt","ca_certificate.crt",8000+i,false,kp);
 		}
 	}
 
