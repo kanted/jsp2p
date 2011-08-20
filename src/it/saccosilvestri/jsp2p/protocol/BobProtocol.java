@@ -72,11 +72,13 @@ public class BobProtocol {
 			// (2) Invio del certificato del peer
 			byte[] certBytes = cert.getEncoded();
 			out.write(certBytes);
+			out.flush();
 			
 			System.out.println("BOB -- NA*******");
 			// (3) Ricezione di nA
 			byte[] nA = {};
 			in.read(nA);
+			System.out.println("LUNGHEZZA NA SU B"+nA.length);
 			//TODO
 			for(int i=0;i<nA.length;i++)
 				System.out.print(nA[i]);
@@ -84,7 +86,9 @@ public class BobProtocol {
 			byte[] nonceA = {};
 			System.out.println("BOB -- CIFA*******");
 			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding","BC");
+			System.out.println("BOB -- QUINDI*******");
 			cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
+			System.out.println("BOB -- QUIND000*******");
 			nonceA = cipher.doFinal(nA);
 			System.out.println("BOB -- CIFAFINAL*******");
 		
@@ -100,8 +104,10 @@ public class BobProtocol {
 			cipher.init(Cipher.ENCRYPT_MODE, pKey);
 			cipherText = cipher.doFinal(nonceA);
 			out.write(cipherText);
+			out.flush();
 			cipherText = cipher.doFinal(nonceB);
 			out.write(cipherText);
+			out.flush();
 					
 			// (5) Ricezione e verifica di nB
 			byte[] nB = new byte[64];
