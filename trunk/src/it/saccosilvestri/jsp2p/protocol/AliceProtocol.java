@@ -118,6 +118,7 @@ public class AliceProtocol {
 		// (1) Invio del certificato del peer
 		byte[] certBytes = cert.getEncoded();
 		out.write(certBytes);
+		out.flush();
 
 		// (2) Ricezione del certificato del peer, verifica ed estrazione della
 		// chiave pubblica.
@@ -147,7 +148,10 @@ public class AliceProtocol {
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		System.out.println("ALICE -- NA*******");
 		cipherText = cipher.doFinal(nonceA);
+		System.out.println("LUNGHEZZA NA SU A"+cipherText.length);
+		//TODO
 		out.write(cipherText);
+		out.flush();
 		//TODO
 		for(int i=0;i<cipherText.length;i++)
 			System.out.print(cipherText[i]);
@@ -159,7 +163,9 @@ public class AliceProtocol {
 		in.read(nA);
 		in.read(nB);
 		byte[] plainText = {};
+		System.out.println("ALICE -- QUINDI111*******");
 		cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
+		System.out.println("ALICE -- QUINDI222*******");
 		plainText = cipher.doFinal(nA);
 		System.out.println("ALICE -- CIFO*******");
 		if (!Arrays.equals(plainText, nonceA))
@@ -170,6 +176,7 @@ public class AliceProtocol {
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		cipherText = cipher.doFinal(plainText);
 		out.write(cipherText);
+		out.flush();
 
 		// (6) Diffie-Helmann
 		// Perform the KeyAgreement
