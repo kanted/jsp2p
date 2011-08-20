@@ -56,12 +56,12 @@ public class BobProtocol {
 			OutputStream out = clientSocket.getOutputStream();
 			
 			// (1) Ricezione del certificato del peer, verifica ed estrazione della chiave pubblica.
-			byte[] certificate = null;
+			byte[] certificate = {};
 			in.read(certificate);
 			CertificateFactory fact = CertificateFactory.getInstance("X.509","BC");			
 			X509Certificate retrievedCert = (X509Certificate)fact.generateCertificate(in);
 			// Basic validation
-			System.out.println("Validating dates...");
+			System.out.println("BOB -- Validating dates...");
 			cert.checkValidity(new Date());
 			System.out.println("Verifying signature...");
 			cert.verify(caPublicKey);
@@ -73,21 +73,25 @@ public class BobProtocol {
 			byte[] certBytes = cert.getEncoded();
 			out.write(certBytes);
 			
+			System.out.println("BOB -- NA*******");
 			// (3) Ricezione di nA
 			byte[] nA = new byte[1024/8];
 			in.read(nA);
-			byte[] nonceA = null;
+			byte[] nonceA = {};
+			System.out.println("BOB -- CIFA*******");
 			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding","BC");
 			cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
 			nonceA = cipher.doFinal(nA);
-			
+			System.out.println("BOB -- CIFAFINAL*******");
+		
 			// (4) Invio di (nA,nB) cifrati con la chiave pubblica di A
 			// Create a secure random number generator
-			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG","BC");
+			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
 			// Get 1024 random bits
+			System.out.println("BOB -- NB*******");
 			byte[] nonceB = new byte[1024/8];
 			sr.nextBytes(nonceB);
-			byte[] cipherText = null;
+			byte[] cipherText = {};
 			// encrypt the plaintext using the public key
 			cipher.init(Cipher.ENCRYPT_MODE, pKey);
 			cipherText = cipher.doFinal(nonceA);

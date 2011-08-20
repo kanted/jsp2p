@@ -23,13 +23,13 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 public class Test {
-	
+
 	private static int NUM_PEER;
 
 	public static void initialization()
 			throws UnreachableCAConfigurationFileException,
-			FileNotFoundException, IOException, WrongCAConfigurationFileSyntaxException
-			{
+			FileNotFoundException, IOException,
+			WrongCAConfigurationFileSyntaxException {
 
 		String configurationFilePath = new String("CA.conf");
 		Properties configFile = new Properties();
@@ -41,29 +41,35 @@ public class Test {
 		}
 		configFile.load(new FileInputStream(configurationFilePath));
 		try {
-			NUM_PEER = 2;//TODO Integer.parseInt(configFile.getProperty("NUM_PEER"));
+			NUM_PEER = 1;// TODO
+							// Integer.parseInt(configFile.getProperty("NUM_PEER"));
 		} catch (Exception e) {
 			throw new WrongCAConfigurationFileSyntaxException();
 		}
 	}
 
-	public static void main(String[] args) throws InvalidKeyException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, IOException, BadNonceException, UnreachableCAConfigurationFileException, WrongCAConfigurationFileSyntaxException  {
-		
+	public static void main(String[] args) {
 
-		/* Lettura del file di configurazione */
-		System.out.println("Initialization...");
-		initialization();
-		
-		CertificationAuthority ca = new CertificationAuthority();
-		System.out.println("Starting simulation");
-		for(int i=0;i<NUM_PEER;i++){
-			System.out.println("porta "+8000+i);
-			KeyPair kp = ca.generateCertificate(i);
-			TestThread a = new TestThread ("certificate_for_peer_"+i+".crt","ca_certificate.crt",8000+i,true,kp);
-		}
-		for(int i=0;i<NUM_PEER;i++){
-			KeyPair kp = ca.generateCertificate(i);
-			TestThread b = new TestThread ("certificate_for_peer_"+i+".crt","ca_certificate.crt",8000+i,false,kp);
+		try {
+			/* Lettura del file di configurazione */
+			System.out.println("Initialization...");
+			initialization();
+
+			CertificationAuthority ca = new CertificationAuthority();
+			System.out.println("Starting simulation");
+			for (int i = 0; i < NUM_PEER; i++) {
+				System.out.println("porta " + 8000 + i);
+				KeyPair kp = ca.generateCertificate(i);
+				TestThread a = new TestThread("certificate_for_peer_" + i
+						+ ".crt", "ca_certificate.crt", 8000 + i, true, kp);
+			}
+			for (int i = 0; i < NUM_PEER; i++) {
+				KeyPair kp = ca.generateCertificate(i);
+				TestThread b = new TestThread("certificate_for_peer_" + i
+						+ ".crt", "ca_certificate.crt", 8000 + i, false, kp);
+			}
+		} catch (Exception e) {
+			System.out.println("EXCEPTION: " + e.getClass() + " - " + e.getMessage());
 		}
 	}
 

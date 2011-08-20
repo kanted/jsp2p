@@ -114,7 +114,7 @@ public class AliceProtocol {
 
 		// (2) Ricezione del certificato del peer, verifica ed estrazione della
 		// chiave pubblica.
-		byte[] certificate = null;
+		byte[] certificate = {};
 		in.read(certificate);
 		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 		X509Certificate retrievedCert = (X509Certificate) fact
@@ -130,23 +130,24 @@ public class AliceProtocol {
 
 		// (3) Invio di un nonce cifrato con pKey
 		// Create a secure random number generator
-		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", "BC");
+		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
 		// Get 1024 random bits
-		byte[] nonceA = new byte[1024 / 8];
+		System.out.println("ALICE -- NA*******");
+		byte[] nonceA = new byte[1024/8];
 		sr.nextBytes(nonceA);
-		byte[] cipherText = null;
+		byte[] cipherText = {};
 		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
 		// encrypt the plaintext using the public key
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		cipherText = cipher.doFinal(nonceA);
 		out.write(cipherText);
-
+		System.out.println("ALICE -- NA+NB*******");
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
-		byte[] nA = new byte[1024 / 8];
-		byte[] nB = new byte[1024 / 8];
+		byte[] nA = new byte[1024/8];
+		byte[] nB = new byte[1024/8];
 		in.read(nA);
 		in.read(nB);
-		byte[] plainText = null;
+		byte[] plainText = {};
 		cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
 		plainText = cipher.doFinal(nA);
 		if (!Arrays.equals(plainText, nonceA))
