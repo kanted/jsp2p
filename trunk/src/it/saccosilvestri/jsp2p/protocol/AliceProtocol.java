@@ -2,9 +2,12 @@ package it.saccosilvestri.jsp2p.protocol;
 
 import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.net.SocketException;
@@ -107,6 +110,10 @@ public class AliceProtocol {
 
 		InputStream in = clientSocket.getInputStream();
 		OutputStream out = clientSocket.getOutputStream();
+		
+		//PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+        //BufferedReader in = new BufferedReader(new InputStreamReader(
+        	//	clientSocket.getInputStream()));
 
 		// (1) Invio del certificato del peer
 		byte[] certBytes = cert.getEncoded();
@@ -132,24 +139,29 @@ public class AliceProtocol {
 		// Create a secure random number generator
 		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
 		// Get 1024 random bits
-		System.out.println("ALICE -- NA*******");
-		byte[] nonceA = new byte[1024/8];
+		byte[] nonceA = new byte[64];
 		sr.nextBytes(nonceA);
 		byte[] cipherText = {};
 		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
 		// encrypt the plaintext using the public key
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
+		System.out.println("ALICE -- NA*******");
 		cipherText = cipher.doFinal(nonceA);
 		out.write(cipherText);
+		//TODO
+		for(int i=0;i<cipherText.length;i++)
+			System.out.print(cipherText[i]);
+		System.out.println("FINENA");
 		System.out.println("ALICE -- NA+NB*******");
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
-		byte[] nA = new byte[1024/8];
-		byte[] nB = new byte[1024/8];
+		byte[] nA = new byte[64];
+		byte[] nB = new byte[64];
 		in.read(nA);
 		in.read(nB);
 		byte[] plainText = {};
 		cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
 		plainText = cipher.doFinal(nA);
+		System.out.println("ALICE -- CIFO*******");
 		if (!Arrays.equals(plainText, nonceA))
 			throw new BadNonceException();
 		plainText = cipher.doFinal(nB);
