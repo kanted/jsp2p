@@ -108,6 +108,7 @@ public class AliceProtocol {
 			NoSuchPaddingException, IllegalBlockSizeException,
 			BadPaddingException, BadNonceException, InvalidKeySpecException {
 
+		System.out.println("A");
 		InputStream in = clientSocket.getInputStream();
 		OutputStream out = clientSocket.getOutputStream();
 		
@@ -117,13 +118,17 @@ public class AliceProtocol {
 
 		// (1) Invio del certificato del peer
 		byte[] certBytes = cert.getEncoded();
+		//TODO stratagemma per non leggere la lunghezza, dopo leggerla
+		int length = certBytes.length;
 		out.write(certBytes);
 		out.flush();
-
+		System.out.println("A ha inviato il certificato...");
+		
 		// (2) Ricezione del certificato del peer, verifica ed estrazione della
 		// chiave pubblica.
-		byte[] certificate = {};
-		in.read(certificate);
+		//byte[] certificate = new byte[length];//TODO farsi dare la lunghezza
+		//in.read(certificate);
+		System.out.println("A ha letto il certificato...");
 		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 		X509Certificate retrievedCert = (X509Certificate) fact
 				.generateCertificate(in);
@@ -142,7 +147,7 @@ public class AliceProtocol {
 		// Get 1024 random bits
 		byte[] nonceA = new byte[64];
 		sr.nextBytes(nonceA);
-		byte[] cipherText = {};
+		byte[] cipherText = new byte[64];
 		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
 		// encrypt the plaintext using the public key
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
@@ -162,7 +167,7 @@ public class AliceProtocol {
 		byte[] nB = new byte[64];
 		in.read(nA);
 		in.read(nB);
-		byte[] plainText = {};
+		byte[] plainText = new byte[64];
 		System.out.println("ALICE -- QUINDI111*******");
 		cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
 		System.out.println("ALICE -- QUINDI222*******");
