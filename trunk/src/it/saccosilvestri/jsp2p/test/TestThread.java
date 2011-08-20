@@ -40,6 +40,7 @@ public class TestThread extends Thread {
 		this.caPath = caPath;
 		this.kp = kp;
 		this.myPath = myPath;
+		this.port = port;
 		this.start();
 	}
 
@@ -62,8 +63,8 @@ public class TestThread extends Thread {
 			Peer peer = new Peer(passive, mySocket, kp, peerCert, caCert);
 			
 			System.out.println("Starting thread");
-			byte[] b = null;
-			String command = null;
+			byte[] b = {};
+			String command = "";
 			while (command != "quit") {
 
 				System.in.read(b);
@@ -83,7 +84,7 @@ public class TestThread extends Thread {
 			}
 
 		} catch (Exception e) {
-			System.out.println("EXCEPTION: " + e.getMessage());
+			System.out.println("EXCEPTION: " + e.getClass() + " - " + e.getMessage());
 		}
 	}
 
