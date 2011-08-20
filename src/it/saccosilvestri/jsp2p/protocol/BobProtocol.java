@@ -75,8 +75,12 @@ public class BobProtocol {
 			
 			System.out.println("BOB -- NA*******");
 			// (3) Ricezione di nA
-			byte[] nA = new byte[1024/8];
+			byte[] nA = {};
 			in.read(nA);
+			//TODO
+			for(int i=0;i<nA.length;i++)
+				System.out.print(nA[i]);
+			System.out.println("FINENADIB");
 			byte[] nonceA = {};
 			System.out.println("BOB -- CIFA*******");
 			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding","BC");
@@ -89,7 +93,7 @@ public class BobProtocol {
 			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
 			// Get 1024 random bits
 			System.out.println("BOB -- NB*******");
-			byte[] nonceB = new byte[1024/8];
+			byte[] nonceB = new byte[64];
 			sr.nextBytes(nonceB);
 			byte[] cipherText = {};
 			// encrypt the plaintext using the public key
@@ -100,7 +104,7 @@ public class BobProtocol {
 			out.write(cipherText);
 					
 			// (5) Ricezione e verifica di nB
-			byte[] nB = new byte[1024/8];
+			byte[] nB = new byte[64];
 			in.read(nB);
 			cipher.init(Cipher.DECRYPT_MODE, pKey);
 			byte[] plainText = cipher.doFinal(nB);
