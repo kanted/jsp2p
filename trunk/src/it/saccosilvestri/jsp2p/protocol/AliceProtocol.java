@@ -3,6 +3,7 @@ package it.saccosilvestri.jsp2p.protocol;
 import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -108,7 +109,7 @@ public class AliceProtocol {
 			NoSuchPaddingException, IllegalBlockSizeException,
 			BadPaddingException, BadNonceException, InvalidKeySpecException {
 
-		InputStream in = clientSocket.getInputStream();
+		DataInputStream in = new DataInputStream(clientSocket.getInputStream());
 		OutputStream out = clientSocket.getOutputStream();
 		
 		//PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -118,11 +119,12 @@ public class AliceProtocol {
 		// (1) Invio del certificato del peer
 		byte[] certBytes = cert.getEncoded();
 		out.write(certBytes);
+		out.flush();
 
 		// (2) Ricezione del certificato del peer, verifica ed estrazione della
 		// chiave pubblica.
 		byte[] certificate = {};
-		in.read(certificate);
+		in.readFully(certificate);
 		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 		X509Certificate retrievedCert = (X509Certificate) fact
 				.generateCertificate(in);
@@ -148,6 +150,7 @@ public class AliceProtocol {
 		System.out.println("ALICE -- NA*******");
 		cipherText = cipher.doFinal(nonceA);
 		out.write(cipherText);
+		out.flush();
 		//TODO
 		for(int i=0;i<cipherText.length;i++)
 			System.out.print(cipherText[i]);
@@ -156,8 +159,8 @@ public class AliceProtocol {
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
 		byte[] nA = new byte[64];
 		byte[] nB = new byte[64];
-		in.read(nA);
-		in.read(nB);
+		in.readFully(nA);
+		in.readFully(nB);
 		byte[] plainText = {};
 		cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
 		plainText = cipher.doFinal(nA);
@@ -170,6 +173,7 @@ public class AliceProtocol {
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		cipherText = cipher.doFinal(plainText);
 		out.write(cipherText);
+		out.flush();
 
 		// (6) Diffie-Helmann
 		// Perform the KeyAgreement
