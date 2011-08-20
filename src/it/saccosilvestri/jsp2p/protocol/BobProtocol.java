@@ -2,6 +2,7 @@ package it.saccosilvestri.jsp2p.protocol;
 
 import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -52,12 +53,13 @@ public class BobProtocol {
 	public Key doService()
 			throws CertificateException, IOException, SocketException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, BadNonceException, InvalidKeySpecException {
 
-			InputStream in = clientSocket.getInputStream();
+			DataInputStream in = new DataInputStream(clientSocket.getInputStream());
+			//InputStream in = clientSocket.getInputStream();
 			OutputStream out = clientSocket.getOutputStream();
 			
 			// (1) Ricezione del certificato del peer, verifica ed estrazione della chiave pubblica.
 			byte[] certificate = {};
-			in.read(certificate);
+			in.readFully(certificate);
 			CertificateFactory fact = CertificateFactory.getInstance("X.509","BC");			
 			X509Certificate retrievedCert = (X509Certificate)fact.generateCertificate(in);
 			// Basic validation
@@ -72,11 +74,12 @@ public class BobProtocol {
 			// (2) Invio del certificato del peer
 			byte[] certBytes = cert.getEncoded();
 			out.write(certBytes);
+			out.flush();
 			
 			System.out.println("BOB -- NA*******");
 			// (3) Ricezione di nA
 			byte[] nA = {};
-			in.read(nA);
+			in.readFully(nA);
 			//TODO
 			for(int i=0;i<nA.length;i++)
 				System.out.print(nA[i]);
@@ -100,12 +103,14 @@ public class BobProtocol {
 			cipher.init(Cipher.ENCRYPT_MODE, pKey);
 			cipherText = cipher.doFinal(nonceA);
 			out.write(cipherText);
+			out.flush();
 			cipherText = cipher.doFinal(nonceB);
 			out.write(cipherText);
+			out.flush();
 					
 			// (5) Ricezione e verifica di nB
 			byte[] nB = new byte[64];
-			in.read(nB);
+			in.readFully(nB);
 			cipher.init(Cipher.DECRYPT_MODE, pKey);
 			byte[] plainText = cipher.doFinal(nB);
 			if(!Arrays.equals(plainText,nonceB))
