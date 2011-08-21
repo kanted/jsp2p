@@ -56,14 +56,13 @@ public class BobProtocol {
      * @param offset The array offset
      * @return The integer
      */
-    private int byteArrayToInt(byte[] b) {
-        int value = 0;
-        for (int i = 0; i < 4; i++) {
-            int shift = (4 - 1 - i) * 8;
-            value += (b[i] & 0x000000FF) << shift;
-        }
-        return value;
-    }
+	 private int byteArrayToInt(byte[] b) {
+	        int value = 0;
+	        for (int i = 0; i < b.length; i++) {
+	            value += b[i]*Math.pow(2,i);
+	        }
+	        return value/8;
+	    }
 
 	public Key doService()
 			throws CertificateException, IOException, SocketException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, BadNonceException, InvalidKeySpecException {
@@ -92,8 +91,8 @@ public class BobProtocol {
 			
 			// (2) Invio del certificato del peer
 			byte[] certBytes = cert.getEncoded();
-			int length = certBytes.length;
-			out.write(length);
+			//int length = certBytes.length;
+			//out.write(length);
 			out.write(certBytes);
 			out.flush();
 			System.out.println("BOB ha inviato il certificato...");
@@ -103,14 +102,15 @@ public class BobProtocol {
 			byte[] nA;
 			byte[] lengthBytes = new byte[128];
 			in.read(lengthBytes);
-			length = byteArrayToInt(lengthBytes);
+			int length = byteArrayToInt(lengthBytes);
+			System.out.println("LUNGHEZZA NA SU B DOPO"+length);
 			nA = new byte[length];
 			in.read(nA);
 			System.out.println("LUNGHEZZA NA SU B"+nA.length);
 			//TODO
-			for(int i=0;i<nA.length;i++)
-				System.out.print(nA[i]);
-			System.out.println("FINENADIB");
+			//for(int i=0;i<nA.length;i++)
+			//	System.out.print(nA[i]);
+			//System.out.println("FINENADIB");
 			byte[] nonceA = new byte[64];
 			System.out.println("BOB -- CIFA*******");
 			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding","BC");
