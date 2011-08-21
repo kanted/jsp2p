@@ -145,10 +145,11 @@ public class AliceProtocol {
 		// chiave pubblica.
 		//byte[] certificate = new byte[length];//TODO farsi dare la lunghezza
 		//in.read(certificate);
-		System.out.println("A ha letto il certificato...");
+		
 		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 		X509Certificate retrievedCert = (X509Certificate) fact
 				.generateCertificate(in);
+		System.out.println("A ha letto il certificato...");
 		// Basic validation
 		System.out.println("Validating dates...");
 		cert.checkValidity(new Date());
