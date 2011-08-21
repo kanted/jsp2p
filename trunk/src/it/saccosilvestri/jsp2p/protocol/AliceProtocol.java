@@ -120,6 +120,7 @@ public class AliceProtocol {
 		byte[] certBytes = cert.getEncoded();
 		//TODO stratagemma per non leggere la lunghezza, dopo leggerla
 		int length = certBytes.length;
+		out.write(length);
 		out.write(certBytes);
 		out.flush();
 		System.out.println("A ha inviato il certificato...");
@@ -155,6 +156,8 @@ public class AliceProtocol {
 		cipherText = cipher.doFinal(nonceA);
 		System.out.println("LUNGHEZZA NA SU A"+cipherText.length);
 		//TODO
+		length = cipherText.length;
+		out.write(length);
 		out.write(cipherText);
 		out.flush();
 		//TODO
@@ -165,7 +168,9 @@ public class AliceProtocol {
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
 		byte[] nA = new byte[64];
 		byte[] nB = new byte[64];
+		System.out.println("ALICE -- ReadNa*******");
 		in.read(nA);
+		System.out.println("ALICE -- ReadNb*******");
 		in.read(nB);
 		byte[] plainText = new byte[64];
 		System.out.println("ALICE -- QUINDI111*******");
@@ -180,6 +185,8 @@ public class AliceProtocol {
 		// (5) Invio di nB cifrato con la chiave pubblica di B
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		cipherText = cipher.doFinal(plainText);
+		length = cipherText.length;
+		out.write(length);
 		out.write(cipherText);
 		out.flush();
 
