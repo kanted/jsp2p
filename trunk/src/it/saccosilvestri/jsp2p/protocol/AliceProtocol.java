@@ -98,6 +98,8 @@ public class AliceProtocol {
         for (int i = 0; i < b.length; i++) {
             value += b[i]*Math.pow(2,i);
         }
+        if(value<0)
+        	value = -value;
         return value;
     }
 
@@ -167,19 +169,19 @@ public class AliceProtocol {
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
 		System.out.println("ALICE -- ReadNa*******");
 		byte[] nA;
-		byte[] lengthBytes = new byte[128];
-		in.read(lengthBytes);
+		byte[] lengthBytes = new byte[1];
+		in.read(lengthBytes,0,1);
 		int nonceLength = byteArrayToInt(lengthBytes);
-		System.out.println("LUNGHEZZA NA SU Ac DOPO"+length);
-		nA = new byte[length];
-		in.read(nA);
+		System.out.println("LUNGHEZZA NA SU Ac DOPO"+nonceLength);
+		nA = new byte[nonceLength];
+		in.read(nA,0,nonceLength);
 		System.out.println("ALICE -- ReadNb*******");
 		byte[] nB;
-		lengthBytes = new byte[128];
-		in.read(lengthBytes);
+		lengthBytes = new byte[1];
+		in.read(lengthBytes,0,1);
 		nonceLength = byteArrayToInt(lengthBytes);
-		nB = new byte[length];
-		in.read(nB);
+		nB = new byte[nonceLength];
+		in.read(nB,0,nonceLength);
 		byte[] plainText = new byte[64];
 		System.out.println("ALICE -- QUINDI111*******");
 		cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
