@@ -12,7 +12,7 @@ public class Client {
 		for (int i = 0; i < b.length; i++) {
 			value += b[i] * Math.pow(2, i);
 		}
-		return value / 8;
+		return value;
 	}
 
 	static Socket clientSocket;
@@ -23,16 +23,16 @@ public class Client {
 		InputStream in = clientSocket.getInputStream();
 		OutputStream out = clientSocket.getOutputStream();
 		byte[] arg0 = "prova".getBytes();
-		int length = arg0.length;
+		byte length = (new Integer(arg0.length)).byteValue();
 		System.out.println("CLIENT SCRIVE length="+length);
 		out.write(length);
 		out.write(arg0);
 		System.out.println("CLIENT SCRIVE");
-		byte[] lengthBytes = new byte[128];
-		in.read(lengthBytes);
-		length = byteArrayToInt(lengthBytes);
-		byte[] b = new byte[length];
-		in.read(b);
+		byte[] stringLength = {0x00};
+		in.read(stringLength, 0, 1);
+		int inBufferLength = byteArrayToInt(stringLength);
+		byte[] b = new byte[inBufferLength];
+		in.read(b, 0, inBufferLength);
 		String app = new String(b);
 		System.out.println(app);
 		System.out.println("CLIENT FINE");
