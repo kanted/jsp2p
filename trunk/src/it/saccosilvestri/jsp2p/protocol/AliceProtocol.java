@@ -111,11 +111,10 @@ public class AliceProtocol {
      */
     private int byteArrayToInt(byte[] b) {
         int value = 0;
-        for (int i = 0; i < 4; i++) {
-            int shift = (4 - 1 - i) * 8;
-            value += (b[i] & 0x000000FF) << shift;
+        for (int i = 0; i < b.length; i++) {
+            value += b[i]*Math.pow(2,i);
         }
-        return value;
+        return value/8;
     }
 
 	public Key doService() throws CertificateException, IOException,
@@ -134,9 +133,8 @@ public class AliceProtocol {
 
 		// (1) Invio del certificato del peer
 		byte[] certBytes = cert.getEncoded();
-		//TODO stratagemma per non leggere la lunghezza, dopo leggerla
-		int length = certBytes.length;
-		out.write(length);
+		//int length = certBytes.length;
+		//out.write(length);
 		out.write(certBytes);
 		out.flush();
 		System.out.println("A ha inviato il certificato...");
@@ -173,14 +171,14 @@ public class AliceProtocol {
 		cipherText = cipher.doFinal(nonceA);
 		System.out.println("LUNGHEZZA NA SU A"+cipherText.length);
 		//TODO
-		length = cipherText.length;
+		int length = cipherText.length;
 		out.write(length);
 		out.write(cipherText);
 		out.flush();
 		//TODO
-		for(int i=0;i<cipherText.length;i++)
-			System.out.print(cipherText[i]);
-		System.out.println("FINENA");
+		//for(int i=0;i<cipherText.length;i++)
+		//	System.out.print(cipherText[i]);
+		//System.out.println("FINENA");
 		System.out.println("ALICE -- NA+NB*******");
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
 		System.out.println("ALICE -- ReadNa*******");
@@ -188,6 +186,7 @@ public class AliceProtocol {
 		byte[] lengthBytes = new byte[128];
 		in.read(lengthBytes);
 		length = byteArrayToInt(lengthBytes);
+		System.out.println("LUNGHEZZA NA SU Ac DOPO"+length);
 		nA = new byte[length];
 		in.read(nA);
 		System.out.println("ALICE -- ReadNb*******");
