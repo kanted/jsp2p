@@ -101,6 +101,22 @@ public class AliceProtocol {
 		cert = c;
 		caPublicKey = capk;
 	}
+	
+	/**
+     * Convert the byte array to an int starting from the given offset.
+     *
+     * @param b The byte array
+     * @param offset The array offset
+     * @return The integer
+     */
+    private int byteArrayToInt(byte[] b) {
+        int value = 0;
+        for (int i = 0; i < 4; i++) {
+            int shift = (4 - 1 - i) * 8;
+            value += (b[i] & 0x000000FF) << shift;
+        }
+        return value;
+    }
 
 	public Key doService() throws CertificateException, IOException,
 			SocketException, InvalidKeyException, NoSuchAlgorithmException,
@@ -166,11 +182,19 @@ public class AliceProtocol {
 		System.out.println("FINENA");
 		System.out.println("ALICE -- NA+NB*******");
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
-		byte[] nA = new byte[64];
-		byte[] nB = new byte[64];
 		System.out.println("ALICE -- ReadNa*******");
+		byte[] nA;
+		byte[] lengthBytes = new byte[128];
+		in.read(lengthBytes);
+		length = byteArrayToInt(lengthBytes);
+		nA = new byte[length];
 		in.read(nA);
 		System.out.println("ALICE -- ReadNb*******");
+		byte[] nB;
+		lengthBytes = new byte[128];
+		in.read(lengthBytes);
+		length = byteArrayToInt(lengthBytes);
+		nB = new byte[length];
 		in.read(nB);
 		byte[] plainText = new byte[64];
 		System.out.println("ALICE -- QUINDI111*******");
