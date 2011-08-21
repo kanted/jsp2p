@@ -2,19 +2,15 @@ package it.saccosilvestri.jsp2p.protocol;
 
 import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.net.SocketException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
@@ -29,19 +25,14 @@ import java.util.Date;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 
-import org.bouncycastle.asn1.x509.X509Name;
-import org.bouncycastle.x509.X509V3CertificateGenerator;
-
 import javax.crypto.KeyAgreement;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.DHParameterSpec;
-import javax.crypto.spec.IvParameterSpec;
 
 public class AliceProtocol {
 
@@ -102,19 +93,12 @@ public class AliceProtocol {
 		caPublicKey = capk;
 	}
 	
-	/**
-     * Convert the byte array to an int starting from the given offset.
-     *
-     * @param b The byte array
-     * @param offset The array offset
-     * @return The integer
-     */
     private int byteArrayToInt(byte[] b) {
         int value = 0;
         for (int i = 0; i < b.length; i++) {
             value += b[i]*Math.pow(2,i);
         }
-        return value/8;
+        return value;
     }
 
 	public Key doService() throws CertificateException, IOException,
@@ -171,7 +155,7 @@ public class AliceProtocol {
 		cipherText = cipher.doFinal(nonceA);
 		System.out.println("LUNGHEZZA NA SU A"+cipherText.length);
 		//TODO
-		int length = cipherText.length;
+		byte length = (new Integer(cipherText.length)).byteValue();
 		out.write(length);
 		out.write(cipherText);
 		out.flush();
@@ -185,7 +169,7 @@ public class AliceProtocol {
 		byte[] nA;
 		byte[] lengthBytes = new byte[128];
 		in.read(lengthBytes);
-		length = byteArrayToInt(lengthBytes);
+		int nonceLength = byteArrayToInt(lengthBytes);
 		System.out.println("LUNGHEZZA NA SU Ac DOPO"+length);
 		nA = new byte[length];
 		in.read(nA);
@@ -193,7 +177,7 @@ public class AliceProtocol {
 		byte[] nB;
 		lengthBytes = new byte[128];
 		in.read(lengthBytes);
-		length = byteArrayToInt(lengthBytes);
+		nonceLength = byteArrayToInt(lengthBytes);
 		nB = new byte[length];
 		in.read(nB);
 		byte[] plainText = new byte[64];
@@ -209,7 +193,7 @@ public class AliceProtocol {
 		// (5) Invio di nB cifrato con la chiave pubblica di B
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		cipherText = cipher.doFinal(plainText);
-		length = cipherText.length;
+		length = (new Integer(cipherText.length)).byteValue();
 		out.write(length);
 		out.write(cipherText);
 		out.flush();

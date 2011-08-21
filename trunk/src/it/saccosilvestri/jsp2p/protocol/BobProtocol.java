@@ -10,7 +10,6 @@ import java.net.SocketException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
@@ -32,9 +31,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 
-import org.bouncycastle.asn1.x509.X509Name;
-import org.bouncycastle.x509.X509V3CertificateGenerator;
-
 public class BobProtocol {
 	
 	private Socket clientSocket;
@@ -49,19 +45,12 @@ public class BobProtocol {
 		caPublicKey = capk;
 	}
 	
-	/**
-     * Convert the byte array to an int starting from the given offset.
-     *
-     * @param b The byte array
-     * @param offset The array offset
-     * @return The integer
-     */
 	 private int byteArrayToInt(byte[] b) {
 	        int value = 0;
 	        for (int i = 0; i < b.length; i++) {
 	            value += b[i]*Math.pow(2,i);
 	        }
-	        return value/8;
+	        return value;
 	    }
 
 	public Key doService()
@@ -101,11 +90,11 @@ public class BobProtocol {
 			// (3) Ricezione di nA
 			byte[] nA;
 			byte[] lengthBytes = new byte[128];
-			in.read(lengthBytes);
-			int length = byteArrayToInt(lengthBytes);
-			System.out.println("LUNGHEZZA NA SU B DOPO"+length);
-			nA = new byte[length];
-			in.read(nA);
+			in.read(lengthBytes,0,128);
+			int nonceLength = byteArrayToInt(lengthBytes);
+			System.out.println("LUNGHEZZA NA SU B DOPO"+nonceLength);
+			//TODOECCOLOOOO!nA = new byte[nonceLength];
+			in.read(nA,0,nonceLength);
 			System.out.println("LUNGHEZZA NA SU B"+nA.length);
 			//TODO
 			//for(int i=0;i<nA.length;i++)
@@ -131,12 +120,12 @@ public class BobProtocol {
 			// encrypt the plaintext using the public key
 			cipher.init(Cipher.ENCRYPT_MODE, pKey);
 			cipherText = cipher.doFinal(nonceA);
-			length = cipherText.length;
+			byte length = (new Integer(cipherText.length)).byteValue();
 			out.write(length);
 			out.write(cipherText);
 			out.flush();
 			cipherText = cipher.doFinal(nonceB);
-			length = cipherText.length;
+			length = (new Integer(cipherText.length)).byteValue();
 			out.write(length);
 			out.write(cipherText);
 			out.flush();
@@ -145,7 +134,7 @@ public class BobProtocol {
 			byte[] nB;
 			lengthBytes = new byte[128];
 			in.read(lengthBytes);
-			length = byteArrayToInt(lengthBytes);
+			nonceLength = byteArrayToInt(lengthBytes);
 			nB = new byte[length];
 			in.read(nB);
 			cipher.init(Cipher.DECRYPT_MODE, pKey);
