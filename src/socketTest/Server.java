@@ -13,7 +13,7 @@ public class Server {
 		for (int i = 0; i < b.length; i++) {
 			value += b[i] * Math.pow(2, i);
 		}
-		return value / 8;
+		return value;
 	}
 
 	static Socket mySocket;
@@ -24,19 +24,19 @@ public class Server {
 		mySocket = server.accept();
 		InputStream in = mySocket.getInputStream();
 		OutputStream out = mySocket.getOutputStream();
-		byte[] lengthBytes = new byte[128];
-		in.read(lengthBytes);
-		int length = byteArrayToInt(lengthBytes);
-		System.out.println("SERVER HA LETTO LENGTH "+length);
-		byte[] b = new byte[length];
-		in.read(b);
-		System.out.println("SERVER HA LETTO");
-		String app = new String(b);
-		System.out.println(app);
-		byte[] arg0 = "prova".getBytes();
-		length = arg0.length;
+		byte[] length = {0x00};
+		in.read(length, 0, 1);
+		System.out.println("LETTI "+length[0]);
+		byte[] serializedString = new byte[5];
+		in.read(serializedString, 0, 5);
+		String receivedString = new String(serializedString);
+		System.out.println("Stringa ricevuta: " + receivedString);
+		String stringToReturn = new String("prova riuscita");
+		byte[] arg0 = stringToReturn.getBytes();
+		length[0] = (new Integer(arg0.length)).byteValue();
+		System.out.println("CLIENT SCRIVE length=" + length[0]);
 		out.write(length);
+		System.out.println("CLIENT SCRIVE "+ stringToReturn);
 		out.write(arg0);
-		System.out.println("SERVER FINE");
 	}
 }
