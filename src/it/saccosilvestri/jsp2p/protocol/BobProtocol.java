@@ -48,6 +48,22 @@ public class BobProtocol {
 		cert = c;
 		caPublicKey = capk;
 	}
+	
+	/**
+     * Convert the byte array to an int starting from the given offset.
+     *
+     * @param b The byte array
+     * @param offset The array offset
+     * @return The integer
+     */
+    private int byteArrayToInt(byte[] b) {
+        int value = 0;
+        for (int i = 0; i < 4; i++) {
+            int shift = (4 - 1 - i) * 8;
+            value += (b[i] & 0x000000FF) << shift;
+        }
+        return value;
+    }
 
 	public Key doService()
 			throws CertificateException, IOException, SocketException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, BadNonceException, InvalidKeySpecException {
@@ -56,10 +72,6 @@ public class BobProtocol {
 		
 			InputStream in = clientSocket.getInputStream();
 			OutputStream out = clientSocket.getOutputStream();
-			
-			//TODO stratagemma per non leggere la lunghezza, dopo leggerla
-			byte[] app = cert.getEncoded();
-			int length = app.length;
 			
 			// (1) Ricezione del certificato del peer, verifica ed estrazione della chiave pubblica.
 		//	byte[] certificate = new byte[length];
@@ -80,13 +92,19 @@ public class BobProtocol {
 			
 			// (2) Invio del certificato del peer
 			byte[] certBytes = cert.getEncoded();
+			int length = certBytes.length;
+			out.write(length);
 			out.write(certBytes);
 			out.flush();
 			System.out.println("BOB ha inviato il certificato...");
 			
 			System.out.println("BOB -- NA*******");
 			// (3) Ricezione di nA
-			byte[] nA = new byte[64];
+			byte[] nA;
+			byte[] lengthBytes = new byte[128];
+			in.read(lengthBytes);
+			length = byteArrayToInt(lengthBytes);
+			nA = new byte[length];
 			in.read(nA);
 			System.out.println("LUNGHEZZA NA SU B"+nA.length);
 			//TODO
@@ -98,7 +116,7 @@ public class BobProtocol {
 			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding","BC");
 			System.out.println("BOB -- QUINDI*******");
 			cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
-			System.out.println("BOB -- QUIND000*******");
+			System.out.println("BOB -- Sto per cifrare na con la private*******");
 			nonceA = cipher.doFinal(nA);
 			System.out.println("BOB -- CIFAFINAL*******");
 		
@@ -113,14 +131,22 @@ public class BobProtocol {
 			// encrypt the plaintext using the public key
 			cipher.init(Cipher.ENCRYPT_MODE, pKey);
 			cipherText = cipher.doFinal(nonceA);
+			length = cipherText.length;
+			out.write(length);
 			out.write(cipherText);
 			out.flush();
 			cipherText = cipher.doFinal(nonceB);
+			length = cipherText.length;
+			out.write(length);
 			out.write(cipherText);
 			out.flush();
 					
 			// (5) Ricezione e verifica di nB
-			byte[] nB = new byte[64];
+			byte[] nB;
+			lengthBytes = new byte[128];
+			in.read(lengthBytes);
+			length = byteArrayToInt(lengthBytes);
+			nB = new byte[length];
 			in.read(nB);
 			cipher.init(Cipher.DECRYPT_MODE, pKey);
 			byte[] plainText = cipher.doFinal(nB);
