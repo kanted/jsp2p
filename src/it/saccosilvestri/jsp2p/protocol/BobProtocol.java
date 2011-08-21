@@ -50,6 +50,8 @@ public class BobProtocol {
 	        for (int i = 0; i < b.length; i++) {
 	            value += b[i]*Math.pow(2,i);
 	        }
+	        if(value<0)
+	        	value = -value;
 	        return value;
 	    }
 
@@ -89,11 +91,11 @@ public class BobProtocol {
 			System.out.println("BOB -- NA*******");
 			// (3) Ricezione di nA
 			byte[] nA;
-			byte[] lengthBytes = new byte[128];
-			in.read(lengthBytes,0,128);
+			byte[] lengthBytes = new byte[1];
+			in.read(lengthBytes,0,1);
 			int nonceLength = byteArrayToInt(lengthBytes);
 			System.out.println("LUNGHEZZA NA SU B DOPO"+nonceLength);
-			//TODOECCOLOOOO!nA = new byte[nonceLength];
+			nA = new byte[nonceLength];
 			in.read(nA,0,nonceLength);
 			System.out.println("LUNGHEZZA NA SU B"+nA.length);
 			//TODO
@@ -105,7 +107,7 @@ public class BobProtocol {
 			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding","BC");
 			System.out.println("BOB -- QUINDI*******");
 			cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
-			System.out.println("BOB -- Sto per cifrare na con la private*******");
+			System.out.println("BOB -- Sto per decifrare na con la private*******");
 			nonceA = cipher.doFinal(nA);
 			System.out.println("BOB -- CIFAFINAL*******");
 		
@@ -132,11 +134,11 @@ public class BobProtocol {
 					
 			// (5) Ricezione e verifica di nB
 			byte[] nB;
-			lengthBytes = new byte[128];
-			in.read(lengthBytes);
+			lengthBytes = new byte[1];
+			in.read(lengthBytes,0,1);
 			nonceLength = byteArrayToInt(lengthBytes);
-			nB = new byte[length];
-			in.read(nB);
+			nB = new byte[nonceLength];
+			in.read(nB,0,nonceLength);
 			cipher.init(Cipher.DECRYPT_MODE, pKey);
 			byte[] plainText = cipher.doFinal(nB);
 			if(!Arrays.equals(plainText,nonceB))
