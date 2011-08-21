@@ -1,7 +1,6 @@
 package it.saccosilvestri.jsp2p.test;
 
 import it.saccosilvestri.jsp2p.certificationAuthority.CertificationAuthority;
-import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
 import it.saccosilvestri.jsp2p.exceptions.UnreachableCAConfigurationFileException;
 import it.saccosilvestri.jsp2p.exceptions.WrongCAConfigurationFileSyntaxException;
 
@@ -9,18 +8,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.InvalidKeyException;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Properties;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 public class Test {
 
