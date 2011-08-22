@@ -118,18 +118,17 @@ public class BobProtocol {
 			System.out.println("BOB -- NB*******");
 			byte[] nonceB = new byte[64];
 			sr.nextBytes(nonceB);
-			byte[] cipherText = new byte[64];
 			// encrypt the plaintext using the public key
 			cipher.init(Cipher.ENCRYPT_MODE, pKey);
-			cipherText = cipher.doFinal(nonceA);
-			byte length = (new Integer(cipherText.length)).byteValue();
+			byte[] ciphredA  = cipher.doFinal(nonceA);
+			byte length = (new Integer(ciphredA.length)).byteValue();
 			out.write(length);
-			out.write(cipherText);
+			out.write(ciphredA);
 			out.flush();
-			cipherText = cipher.doFinal(nonceB);
-			length = (new Integer(cipherText.length)).byteValue();
+			byte[] ciphredB = cipher.doFinal(nonceB);
+			length = (new Integer(ciphredB.length)).byteValue();
 			out.write(length);
-			out.write(cipherText);
+			out.write(ciphredB);
 			out.flush();
 					
 			// (5) Ricezione e verifica di nB
