@@ -149,7 +149,7 @@ public class AliceProtocol {
 		// Get 1024 random bits
 		byte[] nonceA = new byte[64];
 		sr.nextBytes(nonceA);
-		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+		Cipher cipher = Cipher.getInstance("RSA", "BC");
 		// encrypt the plaintext using the public key
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		System.out.println("ALICE -- NA*******");
@@ -160,6 +160,7 @@ public class AliceProtocol {
 		out.write(length);
 		out.write(cipherText);
 		out.flush();
+		//System.out.println("Sono A e STAMPO Na:");
 		//TODO
 		//for(int i=0;i<cipherText.length;i++)
 		//	System.out.print(cipherText[i]);
@@ -188,7 +189,7 @@ public class AliceProtocol {
 		if (!Arrays.equals(plainText, nonceA))
 			throw new BadNonceException();
 		plainText = cipher.doFinal(nB);
-
+		
 		// (5) Invio di nB cifrato con la chiave pubblica di B
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		byte[] ciphredB = cipher.doFinal(plainText);
