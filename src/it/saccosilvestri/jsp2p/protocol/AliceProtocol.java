@@ -149,12 +149,11 @@ public class AliceProtocol {
 		// Get 1024 random bits
 		byte[] nonceA = new byte[64];
 		sr.nextBytes(nonceA);
-		byte[] cipherText = new byte[64];
 		Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
 		// encrypt the plaintext using the public key
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		System.out.println("ALICE -- NA*******");
-		cipherText = cipher.doFinal(nonceA);
+		byte[] cipherText  = cipher.doFinal(nonceA);
 		System.out.println("LUNGHEZZA NA SU A"+cipherText.length);
 		//TODO
 		byte length = (new Integer(cipherText.length)).byteValue();
@@ -168,19 +167,17 @@ public class AliceProtocol {
 		System.out.println("ALICE -- NA+NB*******");
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
 		System.out.println("ALICE -- ReadNa*******");
-		byte[] nA;
 		byte[] lengthBytes = new byte[1];
 		in.read(lengthBytes,0,1);
 		int nonceLength = byteArrayToInt(lengthBytes);
 		System.out.println("LUNGHEZZA NA SU Ac DOPO"+nonceLength);
-		nA = new byte[nonceLength];
+		byte[] nA = new byte[nonceLength];
 		in.read(nA,0,nonceLength);
 		System.out.println("ALICE -- ReadNb*******");
-		byte[] nB;
 		lengthBytes = new byte[1];
 		in.read(lengthBytes,0,1);
 		nonceLength = byteArrayToInt(lengthBytes);
-		nB = new byte[nonceLength];
+		byte[] nB = new byte[nonceLength];
 		in.read(nB,0,nonceLength);
 		byte[] plainText = new byte[64];
 		System.out.println("ALICE -- QUINDI111*******");
@@ -194,10 +191,10 @@ public class AliceProtocol {
 
 		// (5) Invio di nB cifrato con la chiave pubblica di B
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
-		cipherText = cipher.doFinal(plainText);
-		length = (new Integer(cipherText.length)).byteValue();
+		byte[] ciphredB = cipher.doFinal(plainText);
+		length = (new Integer(ciphredB.length)).byteValue();
 		out.write(length);
-		out.write(cipherText);
+		out.write(ciphredB);
 		out.flush();
 
 		// (6) Diffie-Helmann
