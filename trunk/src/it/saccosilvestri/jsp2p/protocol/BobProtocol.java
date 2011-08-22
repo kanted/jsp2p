@@ -98,13 +98,15 @@ public class BobProtocol {
 			nA = new byte[nonceLength];
 			in.read(nA,0,nonceLength);
 			System.out.println("LUNGHEZZA NA SU B"+nA.length);
+			//System.out.println("Sono B e STAMPO NA:");
 			//TODO
 			//for(int i=0;i<nA.length;i++)
 			//	System.out.print(nA[i]);
 			//System.out.println("FINENADIB");
 			byte[] nonceA = new byte[64];
 			System.out.println("BOB -- CIFA*******");
-			Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding","BC");
+			//Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding","BC");
+			Cipher cipher = Cipher.getInstance("RSA","BC");
 			System.out.println("BOB -- QUINDI*******");
 			cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
 			System.out.println("BOB -- Sto per decifrare na con la private*******");
