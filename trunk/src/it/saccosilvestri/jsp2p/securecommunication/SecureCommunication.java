@@ -40,13 +40,19 @@ public class SecureCommunication {
 	public void send(byte[] messageToBeSent) throws InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
 		cipher.init(Cipher.ENCRYPT_MODE, sessionKeySpec);
 		byte[] ciphredText = cipher.doFinal(messageToBeSent);
+		byte length = (new Integer(ciphredText.length)).byteValue();
+		out.write(length);
 		out.write(ciphredText);
+		out.flush();
 	}
 
 	public void receive(byte[] messageToBeReceived) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
-		byte[] ciphredText = {};
-		in.read(ciphredText);
+		byte[] lengthBytes = new byte[3]; //TODO per stare tranquilli
+		in.read(lengthBytes,0,1);
+		int length = Utility.byteArrayToInt(lengthBytes);
+		byte[] ciphredText = new byte[length];
+		in.read(ciphredText,0,length);
 		messageToBeReceived = cipher.doFinal(ciphredText);
 	}
 

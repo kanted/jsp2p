@@ -41,16 +41,6 @@ public class Protocol {
 		out = clientSocket.getOutputStream();
 	}
 	
-	private int byteArrayToInt(byte[] b) {
-        int value = 0;
-        for (int i = 0; i < b.length; i++) {
-            value += b[i]*Math.pow(2,i);
-        }
-        if(value<0)
-        	value = -value;
-        return value;
-    }
-	
 	protected void sendMyCertificate () throws IOException, CertificateEncodingException {
 		byte[] certBytes = cert.getEncoded();
 		out.write(certBytes);
@@ -75,7 +65,7 @@ public class Protocol {
 	protected byte[] readNonce() throws IOException{
 		byte[] lengthBytes = new byte[1];
 		in.read(lengthBytes,0,1);
-		int nonceLength = byteArrayToInt(lengthBytes);
+		int nonceLength = Utility.byteArrayToInt(lengthBytes);
 		byte[] nonce = new byte[nonceLength];
 		in.read(nonce,0,nonceLength);
 		return nonce;
