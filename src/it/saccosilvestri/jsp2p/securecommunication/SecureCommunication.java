@@ -3,6 +3,7 @@ package it.saccosilvestri.jsp2p.securecommunication;
 import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
 import it.saccosilvestri.jsp2p.protocol.AliceProtocol;
 import it.saccosilvestri.jsp2p.protocol.BobProtocol;
+import it.saccosilvestri.jsp2p.utility.Utility;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,14 +54,7 @@ public class SecureCommunication {
 		clientSocket = socket;
 		in = clientSocket.getInputStream();
 		out = clientSocket.getOutputStream();
-		// Basic validation
-		System.out.println("CA certificate:");
-		System.out.println("Validating dates...");
-		CACert.checkValidity(new Date());
-		System.out.println("Verifying signature...");
-		CACert.verify(CACert.getPublicKey());
-		System.out.println("Dates and signature verified.");
-		System.out.println("Retrieving PublicKey...");
+		Utility.checkCertificate(CACert,CACert.getPublicKey());
 		PublicKey CAPublicKey = CACert.getPublicKey();
 		if(!passive){
 			AliceProtocol ap = new AliceProtocol(clientSocket,keyPair,peerCertificate,CAPublicKey);
@@ -72,7 +66,7 @@ public class SecureCommunication {
 		}
 		// Create the CipherStream to be used
 		System.out.println("Creating the CipherStream...");
-		Cipher cipher = Cipher.getInstance("AES","BC");
+		cipher = Cipher.getInstance("AES","BC");
 
 	}
 	

@@ -1,5 +1,7 @@
 package it.saccosilvestri.jsp2p.protocol;
 
+import it.saccosilvestri.jsp2p.utility.Utility;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,12 +61,7 @@ public class Protocol {
 		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 		X509Certificate retrievedCert = (X509Certificate) fact
 				.generateCertificate(in);
-		System.out.println("Controllo la data.");
-		cert.checkValidity(new Date());
-		System.out.println("Controllo la firma.");
-		cert.verify(caPublicKey);
-		System.out.println("Controlli eseguiti correttamente.");
-		System.out.println("Ritorno la chiave pubblica.");
+		Utility.checkCertificate(cert,caPublicKey);
 		return retrievedCert.getPublicKey();
 	}
 	
