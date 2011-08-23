@@ -1,5 +1,7 @@
 package it.saccosilvestri.jsp2p.certificationAuthority;
 
+import it.saccosilvestri.jsp2p.utility.Utility;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -40,14 +42,6 @@ public class CertificationAuthority {
 		certGen.setSignatureAlgorithm("SHA1WithRSAEncryption");
 
 		return certGen.generate(pair.getPrivate());
-	}
-
-	private void exportCertificate(X509Certificate cert, String filename)
-			throws CertificateEncodingException, IOException {
-		PEMWriter pemWr = new PEMWriter(new OutputStreamWriter(
-				new FileOutputStream(filename)));
-		pemWr.writeObject(cert);
-		pemWr.close();
 	}
 
 	public KeyPair generateCertificate(int i)
@@ -92,14 +86,7 @@ public class CertificationAuthority {
 														// CA
 
 		// Controlli
-		System.out.println("Controllo la data.");
-		cert.checkValidity(new Date());
-		System.out.println("Controllo la firma.");
-		cert.verify(caCert.getPublicKey());
-		System.out.println("Controlli eseguiti correttamente.");
-		System.out.println("Esporto il certificato.");
-		exportCertificate(cert, filename);
-		System.out.println("Certificato esportato.");
+		Utility.checkAndExportCertificate(cert,caCert.getPublicKey(),filename);
 		
 		return keyPair;
 		
@@ -121,14 +108,7 @@ public class CertificationAuthority {
 			caCert = selfCertificate(pair);
 
 			// Controlli
-			System.out.println("Controllo la data.");
-			caCert.checkValidity(new Date());
-			System.out.println("Controllo la firma.");
-			caCert.verify(caCert.getPublicKey());
-			System.out.println("Controlli eseguiti correttamente.");
-			System.out.println("Esporto il certificato.");
-			exportCertificate(caCert, filename);
-			System.out.println("Certificato esportato.");
+			Utility.checkAndExportCertificate(caCert,caCert.getPublicKey(),filename);
 
 	}
 
