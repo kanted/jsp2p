@@ -30,7 +30,7 @@ public class Utility {
 	public static void checkAndExportCertificate(X509Certificate cert, PublicKey pk, String filename) throws IOException, InvalidKeyException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException{
 		checkCertificate(cert,pk);
 		System.out.println("Esporto il certificato.");
-		PEMWriter pemWr = new PEMWriter(new OutputStreamWriter( //TODO VEDERE BENE STA COSA
+		PEMWriter pemWr = new PEMWriter(new OutputStreamWriter(
 				new FileOutputStream(filename)));
 		pemWr.writeObject(cert);
 		pemWr.close();
