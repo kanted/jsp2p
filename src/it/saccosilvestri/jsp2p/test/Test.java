@@ -48,13 +48,13 @@ public class Test {
 			System.out.println("Starting simulation");
 			for (int i = 0; i < NUM_PEER; i++) {
 				System.out.println("porta " + 8000 + i);
-				KeyPair kp = ca.generateCertificate(i);
-				TestThread a = new TestThread("certificate_for_peer_" + i
+				KeyPair kp = ca.generateCertificate(0);
+				TestThread a = new TestThread("certificate_for_peer_0" //TODO FARE BENE + i
 						+ ".crt", "ca_certificate.crt", 8000 + i, true, kp);
 			}
 			for (int i = 0; i < NUM_PEER; i++) {
-				KeyPair kp = ca.generateCertificate(i);
-				TestThread b = new TestThread("certificate_for_peer_" + i
+				KeyPair kp = ca.generateCertificate(1);
+				TestThread b = new TestThread("certificate_for_peer_1" //TODO FARE BENE +i
 						+ ".crt", "ca_certificate.crt", 8000 + i, false, kp);
 			}
 		} catch (Exception e) {
