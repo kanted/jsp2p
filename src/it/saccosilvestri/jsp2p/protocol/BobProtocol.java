@@ -33,130 +33,55 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class BobProtocol {
+public class BobProtocol extends Protocol{
 	
-	private Socket clientSocket;
-	private KeyPair keyPair;
-	private X509Certificate cert;
-	private PublicKey caPublicKey;
 	
-	public BobProtocol(Socket cs, KeyPair kp, X509Certificate c, PublicKey capk) {
-		clientSocket = cs;
-		keyPair = kp;
-		cert = c;
-		caPublicKey = capk;
+	
+	public BobProtocol(Socket cs, KeyPair kp, X509Certificate c, PublicKey capk) throws IOException {
+		super(cs,kp,c,capk);
 	}
 	
-	 private int byteArrayToInt(byte[] b) {
-	        int value = 0;
-	        for (int i = 0; i < b.length; i++) {
-	            value += b[i]*Math.pow(2,i);
-	        }
-	        if(value<0)
-	        	value = -value;
-	        return value;
-	    }
 
 	public SecretKeySpec doService()
 			throws CertificateException, IOException, SocketException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, BadNonceException, InvalidKeySpecException {
 
 		System.out.println("B");
 		
-			InputStream in = clientSocket.getInputStream();
-			OutputStream out = clientSocket.getOutputStream();
-			
 			// (1) Ricezione del certificato del peer, verifica ed estrazione della chiave pubblica.
-		//	byte[] certificate = new byte[length];
-		//	in.read(certificate);
-			
-			CertificateFactory fact = CertificateFactory.getInstance("X.509","BC");		
-			//System.out.println("BOB e mo?...");
-			X509Certificate retrievedCert = (X509Certificate)fact.generateCertificate(in);
-			System.out.println("BOB ha letto il certificato...");
-			// Basic validation
-			System.out.println("BOB -- Validating dates...");
-			cert.checkValidity(new Date());
-			System.out.println("Verifying signature...");
-			cert.verify(caPublicKey);
-			System.out.println("Dates and signature verified.");
-			System.out.println("Retrieving PublicKey...");
-			PublicKey pKey = retrievedCert.getPublicKey();
+			PublicKey pKey = receiveCertificate();
 			
 			// (2) Invio del certificato del peer
-			byte[] certBytes = cert.getEncoded();
-			//int length = certBytes.length;
-			//out.write(length);
-			out.write(certBytes);
-			out.flush();
+			sendMyCertificate();
 			System.out.println("BOB ha inviato il certificato...");		
 			System.out.println("BOB -- NA*******");
 			// (3) Ricezione di nA
-			byte[] lengthBytes = new byte[1];
-			in.read(lengthBytes,0,1);
-			int nonceLength = byteArrayToInt(lengthBytes);
-			System.out.println("LUNGHEZZA NA SU B DOPO"+nonceLength);
-			byte[] nA = new byte[nonceLength];
-			in.read(nA,0,nonceLength);
-			System.out.println("LUNGHEZZA NA SU B"+nA.length);
-			//System.out.println("Sono B e STAMPO NA:");
-			//TODO
-			//for(int i=0;i<nA.length;i++)
-			//	System.out.print(nA[i]);
-			//System.out.println("FINENADIB");
+			byte[] nA = readNonce();
 			byte[] nonceA = new byte[64];
-			System.out.println("BOB -- CIFA*******");
-			//Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding","BC");
 			Cipher cipher = Cipher.getInstance("RSA","BC");
-			System.out.println("BOB -- QUINDI*******");
-			cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
-			System.out.println("BOB -- Sto per decifrare na con la private*******");
+			cipher.init(Cipher.DECRYPT_MODE, getPrivate());
 			nonceA = cipher.doFinal(nA);
 			System.out.println("BOB -- CIFAFINAL*******");
 		
 			// (4) Invio di (nA,nB) cifrati con la chiave pubblica di A
 			// Create a secure random number generator
 			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-			// Get 1024 random bits
+			// Get 64 random bits
 			System.out.println("BOB -- NB*******");
 			byte[] nonceB = new byte[64];
 			sr.nextBytes(nonceB);
 			// encrypt the plaintext using the public key
 			cipher.init(Cipher.ENCRYPT_MODE, pKey);
 			byte[] ciphredA  = cipher.doFinal(nonceA);
-			byte length = (new Integer(ciphredA.length)).byteValue();
-			out.write(length);
-			out.write(ciphredA);
-			out.flush();
+			send(ciphredA);
 			byte[] ciphredB = cipher.doFinal(nonceB);
-			length = (new Integer(ciphredB.length)).byteValue();
-			out.write(length);
-			out.write(ciphredB);
-			out.flush();
+			send(ciphredB);
 					
 			// (5) Ricezione e verifica di nB
-			byte[] nB;
-			lengthBytes = new byte[1];
-			in.read(lengthBytes,0,1);
-			nonceLength = byteArrayToInt(lengthBytes);
-			nB = new byte[nonceLength];
-			in.read(nB,0,nonceLength);
-			cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
+			byte[] nB = readNonce();
+			cipher.init(Cipher.DECRYPT_MODE, getPrivate());
 			byte[] plainText = cipher.doFinal(nB);
 			if(!Arrays.equals(plainText,nonceB))
 				throw new BadNonceException();
-			
-			// (6) Diffie-Helmann
-			// Perform the KeyAgreement
-			/*System.out.println("Performing the KeyAgreement...");
-			KeyAgreement ka = KeyAgreement.getInstance("DH", "BC");
-			ka.init(keyPair.getPrivate());
-			ka.doPhase(pKey, true);		
-			// Generate a DES key
-			byte[] sessionKeyBytes = ka.generateSecret();
-			// Create the session key
-			SecretKeyFactory skf = SecretKeyFactory.getInstance("TripleDES", "BC");
-			DESedeKeySpec tripleDesSpec = new DESedeKeySpec(sessionKeyBytes);
-			SecretKey sessionKey = skf.generateSecret(tripleDesSpec);*/
 			
 			//(6) Generazione chiave di sessione
 			byte[] key = new byte[nonceA.length+nonceB.length];
@@ -167,11 +92,10 @@ public class BobProtocol {
 			key = Arrays.copyOf(key, 16); // use only first 128 bit
 			SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
 
-			// Chiusura degli stream.
-			out.close();
-			in.close();
-
-			return secretKeySpec;
+			closeStreams();
+			
+			//(6) Generazione chiave di sessione
+			return sessionKey(nonceA, nonceB);
 
 	}
 

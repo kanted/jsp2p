@@ -24,7 +24,7 @@ public class CertificationAuthority {
 	private KeyPair pair;
 	X509Certificate caCert;
 
-	private X509Certificate generateAutoCertificate(KeyPair pair)
+	private X509Certificate selfCertificate(KeyPair pair)
 			throws InvalidKeyException, NoSuchProviderException,
 			SignatureException, NoSuchAlgorithmException,
 			CertificateEncodingException, IllegalStateException {
@@ -55,7 +55,6 @@ public class CertificationAuthority {
 			NoSuchProviderException, SignatureException, CertificateException, IOException {
 		String filename = ("certificate_for_peer_" + i + ".crt");
 		X509Name subjectName = new X509Name("CN=Peer" + i);
-		
 		Date startDate = new Date(System.currentTimeMillis()); // time from
 																// which
 																// certificate
@@ -92,16 +91,15 @@ public class CertificationAuthority {
 		X509Certificate cert = certGen.generate(caKey); // note: private key of
 														// CA
 
-		// Basic validation
-		System.out.println("Validating dates...");
+		// Controlli
+		System.out.println("Controllo la data.");
 		cert.checkValidity(new Date());
-		System.out.println("Verifying signature...");
+		System.out.println("Controllo la firma.");
 		cert.verify(caCert.getPublicKey());
-		System.out.println("Dates and signature verified.");
-
-		System.out.println("Exporting certificate...");
+		System.out.println("Controlli eseguiti correttamente.");
+		System.out.println("Esporto il certificato.");
 		exportCertificate(cert, filename);
-		System.out.println("Certificate exported.");
+		System.out.println("Certificato esportato.");
 		
 		return keyPair;
 		
@@ -110,40 +108,27 @@ public class CertificationAuthority {
 
 	public CertificationAuthority() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, SignatureException, IllegalStateException, CertificateException, IOException  {
 
-			/* La CA si autocertifica. */
 			String filename = "./ca_certificate.crt";
 
-			// Building keys
+			// Keys
 			System.out.println("Building keys...");
 			KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA","BC");
 			keyPairGen.initialize(1024);
 			pair = keyPairGen.generateKeyPair();
 
-			// Building my SelfCertificate
+			// SelfCertificate
 			System.out.println("Building certificate...");
-			caCert = generateAutoCertificate(pair);
+			caCert = selfCertificate(pair);
 
-			// Basic validation
-			System.out.println("Validating dates...");
+			// Controlli
+			System.out.println("Controllo la data.");
 			caCert.checkValidity(new Date());
-			System.out.println("Verifying signature...");
+			System.out.println("Controllo la firma.");
 			caCert.verify(caCert.getPublicKey());
-			System.out.println("Dates and signature verified.");
-
-			System.out.println("Exporting certificate...");
+			System.out.println("Controlli eseguiti correttamente.");
+			System.out.println("Esporto il certificato.");
 			exportCertificate(caCert, filename);
-			System.out.println("Certificate exported.");
-
-			/*
-			 * CertificateFactory certFact =
-			 * CertificateFactory.getInstance("X.509"); FileInputStream fis =
-			 * new FileInputStream("Certificato_CA.crt"); X509Certificate cert =
-			 * (X509Certificate) certFact.generateCertificate(fis); fis.close();
-			 * System.out.println(cert); cert.checkValidity(new Date()); Key
-			 * pubKey = cert.getPublicKey();
-			 * System.out.println("Chiave pubblica della Certification Authority: "
-			 * ); System.out.println(pubKey.toString());
-			 */
+			System.out.println("Certificato esportato.");
 
 	}
 

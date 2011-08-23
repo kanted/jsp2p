@@ -1,6 +1,6 @@
 package it.saccosilvestri.jsp2p.test;
 
-import it.saccosilvestri.jsp2p.securecommunication.Peer;
+import it.saccosilvestri.jsp2p.securecommunication.SecureCommunication;
 
 import java.io.FileInputStream;
 import java.net.ServerSocket;
@@ -44,7 +44,7 @@ public class TestThread extends Thread {
 			f = new FileInputStream(myPath);
 			X509Certificate peerCert = (X509Certificate) fact
 					.generateCertificate(f);
-			Peer peer = new Peer(passive, mySocket, kp, peerCert, caCert);
+			SecureCommunication peer = new SecureCommunication(passive, mySocket, kp, peerCert, caCert);
 			
 			System.out.println("Starting thread");
 			byte[] b = {};
