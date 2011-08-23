@@ -44,7 +44,9 @@ public class Test {
 			System.out.println("Initialization...");
 			initialization();
 
-			CertificationAuthority ca = new CertificationAuthority();
+			CertificationAuthority ca = new CertificationAuthority(); //Poi si dovrˆ separare
+			// dal test e fare un main a parte per farla partire solo una volta. Comunque
+			// anche qu“ va bene per farla vedere durante la consegna.
 			System.out.println("Starting simulation");
 			for (int i = 0; i < NUM_PEER; i++) {
 				System.out.println("porta " + 8000 + i);
