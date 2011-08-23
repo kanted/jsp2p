@@ -10,6 +10,7 @@ import java.net.SocketException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyPair;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
@@ -30,6 +31,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class BobProtocol {
 	
@@ -55,7 +57,7 @@ public class BobProtocol {
 	        return value;
 	    }
 
-	public Key doService()
+	public SecretKeySpec doService()
 			throws CertificateException, IOException, SocketException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, BadNonceException, InvalidKeySpecException {
 
 		System.out.println("B");
@@ -86,16 +88,14 @@ public class BobProtocol {
 			//out.write(length);
 			out.write(certBytes);
 			out.flush();
-			System.out.println("BOB ha inviato il certificato...");
-			
+			System.out.println("BOB ha inviato il certificato...");		
 			System.out.println("BOB -- NA*******");
 			// (3) Ricezione di nA
-			byte[] nA;
 			byte[] lengthBytes = new byte[1];
 			in.read(lengthBytes,0,1);
 			int nonceLength = byteArrayToInt(lengthBytes);
 			System.out.println("LUNGHEZZA NA SU B DOPO"+nonceLength);
-			nA = new byte[nonceLength];
+			byte[] nA = new byte[nonceLength];
 			in.read(nA,0,nonceLength);
 			System.out.println("LUNGHEZZA NA SU B"+nA.length);
 			//System.out.println("Sono B e STAMPO NA:");
@@ -140,14 +140,14 @@ public class BobProtocol {
 			nonceLength = byteArrayToInt(lengthBytes);
 			nB = new byte[nonceLength];
 			in.read(nB,0,nonceLength);
-			cipher.init(Cipher.DECRYPT_MODE, pKey);
+			cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
 			byte[] plainText = cipher.doFinal(nB);
 			if(!Arrays.equals(plainText,nonceB))
 				throw new BadNonceException();
 			
 			// (6) Diffie-Helmann
 			// Perform the KeyAgreement
-			System.out.println("Performing the KeyAgreement...");
+			/*System.out.println("Performing the KeyAgreement...");
 			KeyAgreement ka = KeyAgreement.getInstance("DH", "BC");
 			ka.init(keyPair.getPrivate());
 			ka.doPhase(pKey, true);		
@@ -156,13 +156,22 @@ public class BobProtocol {
 			// Create the session key
 			SecretKeyFactory skf = SecretKeyFactory.getInstance("TripleDES", "BC");
 			DESedeKeySpec tripleDesSpec = new DESedeKeySpec(sessionKeyBytes);
-			SecretKey sessionKey = skf.generateSecret(tripleDesSpec);
+			SecretKey sessionKey = skf.generateSecret(tripleDesSpec);*/
+			
+			//(6) Generazione chiave di sessione
+			byte[] key = new byte[nonceA.length+nonceB.length];
+			System.arraycopy(nonceA, 0, key, 0, nonceA.length);
+			System.arraycopy(nonceB, 0, key, nonceA.length, nonceB.length);
+			MessageDigest sha = MessageDigest.getInstance("SHA-1","BC");
+			key = sha.digest(key);
+			key = Arrays.copyOf(key, 16); // use only first 128 bit
+			SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
 
 			// Chiusura degli stream.
 			out.close();
 			in.close();
 
-			return sessionKey;
+			return secretKeySpec;
 
 	}
 

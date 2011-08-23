@@ -11,6 +11,7 @@ import java.net.SocketException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyPair;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
@@ -33,6 +34,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.KeyAgreement;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.DHParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class AliceProtocol {
 
@@ -103,7 +105,7 @@ public class AliceProtocol {
         return value;
     }
 
-	public Key doService() throws CertificateException, IOException,
+	public SecretKeySpec doService() throws CertificateException, IOException,
 			SocketException, InvalidKeyException, NoSuchAlgorithmException,
 			NoSuchProviderException, SignatureException,
 			NoSuchPaddingException, IllegalBlockSizeException,
@@ -160,6 +162,7 @@ public class AliceProtocol {
 		out.write(length);
 		out.write(cipherText);
 		out.flush();
+		
 		//System.out.println("Sono A e STAMPO Na:");
 		//TODO
 		//for(int i=0;i<cipherText.length;i++)
@@ -180,25 +183,24 @@ public class AliceProtocol {
 		nonceLength = byteArrayToInt(lengthBytes);
 		byte[] nB = new byte[nonceLength];
 		in.read(nB,0,nonceLength);
-		byte[] plainText = new byte[64];
 		System.out.println("ALICE -- QUINDI111*******");
 		cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
 		System.out.println("ALICE -- QUINDI222*******");
-		plainText = cipher.doFinal(nA);
+		byte[] plainText = cipher.doFinal(nA);
 		System.out.println("ALICE -- CIFO*******");
 		if (!Arrays.equals(plainText, nonceA))
 			throw new BadNonceException();
-		plainText = cipher.doFinal(nB);
+		byte[] nonceB = cipher.doFinal(nB);
 		
 		// (5) Invio di nB cifrato con la chiave pubblica di B
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
-		byte[] ciphredB = cipher.doFinal(plainText);
+		byte[] ciphredB = cipher.doFinal(nonceB);
 		length = (new Integer(ciphredB.length)).byteValue();
 		out.write(length);
 		out.write(ciphredB);
 		out.flush();
 
-		// (6) Diffie-Helmann
+/*		// (6) Diffie-Helmann
 		// Perform the KeyAgreement
 		System.out.println("Performing the KeyAgreement...");
 		KeyAgreement ka = KeyAgreement.getInstance("DH", "BC");
@@ -209,13 +211,22 @@ public class AliceProtocol {
 		// Create the session key
 		SecretKeyFactory skf = SecretKeyFactory.getInstance("TripleDES", "BC");
 		DESedeKeySpec tripleDesSpec = new DESedeKeySpec(sessionKeyBytes);
-		SecretKey sessionKey = skf.generateSecret(tripleDesSpec);
+		SecretKey sessionKey = skf.generateSecret(tripleDesSpec);*/
+		
+		//(6) Generazione chiave di sessione
+		byte[] key = new byte[nonceA.length+nonceB.length];
+		System.arraycopy(nonceA, 0, key, 0, nonceA.length);
+		System.arraycopy(nonceB, 0, key, nonceA.length, nonceB.length);
+		MessageDigest sha = MessageDigest.getInstance("SHA-1","BC");
+		key = sha.digest(key);
+		key = Arrays.copyOf(key, 16); // use only first 128 bit
+		SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
 
 		// Chiusura degli stream.
 		out.close();
 		in.close();
 
-		return sessionKey;
+		return secretKeySpec;
 
 	}
 

@@ -25,6 +25,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 public class Peer {
 	
@@ -32,17 +33,17 @@ public class Peer {
 	InputStream in;
 	OutputStream out;
 	private Cipher cipher;
-	private Key sessionKey;
+	private SecretKeySpec sessionKeySpec;
 	
 
 	public void send(byte[] messageToBeSent) throws InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
-		cipher.init(Cipher.ENCRYPT_MODE, sessionKey);
+		cipher.init(Cipher.ENCRYPT_MODE, sessionKeySpec);
 		byte[] ciphredText = cipher.doFinal(messageToBeSent);
 		out.write(ciphredText);
 	}
 
 	public void receive(byte[] messageToBeReceived) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
-		cipher.init(Cipher.DECRYPT_MODE, sessionKey);
+		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
 		byte[] ciphredText = {};
 		in.read(ciphredText);
 		messageToBeReceived = cipher.doFinal(ciphredText);
@@ -63,16 +64,15 @@ public class Peer {
 		PublicKey CAPublicKey = CACert.getPublicKey();
 		if(!passive){
 			AliceProtocol ap = new AliceProtocol(clientSocket,keyPair,peerCertificate,CAPublicKey);
-			sessionKey = ap.doService();
+			sessionKeySpec = ap.doService();
 		}
 		else{
 			BobProtocol bp = new BobProtocol(clientSocket,keyPair,peerCertificate,CAPublicKey);
-			sessionKey = bp.doService();
+			sessionKeySpec = bp.doService();
 		}
 		// Create the CipherStream to be used
 		System.out.println("Creating the CipherStream...");
-		cipher = Cipher.getInstance("TripleDES/ECB/PKCS1Padding",
-				"BC");
+		Cipher cipher = Cipher.getInstance("AES","BC");
 
 	}
 	
