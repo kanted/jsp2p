@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.util.Properties;
 
-public class Test {
+public class Peer {
 
 	private static int NUM_PEER;
 
@@ -51,12 +51,12 @@ public class Test {
 			for (int i = 0; i < NUM_PEER; i++) {
 				System.out.println("porta " + 8000 + i);
 				KeyPair kp = ca.generateCertificate(0);
-				TestThread a = new TestThread("certificate_for_peer_0" //TODO FARE BENE + i
+				AliceThread a = new AliceThread("certificate_for_peer_0" //TODO FARE BENE + i
 						+ ".crt", "ca_certificate.crt", 8000 + i, true, kp);
 			}
 			for (int i = 0; i < NUM_PEER; i++) {
 				KeyPair kp = ca.generateCertificate(1);
-				TestThread b = new TestThread("certificate_for_peer_1" //TODO FARE BENE +i
+				AliceThread b = new AliceThread("certificate_for_peer_1" //TODO FARE BENE +i
 						+ ".crt", "ca_certificate.crt", 8000 + i, false, kp);
 			}
 		} catch (Exception e) {
