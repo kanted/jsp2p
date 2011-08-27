@@ -76,6 +76,7 @@ public class AliceProtocol extends Protocol{
 		//TODO
 		send(cipherText);
 		System.out.println("ALICE -- NA+NB*******");
+		
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
 		System.out.println("ALICE -- ReadNa*******");
 		byte[] nA = readNonce();
