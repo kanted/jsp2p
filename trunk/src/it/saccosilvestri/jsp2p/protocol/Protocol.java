@@ -1,7 +1,7 @@
 package it.saccosilvestri.jsp2p.protocol;
 
 import it.saccosilvestri.jsp2p.utility.ByteArrayUtility;
-import it.saccosilvestri.jsp2p.utility.CertificateVerificationUtility;
+import it.saccosilvestri.jsp2p.utility.CertificateUtility;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +24,7 @@ import java.util.Date;
 
 import javax.crypto.spec.SecretKeySpec;
 
-public class Protocol {
+abstract class Protocol {
 
 	private Socket clientSocket;
 	private KeyPair keyPair;
@@ -33,7 +33,7 @@ public class Protocol {
 	InputStream in;
 	OutputStream out;
 	
-	protected Protocol (Socket cs, KeyPair kp, X509Certificate c, PublicKey capk) throws IOException{
+	public Protocol (Socket cs, KeyPair kp, X509Certificate c, PublicKey capk) throws IOException{
 		clientSocket = cs;
 		keyPair = kp;
 		cert = c;
@@ -52,7 +52,7 @@ public class Protocol {
 		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 		X509Certificate retrievedCert = (X509Certificate) fact
 				.generateCertificate(in);
-		CertificateVerificationUtility.checkCertificate(cert,caPublicKey);
+		CertificateUtility.checkCertificate(cert,caPublicKey);
 		return retrievedCert.getPublicKey();
 	}
 	
