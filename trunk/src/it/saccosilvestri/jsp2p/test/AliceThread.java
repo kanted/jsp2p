@@ -28,29 +28,37 @@ public class AliceThread extends Thread {
 
 	public void run() {
 		try {
-
-			mySocket = new Socket("127.0.0.1", port);
-			SecureCommunication peer = new SecureCommunication(false, mySocket, kp, peerCert, caCert);
-			byte[] b = new byte[128];
-			String command = "";
+			
+			SecureCommunication peer;
+			String command = new String();
 			System.out.println("Sintassi per inviare un messaggio:");
 			System.out.println("send [messagge] to [ip:port]");
 			while (command != "quit") {
-
+				
+				byte[] b = new byte[128];
 				System.in.read(b);
 
 				command = new String(b, "US-ASCII");
 
-				if (command == "send") {
-					System.in.read(b);
-					peer.send(b);
+				if (command.startsWith("send")&&command.contains("to")) {
+					int toIndex = command.indexOf("to");
+					String message = command.substring(4, toIndex);
+					String indirizzo = command.substring(toIndex, command.length());
+					int colonIndex = indirizzo.indexOf(":");
+					String ip = indirizzo.substring(0,colonIndex);
+					int port = Integer.parseInt(indirizzo.substring(colonIndex,indirizzo.length()));
+					mySocket = new Socket(ip, port);
+					peer = new SecureCommunication(false, mySocket, kp, peerCert, caCert);
+					peer.send(message.getBytes());
+				} if(command.startsWith("help")){	
+					System.out.println("---HELP---");
+					System.out.println("To exit type 'quit'");
+					System.out.println("Sintassi per inviare un messaggio:");
+					System.out.println("send [messagge] to [ip:port]");
+					System.out.println("---END---");
 				}
-				
-				if (command == "receive") {
-					peer.receive(b);
-					String app = new String(b, "US-ASCII");
-					System.out.println(app);
-				}
+				else
+					System.out.println("Unknown command.");
 			}
 
 		} catch (Exception e) {
