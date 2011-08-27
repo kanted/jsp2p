@@ -43,10 +43,10 @@ public class AliceThread extends Thread {
 				if (command.startsWith("send")&&command.contains("to")) { //TODO regular expression
 					int toIndex = command.indexOf("to");
 					String message = command.substring(4, toIndex);
-					String indirizzo = command.substring(toIndex, command.length());
+					String indirizzo = command.substring(toIndex+2, command.length());
 					int colonIndex = indirizzo.indexOf(":");
 					String ip = indirizzo.substring(0,colonIndex);
-					int port = Integer.parseInt(indirizzo.substring(colonIndex,indirizzo.length()));
+					int port = Integer.parseInt(indirizzo.substring(colonIndex+1,indirizzo.length()));
 					mySocket = new Socket(ip, port);
 					sc = new SecureCommunication(false, mySocket, kp, peerCert, caCert);
 					sc.send(message.getBytes());
