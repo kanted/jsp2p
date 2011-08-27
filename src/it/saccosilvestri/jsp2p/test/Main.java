@@ -1,9 +1,13 @@
 package it.saccosilvestri.jsp2p.test;
 
+import java.security.KeyFactory;
 import java.security.KeyPair;
+import java.security.spec.RSAPrivateKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 
 import it.saccosilvestri.jsp2p.certificationAuthority.CertificationAuthority;
 import it.saccosilvestri.jsp2p.utility.ConfigurationFileUtility;
+import it.saccosilvestri.jsp2p.utility.FileUtility;
 
 public class Main {
 
@@ -18,10 +22,9 @@ public class Main {
 
 			CertificationAuthority ca = new CertificationAuthority(); 
 			
-			System.out.println("Generating and exporting certificates for peers...");
+			System.out.println("Generating and exporting certificates and keys for peers...");
 			for (int i = 0; i < NUM_PEER; i++) {
-				KeyPair kp = ca.generateCertificate(i);
-				Peer peer = new Peer(i,kp);
+				ca.generateCertificate(i);
 			}
 			
 			

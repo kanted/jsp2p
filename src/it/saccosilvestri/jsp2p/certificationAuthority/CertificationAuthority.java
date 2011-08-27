@@ -1,12 +1,14 @@
 package it.saccosilvestri.jsp2p.certificationAuthority;
 
 import it.saccosilvestri.jsp2p.utility.CertificateVerificationUtility;
+import it.saccosilvestri.jsp2p.utility.FileUtility;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -16,6 +18,9 @@ import java.security.SignatureException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPrivateKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.util.Date;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.openssl.PEMWriter;
@@ -43,10 +48,11 @@ public class CertificationAuthority {
 
 		return certGen.generate(pair.getPrivate());
 	}
+	
 
-	public KeyPair generateCertificate(int i)
+	public void generateCertificate(int i)
 			throws NoSuchAlgorithmException, InvalidKeyException, IllegalStateException,
-			NoSuchProviderException, SignatureException, CertificateException, IOException {
+			NoSuchProviderException, SignatureException, CertificateException, IOException, InvalidKeySpecException {
 		String filename = ("certificate_for_peer_" + i + ".crt");
 		X509Name subjectName = new X509Name("CN=Peer" + i);
 		Date startDate = new Date(System.currentTimeMillis()); // time from
@@ -84,11 +90,20 @@ public class CertificationAuthority {
 		certGen.setSignatureAlgorithm("SHA1WithRSAEncryption");
 		X509Certificate cert = certGen.generate(caKey); // note: private key of
 														// CA
+		KeyFactory fact = KeyFactory.getInstance("RSA","BC");
+		RSAPublicKeySpec pub = (RSAPublicKeySpec) fact.getKeySpec(keyPair.getPublic(),
+				  RSAPublicKeySpec.class);
+		RSAPrivateKeySpec priv = (RSAPrivateKeySpec) fact.getKeySpec(keyPair.getPrivate(),
+				  RSAPrivateKeySpec.class);
+				
 
-		// Controlli
+		// Controlli e salvataggi su file.
 		CertificateVerificationUtility.checkAndExportCertificate(cert,caCert.getPublicKey(),filename);
-		
-		return keyPair;
+		FileUtility.saveKeyToFile("public"+i+".key", pub.getModulus(),
+				  pub.getPublicExponent());
+		FileUtility.saveKeyToFile("private"+i+".key", priv.getModulus(),
+				  priv.getPrivateExponent());
+
 		
 	}
 
