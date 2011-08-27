@@ -45,7 +45,7 @@ public class AliceProtocol extends Protocol{
 	}
 	
 
-	public SecretKeySpec doService() throws CertificateException, IOException,
+	public SecretKeySpec protocol() throws CertificateException, IOException,
 			SocketException, InvalidKeyException, NoSuchAlgorithmException,
 			NoSuchProviderException, SignatureException,
 			NoSuchPaddingException, IllegalBlockSizeException,
