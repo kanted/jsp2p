@@ -12,63 +12,37 @@ import java.security.cert.X509Certificate;
 public class BobThread extends Thread {
 
 	Socket mySocket;
-	private boolean passive;
 	private int port;
-	private String caPath;
-	private String myPath;
+	private X509Certificate peerCert;
+	private X509Certificate caCert;
 	private KeyPair kp;
 
-	public BobThread(String myPath, String caPath, int port, boolean passive,
-			KeyPair kp) {
-		this.passive = passive;
-		this.caPath = caPath;
+	public BobThread(X509Certificate peerCert, X509Certificate caCert,
+			int port, KeyPair kp) {
+		this.peerCert = peerCert;
+		this.caCert = caCert;
 		this.kp = kp;
-		this.myPath = myPath;
 		this.port = port;
 		this.start();
 	}
 
 	public void run() {
 		try {
-			
-			System.out.println("***TEST THREAD***");
-			if (passive) {
-				ServerSocket server = new ServerSocket(port);
-				mySocket = server.accept();
-			} else
-				mySocket = new Socket("127.0.0.1", port);
-			System.out.println("****TUTTO FATTO****");
-			FileInputStream f = new FileInputStream(caPath);
-			CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
-			X509Certificate caCert = (X509Certificate) fact.generateCertificate(f);
-			f = new FileInputStream(myPath);
-			X509Certificate peerCert = (X509Certificate) fact
-					.generateCertificate(f);
-			SecureCommunication peer = new SecureCommunication(passive, mySocket, kp, peerCert, caCert);
-			
-			System.out.println("Starting thread");
-			byte[] b = {};
-			String command = "";
-			while (command != "quit") {
 
-				System.in.read(b);
+			ServerSocket server = new ServerSocket(port);
+			mySocket = server.accept();
+			SecureCommunication sc = new SecureCommunication(true, mySocket,
+					kp, peerCert, caCert);
 
-				command = new String(b, "US-ASCII");
-
-				if (command == "send") {
-					System.in.read(b);
-					peer.send(b);
-				}
-				
-				if (command == "receive") {
-					peer.receive(b);
-					String app = new String(b, "US-ASCII");
-					System.out.println(app);
-				}
-			}
+			System.out.println("Ricevendo...");
+			byte[] b = sc.receive();
+			System.out.print("Ricevuto: ");
+			String app = new String(b, "US-ASCII");
+			System.out.println(app);
 
 		} catch (Exception e) {
-			System.out.println("EXCEPTION: " + e.getClass() + " - " + e.getMessage());
+			System.out.println("EXCEPTION: " + e.getClass() + " - "
+					+ e.getMessage());
 		}
 	}
 
