@@ -29,17 +29,16 @@ public class BobThread extends Thread {
 	public void run() {
 		try {
 			ServerSocket server = new ServerSocket(port);
-		while(true){
-			mySocket = server.accept();
-			SecureCommunication sc = new SecureCommunication(true, mySocket,
-					kp, peerCert, caCert);
-
-			System.out.println("Ricevendo...");
-			byte[] b = sc.receive();
-			System.out.print("Ricevuto: ");
-			String app = new String(b, "US-ASCII");
-			System.out.println(app);
-		}
+			while (true) {
+				mySocket = server.accept();
+				SecureCommunication sc = new SecureCommunication(true,
+						mySocket, kp, peerCert, caCert);
+				System.out.println("Ricevendo...");
+				byte[] b = sc.receive();
+				System.out.print("Ricevuto: ");
+				String app = new String(b, "US-ASCII");
+				System.out.println(app);
+			}
 		} catch (Exception e) {
 			System.out.println("EXCEPTION: " + e.getClass() + " - "
 					+ e.getMessage());
