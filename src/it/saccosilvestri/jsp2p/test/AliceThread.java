@@ -29,10 +29,10 @@ public class AliceThread extends Thread {
 	public void run() {
 		try {
 			
-			SecureCommunication peer;
+			SecureCommunication sc;
 			String command = new String();
 			System.out.println("Sintassi per inviare un messaggio:");
-			System.out.println("send [messagge] to [ip:port]");
+			System.out.println("send [message] to [ip:port]");
 			while (command != "quit") {
 				
 				byte[] b = new byte[128];
@@ -40,7 +40,7 @@ public class AliceThread extends Thread {
 
 				command = new String(b, "US-ASCII");
 
-				if (command.startsWith("send")&&command.contains("to")) {
+				if (command.startsWith("send")&&command.contains("to")) { //TODO regular expression
 					int toIndex = command.indexOf("to");
 					String message = command.substring(4, toIndex);
 					String indirizzo = command.substring(toIndex, command.length());
@@ -48,8 +48,8 @@ public class AliceThread extends Thread {
 					String ip = indirizzo.substring(0,colonIndex);
 					int port = Integer.parseInt(indirizzo.substring(colonIndex,indirizzo.length()));
 					mySocket = new Socket(ip, port);
-					peer = new SecureCommunication(false, mySocket, kp, peerCert, caCert);
-					peer.send(message.getBytes());
+					sc = new SecureCommunication(false, mySocket, kp, peerCert, caCert);
+					sc.send(message.getBytes());
 				} if(command.startsWith("help")){	
 					System.out.println("---HELP---");
 					System.out.println("To exit type 'quit'");
