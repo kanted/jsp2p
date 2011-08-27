@@ -12,43 +12,29 @@ import java.security.cert.X509Certificate;
 public class AliceThread extends Thread {
 
 	Socket mySocket;
-	private boolean passive;
 	private int port;
-	private String caPath;
-	private String myPath;
+	private X509Certificate peerCert;
+	private X509Certificate caCert;
 	private KeyPair kp;
 
-	public AliceThread(String myPath, String caPath, int port, boolean passive,
+	public AliceThread(X509Certificate peerCert, X509Certificate caCert , int port,
 			KeyPair kp) {
-		this.passive = passive;
-		this.caPath = caPath;
+		this.peerCert = peerCert;
+		this.caCert = caCert;
 		this.kp = kp;
-		this.myPath = myPath;
 		this.port = port;
 		this.start();
 	}
 
 	public void run() {
 		try {
-			
-			System.out.println("***TEST THREAD***");
-			if (passive) {
-				ServerSocket server = new ServerSocket(port);
-				mySocket = server.accept();
-			} else
-				mySocket = new Socket("127.0.0.1", port);
-			System.out.println("****TUTTO FATTO****");
-			FileInputStream f = new FileInputStream(caPath);
-			CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
-			X509Certificate caCert = (X509Certificate) fact.generateCertificate(f);
-			f = new FileInputStream(myPath);
-			X509Certificate peerCert = (X509Certificate) fact
-					.generateCertificate(f);
-			SecureCommunication peer = new SecureCommunication(passive, mySocket, kp, peerCert, caCert);
-			
-			System.out.println("Starting thread");
-			byte[] b = {};
+
+			mySocket = new Socket("127.0.0.1", port);
+			SecureCommunication peer = new SecureCommunication(false, mySocket, kp, peerCert, caCert);
+			byte[] b = new byte[128];
 			String command = "";
+			System.out.println("Sintassi per inviare un messaggio:");
+			System.out.println("send [messagge] to [ip:port]");
 			while (command != "quit") {
 
 				System.in.read(b);

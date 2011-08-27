@@ -47,14 +47,15 @@ public class SecureCommunication {
 		out.flush();
 	}
 
-	public void receive(byte[] messageToBeReceived) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
+	public byte[] receive() throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
 		byte[] lengthBytes = new byte[3]; //TODO per stare tranquilli
 		in.read(lengthBytes,0,1);
 		int length = ByteArrayUtility.byteArrayToInt(lengthBytes);
 		byte[] ciphredText = new byte[length];
 		in.read(ciphredText,0,length);
-		messageToBeReceived = cipher.doFinal(ciphredText);
+		byte[] messageToBeReceived = cipher.doFinal(ciphredText);
+		return messageToBeReceived;
 	}
 
 	public SecureCommunication(boolean passive, Socket socket, KeyPair keyPair, X509Certificate peerCertificate, X509Certificate CACert) throws InvalidKeyException, CertificateException, SocketException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, IOException, BadNonceException  {
