@@ -28,7 +28,6 @@ public class BobThread extends Thread {
 
 	public void run() {
 		try {
-
 			ServerSocket server = new ServerSocket(port);
 		while(true){
 			mySocket = server.accept();
