@@ -1,6 +1,6 @@
 package it.saccosilvestri.jsp2p.certificationAuthority;
 
-import it.saccosilvestri.jsp2p.utility.Utility;
+import it.saccosilvestri.jsp2p.utility.CertificateVerificationUtility;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -86,7 +86,7 @@ public class CertificationAuthority {
 														// CA
 
 		// Controlli
-		Utility.checkAndExportCertificate(cert,caCert.getPublicKey(),filename);
+		CertificateVerificationUtility.checkAndExportCertificate(cert,caCert.getPublicKey(),filename);
 		
 		return keyPair;
 		
@@ -108,7 +108,7 @@ public class CertificationAuthority {
 			caCert = selfCertificate(pair);
 
 			// Controlli
-			Utility.checkAndExportCertificate(caCert,caCert.getPublicKey(),filename);
+			CertificateVerificationUtility.checkAndExportCertificate(caCert,caCert.getPublicKey(),filename);
 
 	}
 

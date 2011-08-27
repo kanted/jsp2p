@@ -3,6 +3,7 @@ package it.saccosilvestri.jsp2p.test;
 import it.saccosilvestri.jsp2p.certificationAuthority.CertificationAuthority;
 import it.saccosilvestri.jsp2p.exceptions.UnreachableCAConfigurationFileException;
 import it.saccosilvestri.jsp2p.exceptions.WrongCAConfigurationFileSyntaxException;
+import it.saccosilvestri.jsp2p.utility.ConfigurationFileUtility;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,51 +15,34 @@ import java.util.Properties;
 public class Peer {
 
 	private static int NUM_PEER;
-
-	public static void initialization()
-			throws UnreachableCAConfigurationFileException,
-			FileNotFoundException, IOException,
-			WrongCAConfigurationFileSyntaxException {
-
-		String configurationFilePath = new String("CA.conf");
-		Properties configFile = new Properties();
-		// Controllo che il file di configurazione esista e si possa aprire in
-		// lettura.
-		File file = new File(configurationFilePath);
-		if (!file.canRead()) {
-			throw new UnreachableCAConfigurationFileException();
-		}
-		configFile.load(new FileInputStream(configurationFilePath));
-		try {
-			NUM_PEER = 1;// TODO
-							// Integer.parseInt(configFile.getProperty("NUM_PEER"));
-		} catch (Exception e) {
-			throw new WrongCAConfigurationFileSyntaxException();
-		}
+	private static int i;
+	private static KeyPair kp;
+	
+	public Peer(int i, KeyPair kp){
+		this.i=i;
+		this.kp=kp;
 	}
 
 	public static void main(String[] args) {
 
 		try {
-			/* Lettura del file di configurazione */
-			System.out.println("Initialization...");
-			initialization();
 
-			CertificationAuthority ca = new CertificationAuthority(); //Poi si dovrˆ separare
-			// dal test e fare un main a parte per farla partire solo una volta. Comunque
-			// anche qu“ va bene per farla vedere durante la consegna.
-			System.out.println("Starting simulation");
-			for (int i = 0; i < NUM_PEER; i++) {
-				System.out.println("porta " + 8000 + i);
-				KeyPair kp = ca.generateCertificate(0);
-				AliceThread a = new AliceThread("certificate_for_peer_0" //TODO FARE BENE + i
-						+ ".crt", "ca_certificate.crt", 8000 + i, true, kp);
+			int port = Integer.parseInt(args[0]);
+			if(port<1024||port>65535){
+				System.out.println("Attenzione. Inserire un numero di porta valido.");
+				return;
 			}
-			for (int i = 0; i < NUM_PEER; i++) {
-				KeyPair kp = ca.generateCertificate(1);
+			
+			System.out.println("Starting peer "+i);
+			
+			AliceThread a = new AliceThread("certificate_for_peer_0" //TODO FARE BENE + i
+						+ ".crt", "ca_certificate.crt", port, true, kp);
+			
+			
+		
 				BobThread b = new BobThread("certificate_for_peer_1" //TODO FARE BENE +i
-						+ ".crt", "ca_certificate.crt", 8000 + i, false, kp);
-			}
+						+ ".crt", "ca_certificate.crt", port, false, kp);
+
 		} catch (Exception e) {
 			System.out.println("EXCEPTION: " + e.getClass() + " - " + e.getMessage());
 		}

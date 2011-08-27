@@ -1,6 +1,7 @@
 package it.saccosilvestri.jsp2p.protocol;
 
-import it.saccosilvestri.jsp2p.utility.Utility;
+import it.saccosilvestri.jsp2p.utility.ByteArrayUtility;
+import it.saccosilvestri.jsp2p.utility.CertificateVerificationUtility;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +52,7 @@ public class Protocol {
 		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 		X509Certificate retrievedCert = (X509Certificate) fact
 				.generateCertificate(in);
-		Utility.checkCertificate(cert,caPublicKey);
+		CertificateVerificationUtility.checkCertificate(cert,caPublicKey);
 		return retrievedCert.getPublicKey();
 	}
 	
@@ -65,7 +66,7 @@ public class Protocol {
 	protected byte[] readNonce() throws IOException{
 		byte[] lengthBytes = new byte[1];
 		in.read(lengthBytes,0,1);
-		int nonceLength = Utility.byteArrayToInt(lengthBytes);
+		int nonceLength = ByteArrayUtility.byteArrayToInt(lengthBytes);
 		byte[] nonce = new byte[nonceLength];
 		in.read(nonce,0,nonceLength);
 		return nonce;

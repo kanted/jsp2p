@@ -3,7 +3,8 @@ package it.saccosilvestri.jsp2p.securecommunication;
 import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
 import it.saccosilvestri.jsp2p.protocol.AliceProtocol;
 import it.saccosilvestri.jsp2p.protocol.BobProtocol;
-import it.saccosilvestri.jsp2p.utility.Utility;
+import it.saccosilvestri.jsp2p.utility.ByteArrayUtility;
+import it.saccosilvestri.jsp2p.utility.CertificateVerificationUtility;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +51,7 @@ public class SecureCommunication {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
 		byte[] lengthBytes = new byte[3]; //TODO per stare tranquilli
 		in.read(lengthBytes,0,1);
-		int length = Utility.byteArrayToInt(lengthBytes);
+		int length = ByteArrayUtility.byteArrayToInt(lengthBytes);
 		byte[] ciphredText = new byte[length];
 		in.read(ciphredText,0,length);
 		messageToBeReceived = cipher.doFinal(ciphredText);
@@ -60,7 +61,7 @@ public class SecureCommunication {
 		clientSocket = socket;
 		in = clientSocket.getInputStream();
 		out = clientSocket.getOutputStream();
-		Utility.checkCertificate(CACert,CACert.getPublicKey());
+		CertificateVerificationUtility.checkCertificate(CACert,CACert.getPublicKey());
 		PublicKey CAPublicKey = CACert.getPublicKey();
 		if(!passive){
 			AliceProtocol ap = new AliceProtocol(clientSocket,keyPair,peerCertificate,CAPublicKey);
