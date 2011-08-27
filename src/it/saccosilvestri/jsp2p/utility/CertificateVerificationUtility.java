@@ -17,7 +17,7 @@ import java.util.Date;
 
 import org.bouncycastle.openssl.PEMWriter;
 
-public class Utility {
+public class CertificateVerificationUtility {
 
 	public static void checkCertificate(X509Certificate cert, PublicKey pk) throws InvalidKeyException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException {
 		System.out.println("Controllo la data.");
@@ -36,15 +36,5 @@ public class Utility {
 		pemWr.close();
 		System.out.println("Certificato esportato.");
 	}
-	
-	public static int byteArrayToInt(byte[] b) {
-        int value = 0;
-        for (int i = 0; i < b.length; i++) {
-            value += b[i]*Math.pow(2,i);
-        }
-        if(value<0)
-        	value = -value;
-        return value;
-    }
 	
 }
