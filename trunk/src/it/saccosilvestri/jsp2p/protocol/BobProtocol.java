@@ -82,15 +82,6 @@ public class BobProtocol extends Protocol{
 			byte[] plainText = cipher.doFinal(nB);
 			if(!Arrays.equals(plainText,nonceB))
 				throw new BadNonceException();
-			
-			//(6) Generazione chiave di sessione
-			byte[] key = new byte[nonceA.length+nonceB.length];
-			System.arraycopy(nonceA, 0, key, 0, nonceA.length);
-			System.arraycopy(nonceB, 0, key, nonceA.length, nonceB.length);
-			MessageDigest sha = MessageDigest.getInstance("SHA-1","BC");
-			key = sha.digest(key);
-			key = Arrays.copyOf(key, 16); // use only first 128 bit
-			SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
 
 			closeStreams();
 			
