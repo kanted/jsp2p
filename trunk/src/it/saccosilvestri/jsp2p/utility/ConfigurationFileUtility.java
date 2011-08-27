@@ -25,12 +25,12 @@ import org.bouncycastle.openssl.PEMWriter;
 
 public class ConfigurationFileUtility {
 
-	public static int retrieveNumPeer()
+	public static int retrieveNumPeer(String filename)
 			throws UnreachableCAConfigurationFileException,
 			FileNotFoundException, IOException,
 			WrongCAConfigurationFileSyntaxException {
 
-		String configurationFilePath = new String("CA.conf");
+		String configurationFilePath = new String(filename);
 		Properties configFile = new Properties();
 		// Controllo che il file di configurazione esista e si possa aprire in
 		// lettura.
