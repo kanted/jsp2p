@@ -4,6 +4,7 @@ import it.saccosilvestri.jsp2p.certificationAuthority.CertificationAuthority;
 import it.saccosilvestri.jsp2p.exceptions.UnreachableCAConfigurationFileException;
 import it.saccosilvestri.jsp2p.exceptions.WrongCAConfigurationFileSyntaxException;
 import it.saccosilvestri.jsp2p.securecommunication.SecureCommunication;
+import it.saccosilvestri.jsp2p.utility.CertificateUtility;
 import it.saccosilvestri.jsp2p.utility.ConfigurationFileUtility;
 import it.saccosilvestri.jsp2p.utility.FileUtility;
 
@@ -48,21 +49,10 @@ public class Peer {
 			int i = Integer.parseInt(args[1]);
 
 			System.out.println("Starting peer " + i);
-			System.out.println("Recuperando il certificato per il peer " + i);
-			FileInputStream f = new FileInputStream("ca_certificate.crt"); // TODO
-																			// magari
-																			// path
-																			// nel
-																			// file
-																			// di
-																			// conf.
-			CertificateFactory fact = CertificateFactory.getInstance("X.509",
-					"BC");
-			X509Certificate caCert = (X509Certificate) fact
-					.generateCertificate(f);
-			f = new FileInputStream("certificate_for_peer_" + i);
-			X509Certificate peerCert = (X509Certificate) fact
-					.generateCertificate(f);
+			System.out.println("Recuperando il certificato per il peer " + i);		
+			X509Certificate peerCert = CertificateUtility.readCertificate("ca_certificate.crt"); // TODO magari nel file di config.
+			X509Certificate caCert = CertificateUtility.readCertificate("certificate_for_peer_" + i +".crt"); // TODO magari nel file di config.
+			
 			System.out.println("Recuperando le chiavi per il peer " + i);
 			KeyPair kp = FileUtility.readKeysFromFiles("public" + i + ".key", "private" + i
 					+ ".key"); // TODO magari path nel file di conf.

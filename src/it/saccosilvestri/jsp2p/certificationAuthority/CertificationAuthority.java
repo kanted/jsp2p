@@ -1,6 +1,6 @@
 package it.saccosilvestri.jsp2p.certificationAuthority;
 
-import it.saccosilvestri.jsp2p.utility.CertificateVerificationUtility;
+import it.saccosilvestri.jsp2p.utility.CertificateUtility;
 import it.saccosilvestri.jsp2p.utility.FileUtility;
 
 import java.io.FileOutputStream;
@@ -98,7 +98,7 @@ public class CertificationAuthority {
 				
 
 		// Controlli e salvataggi su file.
-		CertificateVerificationUtility.checkAndExportCertificate(cert,caCert.getPublicKey(),filename);
+		CertificateUtility.checkAndExportCertificate(cert,caCert.getPublicKey(),filename);
 		FileUtility.saveKeyToFile("public"+i+".key", pub.getModulus(),
 				  pub.getPublicExponent());
 		FileUtility.saveKeyToFile("private"+i+".key", priv.getModulus(),
@@ -123,7 +123,7 @@ public class CertificationAuthority {
 			caCert = selfCertificate(pair);
 
 			// Controlli
-			CertificateVerificationUtility.checkAndExportCertificate(caCert,caCert.getPublicKey(),filename);
+			CertificateUtility.checkAndExportCertificate(caCert,caCert.getPublicKey(),filename);
 
 	}
 
