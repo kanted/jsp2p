@@ -56,7 +56,7 @@ public class Peer {
 			}
 			for (int i = 0; i < NUM_PEER; i++) {
 				KeyPair kp = ca.generateCertificate(1);
-				AliceThread b = new AliceThread("certificate_for_peer_1" //TODO FARE BENE +i
+				BobThread b = new BobThread("certificate_for_peer_1" //TODO FARE BENE +i
 						+ ".crt", "ca_certificate.crt", 8000 + i, false, kp);
 			}
 		} catch (Exception e) {
