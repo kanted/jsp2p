@@ -19,15 +19,11 @@ public class Trent {
 			/* Lettura del file di configurazione */
 			System.out.println("Initialization...");
 			NUM_PEER = ConfigurationFileUtility.retrieveNumPeer();
-
-			CertificationAuthority ca = new CertificationAuthority(); 
-			
+			CertificationAuthority ca = new CertificationAuthority(); 		
 			System.out.println("Generating and exporting certificates and keys for peers...");
 			for (int i = 0; i < NUM_PEER; i++) {
 				ca.generateCertificate(i);
-			}
-			
-			
+			}				
 		} catch (Exception e) {
 			System.out.println("EXCEPTION: " + e.getClass() + " - " + e.getMessage());
 		}
