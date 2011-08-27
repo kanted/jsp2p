@@ -66,11 +66,11 @@ public class SecureCommunication {
 		PublicKey CAPublicKey = CACert.getPublicKey();
 		if(!passive){
 			AliceProtocol ap = new AliceProtocol(clientSocket,keyPair,peerCertificate,CAPublicKey);
-			sessionKeySpec = ap.doService();
+			sessionKeySpec = ap.protocol();
 		}
 		else{
 			BobProtocol bp = new BobProtocol(clientSocket,keyPair,peerCertificate,CAPublicKey);
-			sessionKeySpec = bp.doService();
+			sessionKeySpec = bp.protocol();
 		}
 		// Create the CipherStream to be used
 		System.out.println("Creating the CipherStream...");

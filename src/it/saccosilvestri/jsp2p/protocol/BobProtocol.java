@@ -42,7 +42,7 @@ public class BobProtocol extends Protocol{
 	}
 	
 
-	public SecretKeySpec doService()
+	public SecretKeySpec protocol()
 			throws CertificateException, IOException, SocketException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, BadNonceException, InvalidKeySpecException {
 
 		System.out.println("B");
