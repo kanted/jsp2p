@@ -44,7 +44,6 @@ public class Peer {
 						.println("Attenzione. Inserire un numero di porta valido.");
 				return;
 			}
-
 			// Recupero il numero del peer
 			int i = Integer.parseInt(args[1]);
 
@@ -52,12 +51,11 @@ public class Peer {
 			System.out.println("Recuperando il certificato per il peer " + i);		
 			X509Certificate peerCert = CertificateUtility.readCertificate("ca_certificate.crt"); // TODO magari nel file di config.
 			X509Certificate caCert = CertificateUtility.readCertificate("certificate_for_peer_" + i +".crt"); // TODO magari nel file di config.
-			
 			System.out.println("Recuperando le chiavi per il peer " + i);
 			KeyPair kp = FileUtility.readKeysFromFiles("public" + i + ".key", "private" + i
 					+ ".key"); // TODO magari path nel file di conf.
-
-			// Un peer è sia alice che bob contemporaneamente.
+			
+			// Un peer e' sia alice che bob contemporaneamente.
 			AliceThread a = new AliceThread(peerCert, caCert, port, kp);
 			BobThread b = new BobThread(peerCert, caCert, port, kp);
 
