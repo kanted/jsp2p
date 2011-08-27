@@ -30,6 +30,7 @@ public class BobThread extends Thread {
 		try {
 
 			ServerSocket server = new ServerSocket(port);
+		while(true){
 			mySocket = server.accept();
 			SecureCommunication sc = new SecureCommunication(true, mySocket,
 					kp, peerCert, caCert);
@@ -39,11 +40,10 @@ public class BobThread extends Thread {
 			System.out.print("Ricevuto: ");
 			String app = new String(b, "US-ASCII");
 			System.out.println(app);
-
+		}
 		} catch (Exception e) {
 			System.out.println("EXCEPTION: " + e.getClass() + " - "
 					+ e.getMessage());
 		}
 	}
-
 }
