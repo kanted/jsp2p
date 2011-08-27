@@ -9,7 +9,7 @@ import it.saccosilvestri.jsp2p.certificationAuthority.CertificationAuthority;
 import it.saccosilvestri.jsp2p.utility.ConfigurationFileUtility;
 import it.saccosilvestri.jsp2p.utility.FileUtility;
 
-public class Main {
+public class Trent {
 
 	private static int NUM_PEER;
 
