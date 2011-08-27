@@ -9,7 +9,7 @@ import java.security.KeyPair;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
-public class TestThread extends Thread {
+public class AliceThread extends Thread {
 
 	Socket mySocket;
 	private boolean passive;
@@ -18,7 +18,7 @@ public class TestThread extends Thread {
 	private String myPath;
 	private KeyPair kp;
 
-	public TestThread(String myPath, String caPath, int port, boolean passive,
+	public AliceThread(String myPath, String caPath, int port, boolean passive,
 			KeyPair kp) {
 		this.passive = passive;
 		this.caPath = caPath;
