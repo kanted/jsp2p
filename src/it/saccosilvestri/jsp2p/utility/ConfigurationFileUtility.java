@@ -40,8 +40,8 @@ public class ConfigurationFileUtility {
 		}
 		configFile.load(new FileInputStream(configurationFilePath));
 		try {
-			return 1;// TODO
-							// Integer.parseInt(configFile.getProperty("NUM_PEER"));
+			return 2;
+			//return Integer.parseInt(configFile.getProperty("NUM_PEER"));
 		} catch (Exception e) {
 			throw new WrongCAConfigurationFileSyntaxException();
 		}
