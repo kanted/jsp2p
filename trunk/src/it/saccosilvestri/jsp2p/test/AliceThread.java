@@ -60,7 +60,7 @@ public class AliceThread extends Thread {
 				}
 				else if (command.startsWith("help")) {
 					System.out.println("---HELP---");
-					System.out.println("To exit type 'quit'");
+					System.out.println("To exit type 'quit'"); //TODO in realta' non e' vero
 					System.out.println("Sintassi per inviare un messaggio:");
 					System.out.println("send [messagge] to [ip:port]");
 					System.out.println("---END---");
