@@ -30,8 +30,8 @@ import org.bouncycastle.openssl.PEMWriter;
 
 public class FileUtility {
 
-	public static void saveKeyToFile(String fileName, BigInteger mod, BigInteger exp)
-			throws IOException {
+	public static void saveKeyToFile(String fileName, BigInteger mod,
+			BigInteger exp) throws IOException {
 		ObjectOutputStream out = new ObjectOutputStream(
 				new BufferedOutputStream(new FileOutputStream(fileName)));
 		try {
@@ -43,7 +43,7 @@ public class FileUtility {
 			out.close();
 		}
 	}
-	
+
 	public static KeyPair readKeysFromFiles(String publicKeyFileName,
 			String privateKeyFileName) throws IOException {
 		ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(

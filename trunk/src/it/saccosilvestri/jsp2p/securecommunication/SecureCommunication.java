@@ -30,15 +30,15 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 public class SecureCommunication {
-	
+
 	private Socket clientSocket;
 	InputStream in;
 	OutputStream out;
 	private Cipher cipher;
 	private SecretKeySpec sessionKeySpec;
-	
 
-	public void send(byte[] messageToBeSent) throws InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
+	public void send(byte[] messageToBeSent) throws InvalidKeyException,
+			IOException, IllegalBlockSizeException, BadPaddingException {
 		cipher.init(Cipher.ENCRYPT_MODE, sessionKeySpec);
 		System.out.println("Encrypting with session key...");
 		byte[] ciphredText = cipher.doFinal(messageToBeSent);
@@ -48,37 +48,45 @@ public class SecureCommunication {
 		out.flush();
 	}
 
-	public byte[] receive() throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
+	public byte[] receive() throws InvalidKeyException,
+			IllegalBlockSizeException, BadPaddingException, IOException {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
 		System.out.println("Decrypting with session key...");
-		byte[] lengthBytes = new byte[3]; //TODO per stare tranquilli
-		in.read(lengthBytes,0,1);
+		byte[] lengthBytes = new byte[3]; // TODO per stare tranquilli
+		in.read(lengthBytes, 0, 1);
 		int length = ByteArrayUtility.byteArrayToInt(lengthBytes);
 		byte[] ciphredText = new byte[length];
-		in.read(ciphredText,0,length);
+		in.read(ciphredText, 0, length);
 		byte[] messageToBeReceived = cipher.doFinal(ciphredText);
 		return messageToBeReceived;
 	}
 
-	public SecureCommunication(boolean passive, Socket socket, KeyPair keyPair, X509Certificate peerCertificate, X509Certificate CACert) throws InvalidKeyException, CertificateException, SocketException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, IOException, BadNonceException  {
+	public SecureCommunication(boolean passive, Socket socket, KeyPair keyPair,
+			X509Certificate peerCertificate, X509Certificate CACert)
+			throws InvalidKeyException, CertificateException, SocketException,
+			NoSuchAlgorithmException, NoSuchProviderException,
+			SignatureException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException,
+			InvalidKeySpecException, IOException, BadNonceException {
 		clientSocket = socket;
 		in = clientSocket.getInputStream();
 		out = clientSocket.getOutputStream();
 		PublicKey CAPublicKey = CACert.getPublicKey();
-		CertificateUtility.checkCertificate(CACert,CAPublicKey);
-		if(!passive){
-			AliceProtocol ap = new AliceProtocol(clientSocket,keyPair,peerCertificate,CAPublicKey);
+		CertificateUtility.checkCertificate(CACert, CAPublicKey);
+		if (!passive) {
+			AliceProtocol ap = new AliceProtocol(clientSocket, keyPair,
+					peerCertificate, CAPublicKey);
 			sessionKeySpec = ap.protocol();
-		}
-		else{
-			BobProtocol bp = new BobProtocol(clientSocket,keyPair,peerCertificate,CAPublicKey);
+		} else {
+			BobProtocol bp = new BobProtocol(clientSocket, keyPair,
+					peerCertificate, CAPublicKey);
 			sessionKeySpec = bp.protocol();
 		}
 
 		System.out.println("Session key established.");
 		System.out.println("Creating the CipherStream...");
-		cipher = Cipher.getInstance("AES","BC");
+		cipher = Cipher.getInstance("AES", "BC");
 
 	}
-	
+
 }
