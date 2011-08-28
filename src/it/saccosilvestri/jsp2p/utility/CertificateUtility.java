@@ -1,6 +1,7 @@
 package it.saccosilvestri.jsp2p.utility;
 
 import it.saccosilvestri.jsp2p.exceptions.WrongSubjectDNException;
+import it.saccosilvestri.jsp2p.logging.LogManager;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -28,16 +29,15 @@ public class CertificateUtility {
 			throws InvalidKeyException, CertificateException,
 			NoSuchAlgorithmException, NoSuchProviderException,
 			SignatureException {
-		System.out.println("Attenzione! Certificato rilasciato a: "+cert.getSubjectDN());
+		LogManager.currentLogger.warn("Attenzione! Certificato rilasciato a: "+cert.getSubjectDN());
 		cert.checkValidity(new Date());
-		System.out.println("Controllo la firma.");
+		LogManager.currentLogger.info("Controllo la firma.");
 		cert.verify(pk);
-		System.out.println("Controlli eseguiti correttamente.");
+		LogManager.currentLogger.info("Controlli eseguiti correttamente.");
 	}
 	
 	public static void checkCertificateWithNameAuthentication(X509Certificate cert, PublicKey pk, String peerName) throws InvalidKeyException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException{
-		System.out.println("Controllo che il certificato sia stato rilasciato a: "+peerName+".");
-		System.out.println(cert.getSubjectDN().getName());
+		LogManager.currentLogger.info("Controllo che il certificato sia stato rilasciato a: "+peerName+".");
 		if (peerName.compareTo((cert.getSubjectDN().getName()))!=0)
 			throw new WrongSubjectDNException();
 		checkCertificate(cert,pk);
@@ -49,12 +49,12 @@ public class CertificateUtility {
 			NoSuchAlgorithmException, NoSuchProviderException,
 			SignatureException {
 		checkCertificate(cert, pk);
-		System.out.println("Esporto il certificato.");
+		LogManager.currentLogger.info("Esporto il certificato.");
 		PEMWriter pemWr = new PEMWriter(new OutputStreamWriter(
 				new FileOutputStream(filename)));
 		pemWr.writeObject(cert);
 		pemWr.close();
-		System.out.println("Certificato esportato.");
+		LogManager.currentLogger.info("Certificato esportato.");
 	}
 
 	public static X509Certificate readCertificate(String filename)
