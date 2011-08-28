@@ -35,10 +35,10 @@ public class AliceThread extends Thread {
 			String command = new String();
 			System.out.println("Sintassi per inviare un messaggio:");
 			System.out.println("send [message] to [peerID@ip:port]");
-			System.out.print(">>");
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					System.in));
 			while (!command.startsWith("quit")) {
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						System.in));
+				System.out.print(">>");
 				command = br.readLine();
 				if (command.startsWith("send") && command.contains("to")
 						&& command.contains("@") && command.contains(":")) { // TODO
@@ -59,7 +59,6 @@ public class AliceThread extends Thread {
 					sc = new SecureCommunication(false, mySocket, kp, peerCert,
 							caCert, peerName);
 					sc.send(message.getBytes());
-					System.out.print(">>");
 				}
 				else if (command.startsWith("help")) {
 					System.out.println("---HELP---");
@@ -67,7 +66,6 @@ public class AliceThread extends Thread {
 					System.out.println("Sintassi per inviare un messaggio:");
 					System.out.println("send [messagge] to [ip:port]");
 					System.out.println("---END---");
-					System.out.print(">>");
 				}
 			}
 
