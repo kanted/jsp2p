@@ -2,7 +2,9 @@ package it.saccosilvestri.jsp2p.test;
 
 import it.saccosilvestri.jsp2p.securecommunication.SecureCommunication;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.KeyPair;
@@ -34,19 +36,18 @@ public class AliceThread extends Thread {
 			System.out.println("Sintassi per inviare un messaggio:");
 			System.out.println("send [message] to [ip:port]");
 			while (command != "quit") {
-				
-				byte[] b = new byte[128];
-				System.in.read(b);
-
-				command = new String(b, "US-ASCII");
-
+				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			    command = br.readLine();
 				if (command.startsWith("send")&&command.contains("to")) { //TODO regular expression
+					System.out.println("YES");
 					int toIndex = command.indexOf("to");
 					String message = command.substring(4, toIndex);
-					String indirizzo = command.substring(toIndex+2, command.length());
+					String indirizzo = command.substring(toIndex+3);
 					int colonIndex = indirizzo.indexOf(":");
 					String ip = indirizzo.substring(0,colonIndex);
-					int port = Integer.parseInt(indirizzo.substring(colonIndex+1,indirizzo.length()));
+					String portString = indirizzo.substring(colonIndex+1);
+					int port = Integer.parseInt(portString);
+					System.out.println("ECCOLO");
 					mySocket = new Socket(ip, port);
 					sc = new SecureCommunication(false, mySocket, kp, peerCert, caCert);
 					sc.send(message.getBytes());

@@ -40,8 +40,8 @@ public class CertificationAuthority {
 
 		certGen.setSerialNumber(BigInteger.valueOf(System.currentTimeMillis()));
 		certGen.setIssuerDN(new X509Name("CN=Pippo"));
-		certGen.setNotBefore(new Date(System.currentTimeMillis() - 50000));
-		certGen.setNotAfter(new Date(System.currentTimeMillis() + 50000));
+		certGen.setNotBefore(new Date(System.currentTimeMillis() - 50000 * 60 * 60));
+		certGen.setNotAfter(new Date(System.currentTimeMillis() + 50000 * 60 * 60 * 24));
 		certGen.setSubjectDN(new X509Name("CN=Pippo"));
 		certGen.setPublicKey(pair.getPublic());
 		certGen.setSignatureAlgorithm("SHA1WithRSAEncryption");
@@ -55,11 +55,11 @@ public class CertificationAuthority {
 			NoSuchProviderException, SignatureException, CertificateException, IOException, InvalidKeySpecException {
 		String filename = ("certificate_for_peer_" + i + ".crt");
 		X509Name subjectName = new X509Name("CN=Peer" + i);
-		Date startDate = new Date(System.currentTimeMillis()); // time from
+		Date startDate = new Date(System.currentTimeMillis() - 50000 * 60 * 60); // time from
 																// which
 																// certificate
 																// is valid
-		Date expiryDate = new Date(System.currentTimeMillis() + 5000000); // time
+		Date expiryDate = new Date(System.currentTimeMillis() + 50000 * 60 * 60 * 24); // time
 																			// after
 																			// which
 																			// certificate

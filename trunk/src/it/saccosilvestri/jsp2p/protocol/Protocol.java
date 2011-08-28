@@ -87,10 +87,4 @@ abstract class Protocol {
 
 	}
 	
-	protected void closeStreams() throws IOException{
-		// Chiusura degli stream.
-		out.close();
-		in.close();
-	}
-	
 }
