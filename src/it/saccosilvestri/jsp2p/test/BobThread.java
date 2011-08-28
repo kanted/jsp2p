@@ -32,7 +32,8 @@ public class BobThread extends Thread {
 			while (true) {
 				mySocket = server.accept();
 				SecureCommunication sc = new SecureCommunication(true,
-						mySocket, kp, peerCert, caCert);
+						mySocket, kp, peerCert, caCert, ""); // Per Bob non e' significativo l'identificatore del peer
+				// perche' Bob non sa a priori da chi verra' contattato.
 				System.out.println("Ricevendo...");
 				byte[] b = sc.receive();
 				System.out.print("Ricevuto: ");

@@ -35,9 +35,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class BobProtocol extends Protocol {
 
-	public BobProtocol(Socket cs, KeyPair kp, X509Certificate c, PublicKey capk)
-			throws IOException {
-		super(cs, kp, c, capk);
+	public BobProtocol(Socket cs, KeyPair kp, X509Certificate c,
+			PublicKey capk, String peerName) throws IOException {
+		super(cs, kp, c, capk, peerName); 
 	}
 
 	public SecretKeySpec protocol() throws CertificateException, IOException,
@@ -46,11 +46,9 @@ public class BobProtocol extends Protocol {
 			NoSuchPaddingException, IllegalBlockSizeException,
 			BadPaddingException, BadNonceException, InvalidKeySpecException {
 
-		System.out.println("B");
-
 		// (1) Ricezione del certificato del peer, verifica ed estrazione della
 		// chiave pubblica.
-		PublicKey pKey = receiveCertificate();
+		PublicKey pKey = receiveAndCheckCertificate();
 
 		// (2) Invio del certificato del peer
 		sendMyCertificate();

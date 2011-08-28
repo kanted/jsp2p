@@ -30,17 +30,19 @@ abstract class Protocol {
 	private KeyPair keyPair;
 	private X509Certificate cert;
 	private PublicKey caPublicKey;
-	InputStream in;
-	OutputStream out;
+	protected String peerName;
+	private InputStream in;
+	private OutputStream out;
 
-	public Protocol(Socket cs, KeyPair kp, X509Certificate c, PublicKey capk)
-			throws IOException {
+	public Protocol(Socket cs, KeyPair kp, X509Certificate c, PublicKey capk,
+			String pn) throws IOException {
 		clientSocket = cs;
 		keyPair = kp;
 		cert = c;
 		caPublicKey = capk;
 		in = clientSocket.getInputStream();
 		out = clientSocket.getOutputStream();
+		peerName = pn;
 	}
 
 	protected void sendMyCertificate() throws IOException,
@@ -50,13 +52,24 @@ abstract class Protocol {
 		out.flush();
 	}
 
-	protected PublicKey receiveCertificate() throws CertificateException,
-			NoSuchProviderException, InvalidKeyException,
-			NoSuchAlgorithmException, SignatureException {
+	protected PublicKey receiveAndCheckCertificate()
+			throws CertificateException, NoSuchProviderException,
+			InvalidKeyException, NoSuchAlgorithmException, SignatureException {
 		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 		X509Certificate retrievedCert = (X509Certificate) fact
 				.generateCertificate(in);
 		CertificateUtility.checkCertificate(cert, caPublicKey);
+		return retrievedCert.getPublicKey();
+	}
+
+	protected PublicKey receiveAndCheckCertificateWithNameAuthentication(
+			String peerName) throws CertificateException, NoSuchProviderException,
+			InvalidKeyException, NoSuchAlgorithmException, SignatureException {
+		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
+		X509Certificate retrievedCert = (X509Certificate) fact
+				.generateCertificate(in);
+		CertificateUtility.checkCertificateWithNameAuthentication(cert,
+				caPublicKey, peerName);
 		return retrievedCert.getPublicKey();
 	}
 

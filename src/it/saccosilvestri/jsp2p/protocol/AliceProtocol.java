@@ -39,8 +39,8 @@ import javax.crypto.spec.SecretKeySpec;
 public class AliceProtocol extends Protocol {
 
 	public AliceProtocol(Socket cs, KeyPair kp, X509Certificate c,
-			PublicKey capk) throws IOException {
-		super(cs, kp, c, capk);
+			PublicKey capk, String peerName) throws IOException {
+		super(cs, kp, c, capk, peerName);
 	}
 
 	public SecretKeySpec protocol() throws CertificateException, IOException,
@@ -49,15 +49,13 @@ public class AliceProtocol extends Protocol {
 			NoSuchPaddingException, IllegalBlockSizeException,
 			BadPaddingException, BadNonceException, InvalidKeySpecException {
 
-		System.out.println("A");
-
 		// (1) Invio del certificato del peer
 		sendMyCertificate();
 		System.out.println("A ha inviato il certificato...");
 
 		// (2) Ricezione del certificato del peer, verifica ed estrazione della
 		// chiave pubblica.
-		PublicKey pKey = receiveCertificate();
+		PublicKey pKey = receiveAndCheckCertificateWithNameAuthentication(peerName);
 
 		// (3) Invio di un nonce cifrato con pKey
 		// Create a secure random number generator
