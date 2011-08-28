@@ -58,7 +58,7 @@ abstract class Protocol {
 		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 		X509Certificate retrievedCert = (X509Certificate) fact
 				.generateCertificate(in);
-		CertificateUtility.checkCertificate(cert, caPublicKey);
+		CertificateUtility.checkCertificate(retrievedCert, caPublicKey);
 		return retrievedCert.getPublicKey();
 	}
 
@@ -68,7 +68,7 @@ abstract class Protocol {
 		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 		X509Certificate retrievedCert = (X509Certificate) fact
 				.generateCertificate(in);
-		CertificateUtility.checkCertificateWithNameAuthentication(cert,
+		CertificateUtility.checkCertificateWithNameAuthentication(retrievedCert,
 				caPublicKey, peerName);
 		return retrievedCert.getPublicKey();
 	}
