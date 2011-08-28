@@ -33,28 +33,40 @@ import java.util.Properties;
 
 public class Peer {
 
-
 	public static void main(String[] args) {
 
 		try {
-
-			int port = Integer.parseInt(args[0]);
+			if (args.length < 2) {
+				System.out
+						.println("Sintassi: java Peer [numero identificativo del peer] [porta]");
+				return;
+			}
+			// Recupero il numero del peer.
+			int i = Integer.parseInt(args[0]);
+			// Recupero la porta.
+			int port = Integer.parseInt(args[1]);
 			if (port < 1024 || port > 65535) {
 				System.out
 						.println("Attenzione. Inserire un numero di porta valido.");
 				return;
 			}
-			// Recupero il numero del peer
-			int i = Integer.parseInt(args[1]);
-
 			System.out.println("Starting peer " + i);
-			System.out.println("Recuperando il certificato per il peer " + i);		
-			X509Certificate caCert = CertificateUtility.readCertificate("ca_certificate.crt"); // TODO magari nel file di config.
-			X509Certificate peerCert = CertificateUtility.readCertificate("certificate_for_peer_" + i +".crt"); // TODO magari nel file di config.
+			System.out.println("Recuperando il certificato per il peer " + i);
+			X509Certificate caCert = CertificateUtility
+					.readCertificate("ca_certificate.crt"); // TODO magari nel
+															// file di config.
+			X509Certificate peerCert = CertificateUtility
+					.readCertificate("certificate_for_peer_" + i + ".crt"); // TODO
+																			// magari
+																			// nel
+																			// file
+																			// di
+																			// config.
 			System.out.println("Recuperando le chiavi per il peer " + i);
-			KeyPair kp = FileUtility.readKeysFromFiles("public" + i + ".key", "private" + i
-					+ ".key"); // TODO magari path nel file di conf.
-			
+			KeyPair kp = FileUtility.readKeysFromFiles("public" + i + ".key",
+					"private" + i + ".key"); // TODO magari path nel file di
+												// conf.
+
 			// Un peer e' sia alice che bob contemporaneamente.
 			AliceThread a = new AliceThread(peerCert, caCert, port, kp);
 			BobThread b = new BobThread(peerCert, caCert, port, kp);

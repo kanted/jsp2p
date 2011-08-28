@@ -33,59 +33,61 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class BobProtocol extends Protocol{
-	
-	
-	
-	public BobProtocol(Socket cs, KeyPair kp, X509Certificate c, PublicKey capk) throws IOException {
-		super(cs,kp,c,capk);
-	}
-	
+public class BobProtocol extends Protocol {
 
-	public SecretKeySpec protocol()
-			throws CertificateException, IOException, SocketException, InvalidKeyException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, BadNonceException, InvalidKeySpecException {
+	public BobProtocol(Socket cs, KeyPair kp, X509Certificate c, PublicKey capk)
+			throws IOException {
+		super(cs, kp, c, capk);
+	}
+
+	public SecretKeySpec protocol() throws CertificateException, IOException,
+			SocketException, InvalidKeyException, NoSuchAlgorithmException,
+			NoSuchProviderException, SignatureException,
+			NoSuchPaddingException, IllegalBlockSizeException,
+			BadPaddingException, BadNonceException, InvalidKeySpecException {
 
 		System.out.println("B");
-		
-			// (1) Ricezione del certificato del peer, verifica ed estrazione della chiave pubblica.
-			PublicKey pKey = receiveCertificate();
-			
-			// (2) Invio del certificato del peer
-			sendMyCertificate();
-			System.out.println("BOB ha inviato il certificato...");		
-			
-			// (3) Ricezione di nA
-			System.out.println("BOB -- Receiving nonce A");
-			byte[] nA = readNonce();
-			byte[] nonceA = new byte[64];
-			Cipher cipher = Cipher.getInstance("RSA","BC");
-			cipher.init(Cipher.DECRYPT_MODE, getPrivate());
-			nonceA = cipher.doFinal(nA);
-		
-			// (4) Invio di (nA,nB) cifrati con la chiave pubblica di A
-			// Create a secure random number generator
-			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-			// Get 64 random bits
-			System.out.println("BOB -- Sending nonce A and nonce B");
-			byte[] nonceB = new byte[64];
-			sr.nextBytes(nonceB);
-			// encrypt the plaintext using the public key
-			cipher.init(Cipher.ENCRYPT_MODE, pKey);
-			byte[] ciphredA  = cipher.doFinal(nonceA);
-			send(ciphredA);
-			byte[] ciphredB = cipher.doFinal(nonceB);
-			send(ciphredB);
-					
-			// (5) Ricezione e verifica di nB
-			System.out.println("BOB -- Receiving nonce B");
-			byte[] nB = readNonce();
-			cipher.init(Cipher.DECRYPT_MODE, getPrivate());
-			byte[] plainText = cipher.doFinal(nB);
-			if(!Arrays.equals(plainText,nonceB))
-				throw new BadNonceException();
-			
-			//(6) Generazione chiave di sessione
-			return sessionKey(nonceA, nonceB);
+
+		// (1) Ricezione del certificato del peer, verifica ed estrazione della
+		// chiave pubblica.
+		PublicKey pKey = receiveCertificate();
+
+		// (2) Invio del certificato del peer
+		sendMyCertificate();
+		System.out.println("BOB ha inviato il certificato...");
+
+		// (3) Ricezione di nA
+		System.out.println("BOB -- Receiving nonce A");
+		byte[] nA = readNonce();
+		byte[] nonceA = new byte[64];
+		Cipher cipher = Cipher.getInstance("RSA", "BC");
+		cipher.init(Cipher.DECRYPT_MODE, getPrivate());
+		nonceA = cipher.doFinal(nA);
+
+		// (4) Invio di (nA,nB) cifrati con la chiave pubblica di A
+		// Create a secure random number generator
+		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+		// Get 64 random bits
+		System.out.println("BOB -- Sending nonce A and nonce B");
+		byte[] nonceB = new byte[64];
+		sr.nextBytes(nonceB);
+		// encrypt the plaintext using the public key
+		cipher.init(Cipher.ENCRYPT_MODE, pKey);
+		byte[] ciphredA = cipher.doFinal(nonceA);
+		send(ciphredA);
+		byte[] ciphredB = cipher.doFinal(nonceB);
+		send(ciphredB);
+
+		// (5) Ricezione e verifica di nB
+		System.out.println("BOB -- Receiving nonce B");
+		byte[] nB = readNonce();
+		cipher.init(Cipher.DECRYPT_MODE, getPrivate());
+		byte[] plainText = cipher.doFinal(nB);
+		if (!Arrays.equals(plainText, nonceB))
+			throw new BadNonceException();
+
+		// (6) Generazione chiave di sessione
+		return sessionKey(nonceA, nonceB);
 
 	}
 

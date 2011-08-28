@@ -46,11 +46,12 @@ public class CertificateUtility {
 		System.out.println("Certificato esportato.");
 	}
 
-	public static X509Certificate readCertificate(String filename) throws FileNotFoundException, CertificateException, NoSuchProviderException {
+	public static X509Certificate readCertificate(String filename)
+			throws FileNotFoundException, CertificateException,
+			NoSuchProviderException {
 		FileInputStream f = new FileInputStream(filename);
 		CertificateFactory fact = CertificateFactory.getInstance("X.509", "BC");
 		return (X509Certificate) fact.generateCertificate(f);
 	}
 
 }
-
