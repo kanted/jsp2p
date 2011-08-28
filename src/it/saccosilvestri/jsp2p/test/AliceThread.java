@@ -41,9 +41,7 @@ public class AliceThread extends Thread {
 				System.out.print(">>");
 				command = br.readLine();
 				if (command.startsWith("send") && command.contains("to")
-						&& command.contains("@") && command.contains(":")) { // TODO
-					// regular
-					// expression
+						&& command.contains("@") && command.contains(":")) { // TODO regular expression
 					int toIndex = command.indexOf("to");
 					String message = command.substring(4, toIndex);
 					int atIndex = command.indexOf("@");
