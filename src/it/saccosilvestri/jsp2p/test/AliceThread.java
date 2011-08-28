@@ -58,8 +58,6 @@ public class AliceThread extends Thread {
 					System.out.println("send [messagge] to [ip:port]");
 					System.out.println("---END---");
 				}
-				else
-					System.out.println("Unknown command.");
 			}
 
 		} catch (Exception e) {
