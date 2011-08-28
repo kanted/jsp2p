@@ -62,7 +62,7 @@ public class SecureCommunication {
 	}
 
 	public SecureCommunication(boolean passive, Socket socket, KeyPair keyPair,
-			X509Certificate peerCertificate, X509Certificate CACert)
+			X509Certificate peerCertificate, X509Certificate CACert, String peerName)
 			throws InvalidKeyException, CertificateException, SocketException,
 			NoSuchAlgorithmException, NoSuchProviderException,
 			SignatureException, NoSuchPaddingException,
@@ -75,11 +75,11 @@ public class SecureCommunication {
 		CertificateUtility.checkCertificate(CACert, CAPublicKey);
 		if (!passive) {
 			AliceProtocol ap = new AliceProtocol(clientSocket, keyPair,
-					peerCertificate, CAPublicKey);
+					peerCertificate, CAPublicKey, peerName);
 			sessionKeySpec = ap.protocol();
 		} else {
 			BobProtocol bp = new BobProtocol(clientSocket, keyPair,
-					peerCertificate, CAPublicKey);
+					peerCertificate, CAPublicKey, peerName);
 			sessionKeySpec = bp.protocol();
 		}
 

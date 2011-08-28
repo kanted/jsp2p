@@ -1,5 +1,7 @@
 package it.saccosilvestri.jsp2p.utility;
 
+import it.saccosilvestri.jsp2p.exceptions.WrongSubjectDNException;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -17,6 +19,7 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
+import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.openssl.PEMWriter;
 
 public class CertificateUtility {
@@ -25,11 +28,20 @@ public class CertificateUtility {
 			throws InvalidKeyException, CertificateException,
 			NoSuchAlgorithmException, NoSuchProviderException,
 			SignatureException {
-		System.out.println("Controllo la data.");
+		System.out.println("Attenzione! Certificato rilasciato a: "+cert.getSubjectDN());
 		cert.checkValidity(new Date());
 		System.out.println("Controllo la firma.");
 		cert.verify(pk);
 		System.out.println("Controlli eseguiti correttamente.");
+	}
+	
+	public static void checkCertificateWithNameAuthentication(X509Certificate cert, PublicKey pk, String peerName) throws InvalidKeyException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException{
+		System.out.println("Controllo che il certificato sia stato rilasciato a: "+peerName+".");
+		System.out.println(peerName);
+		System.out.println(cert.getSubjectDN().getName());
+		if (peerName.compareTo((cert.getSubjectDN().getName()))!=0)
+			throw new WrongSubjectDNException();
+		checkCertificate(cert,pk);
 	}
 
 	public static void checkAndExportCertificate(X509Certificate cert,
