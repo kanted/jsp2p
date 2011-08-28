@@ -37,7 +37,6 @@ public class CertificateUtility {
 	
 	public static void checkCertificateWithNameAuthentication(X509Certificate cert, PublicKey pk, String peerName) throws InvalidKeyException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException{
 		System.out.println("Controllo che il certificato sia stato rilasciato a: "+peerName+".");
-		System.out.println(peerName);
 		System.out.println(cert.getSubjectDN().getName());
 		if (peerName.compareTo((cert.getSubjectDN().getName()))!=0)
 			throw new WrongSubjectDNException();
