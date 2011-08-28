@@ -38,6 +38,7 @@ public class BobThread extends Thread {
 				System.out.print("Ricevuto: ");
 				String app = new String(b, "US-ASCII");
 				System.out.println(app);
+				System.out.print(">>");
 			}
 		} catch (Exception e) {
 			System.out.println("EXCEPTION: " + e.getClass() + " - "

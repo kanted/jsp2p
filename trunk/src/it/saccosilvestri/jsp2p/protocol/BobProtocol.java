@@ -53,20 +53,20 @@ public class BobProtocol extends Protocol{
 			// (2) Invio del certificato del peer
 			sendMyCertificate();
 			System.out.println("BOB ha inviato il certificato...");		
-			System.out.println("BOB -- NA*******");
+			
 			// (3) Ricezione di nA
+			System.out.println("BOB -- Receiving nonce A");
 			byte[] nA = readNonce();
 			byte[] nonceA = new byte[64];
 			Cipher cipher = Cipher.getInstance("RSA","BC");
 			cipher.init(Cipher.DECRYPT_MODE, getPrivate());
 			nonceA = cipher.doFinal(nA);
-			System.out.println("BOB -- CIFAFINAL*******");
 		
 			// (4) Invio di (nA,nB) cifrati con la chiave pubblica di A
 			// Create a secure random number generator
 			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
 			// Get 64 random bits
-			System.out.println("BOB -- NB*******");
+			System.out.println("BOB -- Sending nonce A and nonce B");
 			byte[] nonceB = new byte[64];
 			sr.nextBytes(nonceB);
 			// encrypt the plaintext using the public key
@@ -77,6 +77,7 @@ public class BobProtocol extends Protocol{
 			send(ciphredB);
 					
 			// (5) Ricezione e verifica di nB
+			System.out.println("BOB -- Receiving nonce B");
 			byte[] nB = readNonce();
 			cipher.init(Cipher.DECRYPT_MODE, getPrivate());
 			byte[] plainText = cipher.doFinal(nB);
