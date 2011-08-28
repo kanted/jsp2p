@@ -17,11 +17,8 @@ public class Trent {
 
 		try {
 			/* Lettura del file di configurazione */
-			System.out.println("Initialization...");
 			NUM_PEER = ConfigurationFileUtility.retrieveNumPeer("trent.conf");
 			CertificationAuthority ca = new CertificationAuthority();
-			System.out
-					.println("Generating and exporting certificates and keys for peers...");
 			for (int i = 0; i < NUM_PEER; i++) {
 				ca.generateCertificate(i);
 			}

@@ -62,7 +62,6 @@ public class Peer {
 																			// file
 																			// di
 																			// config.
-			System.out.println(peerCert.toString());
 			System.out.println("Recuperando le chiavi per il peer " + i);
 			KeyPair kp = FileUtility.readKeysFromFiles("public" + i + ".key",
 					"private" + i + ".key"); // TODO magari path nel file di

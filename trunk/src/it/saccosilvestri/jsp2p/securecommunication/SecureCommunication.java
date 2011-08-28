@@ -1,6 +1,8 @@
 package it.saccosilvestri.jsp2p.securecommunication;
 
 import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
+import it.saccosilvestri.jsp2p.exceptions.UnreachableLoggerConfigurationFileException;
+import it.saccosilvestri.jsp2p.logging.LogManager;
 import it.saccosilvestri.jsp2p.protocol.AliceProtocol;
 import it.saccosilvestri.jsp2p.protocol.BobProtocol;
 import it.saccosilvestri.jsp2p.utility.ByteArrayUtility;
@@ -40,7 +42,7 @@ public class SecureCommunication {
 	public void send(byte[] messageToBeSent) throws InvalidKeyException,
 			IOException, IllegalBlockSizeException, BadPaddingException {
 		cipher.init(Cipher.ENCRYPT_MODE, sessionKeySpec);
-		System.out.println("Encrypting with session key...");
+		LogManager.currentLogger.info("Encrypting with session key...");
 		byte[] ciphredText = cipher.doFinal(messageToBeSent);
 		byte length = (new Integer(ciphredText.length)).byteValue();
 		out.write(length);
@@ -51,7 +53,7 @@ public class SecureCommunication {
 	public byte[] receive() throws InvalidKeyException,
 			IllegalBlockSizeException, BadPaddingException, IOException {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
-		System.out.println("Decrypting with session key...");
+		LogManager.currentLogger.info("Decrypting with session key...");
 		byte[] lengthBytes = new byte[3]; // TODO per stare tranquilli
 		in.read(lengthBytes, 0, 1);
 		int length = ByteArrayUtility.byteArrayToInt(lengthBytes);
@@ -67,7 +69,9 @@ public class SecureCommunication {
 			NoSuchAlgorithmException, NoSuchProviderException,
 			SignatureException, NoSuchPaddingException,
 			IllegalBlockSizeException, BadPaddingException,
-			InvalidKeySpecException, IOException, BadNonceException {
+			InvalidKeySpecException, IOException, BadNonceException, UnreachableLoggerConfigurationFileException {
+		LogManager.initialization("logger.conf");
+		LogManager.currentLogger.info("STARTING secure communication.");
 		clientSocket = socket;
 		in = clientSocket.getInputStream();
 		out = clientSocket.getOutputStream();
@@ -83,8 +87,8 @@ public class SecureCommunication {
 			sessionKeySpec = bp.protocol();
 		}
 
-		System.out.println("Session key established.");
-		System.out.println("Creating the CipherStream...");
+		LogManager.currentLogger.info("Session key established.");
+		LogManager.currentLogger.info("Creating the CipherStream...");
 		cipher = Cipher.getInstance("AES", "BC");
 
 	}

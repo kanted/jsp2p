@@ -1,6 +1,7 @@
 package it.saccosilvestri.jsp2p.protocol;
 
 import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
+import it.saccosilvestri.jsp2p.logging.LogManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,10 +53,10 @@ public class BobProtocol extends Protocol {
 
 		// (2) Invio del certificato del peer
 		sendMyCertificate();
-		System.out.println("BOB ha inviato il certificato...");
+		LogManager.currentLogger.info("BOB -- Invio il certificato...");
 
 		// (3) Ricezione di nA
-		System.out.println("BOB -- Receiving nonce A");
+		LogManager.currentLogger.info("BOB -- Receiving nonce A");
 		byte[] nA = readNonce();
 		byte[] nonceA = new byte[64];
 		Cipher cipher = Cipher.getInstance("RSA", "BC");
@@ -66,7 +67,7 @@ public class BobProtocol extends Protocol {
 		// Create a secure random number generator
 		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
 		// Get 64 random bits
-		System.out.println("BOB -- Sending nonce A and nonce B");
+		LogManager.currentLogger.info("BOB -- Sending nonce A and nonce B");
 		byte[] nonceB = new byte[64];
 		sr.nextBytes(nonceB);
 		// encrypt the plaintext using the public key
@@ -77,7 +78,7 @@ public class BobProtocol extends Protocol {
 		send(ciphredB);
 
 		// (5) Ricezione e verifica di nB
-		System.out.println("BOB -- Receiving nonce B");
+		LogManager.currentLogger.info("BOB -- Receiving nonce B");
 		byte[] nB = readNonce();
 		cipher.init(Cipher.DECRYPT_MODE, getPrivate());
 		byte[] plainText = cipher.doFinal(nB);

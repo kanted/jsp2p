@@ -1,6 +1,7 @@
 package it.saccosilvestri.jsp2p.protocol;
 
 import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
+import it.saccosilvestri.jsp2p.logging.LogManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +52,7 @@ public class AliceProtocol extends Protocol {
 
 		// (1) Invio del certificato del peer
 		sendMyCertificate();
-		System.out.println("A ha inviato il certificato...");
+		LogManager.currentLogger.info("ALICE -- Invio del certificato...");
 
 		// (2) Ricezione del certificato del peer, verifica ed estrazione della
 		// chiave pubblica.
@@ -66,13 +67,13 @@ public class AliceProtocol extends Protocol {
 		Cipher cipher = Cipher.getInstance("RSA", "BC");
 		// encrypt the plaintext using the public key
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
-		System.out.println("ALICE -- Sending nonce A");
+		LogManager.currentLogger.info("ALICE -- Sending nonce A");
 		byte[] cipherText = cipher.doFinal(nonceA);
 		// TODO
 		send(cipherText);
 
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
-		System.out.println("ALICE -- Receiving nonce A and nonce B");
+		LogManager.currentLogger.info("ALICE -- Receiving nonce A and nonce B");
 		byte[] nA = readNonce();
 		byte[] nB = readNonce();
 		cipher.init(Cipher.DECRYPT_MODE, getPrivate());

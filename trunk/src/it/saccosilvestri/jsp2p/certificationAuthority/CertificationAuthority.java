@@ -1,5 +1,7 @@
 package it.saccosilvestri.jsp2p.certificationAuthority;
 
+import it.saccosilvestri.jsp2p.exceptions.UnreachableLoggerConfigurationFileException;
+import it.saccosilvestri.jsp2p.logging.LogManager;
 import it.saccosilvestri.jsp2p.utility.CertificateUtility;
 import it.saccosilvestri.jsp2p.utility.FileUtility;
 
@@ -76,7 +78,7 @@ public class CertificationAuthority {
 		PrivateKey caKey = pair.getPrivate(); // private key of the certifying
 												// authority (ca) certificate
 		// Building keys
-		System.out.println("Building keys...");
+		LogManager.currentLogger.info("Building keys...");
 		KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA", "BC");
 		keyPairGen.initialize(1024);
 		KeyPair keyPair = keyPairGen.generateKeyPair(); // public/private key
@@ -112,18 +114,20 @@ public class CertificationAuthority {
 
 	public CertificationAuthority() throws NoSuchAlgorithmException,
 			NoSuchProviderException, InvalidKeyException, SignatureException,
-			IllegalStateException, CertificateException, IOException {
-
+			IllegalStateException, CertificateException, IOException, UnreachableLoggerConfigurationFileException {
+		
+		LogManager.initialization("ca_logger.conf");
+		LogManager.currentLogger.info("STARTING CA.");
 		String filename = "./ca_certificate.crt";
 
 		// Keys
-		System.out.println("Building keys...");
+		LogManager.currentLogger.info("Building keys...");
 		KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA", "BC");
 		keyPairGen.initialize(1024);
 		pair = keyPairGen.generateKeyPair();
 
 		// SelfCertificate
-		System.out.println("Building certificate...");
+		LogManager.currentLogger.info("Building certificate...");
 		caCert = selfCertificate(pair);
 
 		// Controlli
