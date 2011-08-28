@@ -40,6 +40,7 @@ public class SecureCommunication {
 
 	public void send(byte[] messageToBeSent) throws InvalidKeyException, IOException, IllegalBlockSizeException, BadPaddingException {
 		cipher.init(Cipher.ENCRYPT_MODE, sessionKeySpec);
+		System.out.println("Encrypting with session key...");
 		byte[] ciphredText = cipher.doFinal(messageToBeSent);
 		byte length = (new Integer(ciphredText.length)).byteValue();
 		out.write(length);
@@ -49,6 +50,7 @@ public class SecureCommunication {
 
 	public byte[] receive() throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, IOException {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
+		System.out.println("Decrypting with session key...");
 		byte[] lengthBytes = new byte[3]; //TODO per stare tranquilli
 		in.read(lengthBytes,0,1);
 		int length = ByteArrayUtility.byteArrayToInt(lengthBytes);
@@ -72,7 +74,8 @@ public class SecureCommunication {
 			BobProtocol bp = new BobProtocol(clientSocket,keyPair,peerCertificate,CAPublicKey);
 			sessionKeySpec = bp.protocol();
 		}
-		// Create the CipherStream to be used
+
+		System.out.println("Session key established.");
 		System.out.println("Creating the CipherStream...");
 		cipher = Cipher.getInstance("AES","BC");
 

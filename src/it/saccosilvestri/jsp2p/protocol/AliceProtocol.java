@@ -70,23 +70,17 @@ public class AliceProtocol extends Protocol{
 		Cipher cipher = Cipher.getInstance("RSA", "BC");
 		// encrypt the plaintext using the public key
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
-		System.out.println("ALICE -- NA*******");
+		System.out.println("ALICE -- Sending nonce A");
 		byte[] cipherText  = cipher.doFinal(nonceA);
-		System.out.println("LUNGHEZZA NA SU A"+cipherText.length);
 		//TODO
 		send(cipherText);
-		System.out.println("ALICE -- NA+NB*******");
 		
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
-		System.out.println("ALICE -- ReadNa*******");
+		System.out.println("ALICE -- Receiving nonce A and nonce B");
 		byte[] nA = readNonce();
-		System.out.println("ALICE -- ReadNb*******");
 		byte[] nB = readNonce();
-		System.out.println("ALICE -- QUINDI111*******");
 		cipher.init(Cipher.DECRYPT_MODE, getPrivate());
-		System.out.println("ALICE -- QUINDI222*******");
 		byte[] plainText = cipher.doFinal(nA);
-		System.out.println("ALICE -- CIFO*******");
 		if (!Arrays.equals(plainText, nonceA))
 			throw new BadNonceException();
 		byte[] nonceB = cipher.doFinal(nB);

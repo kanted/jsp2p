@@ -35,11 +35,11 @@ public class AliceThread extends Thread {
 			String command = new String();
 			System.out.println("Sintassi per inviare un messaggio:");
 			System.out.println("send [message] to [ip:port]");
-			while (command != "quit") {
+			System.out.print(">>");
+			while (!command.startsWith("quit")) {
 				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			    command = br.readLine();
 				if (command.startsWith("send")&&command.contains("to")) { //TODO regular expression
-					System.out.println("YES");
 					int toIndex = command.indexOf("to");
 					String message = command.substring(4, toIndex);
 					String indirizzo = command.substring(toIndex+3);
@@ -47,16 +47,17 @@ public class AliceThread extends Thread {
 					String ip = indirizzo.substring(0,colonIndex);
 					String portString = indirizzo.substring(colonIndex+1);
 					int port = Integer.parseInt(portString);
-					System.out.println("ECCOLO");
 					mySocket = new Socket(ip, port);
 					sc = new SecureCommunication(false, mySocket, kp, peerCert, caCert);
 					sc.send(message.getBytes());
+					System.out.print(">>");
 				} if(command.startsWith("help")){	
 					System.out.println("---HELP---");
 					System.out.println("To exit type 'quit'");
 					System.out.println("Sintassi per inviare un messaggio:");
 					System.out.println("send [messagge] to [ip:port]");
 					System.out.println("---END---");
+					System.out.print(">>");
 				}
 			}
 
