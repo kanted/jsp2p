@@ -95,8 +95,6 @@ public class AliceProtocol extends Protocol{
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		byte[] ciphredB = cipher.doFinal(nonceB);
 		send(ciphredB);
-
-		closeStreams();
 		
 		//(6) Generazione chiave di sessione
 		return sessionKey(nonceA, nonceB);

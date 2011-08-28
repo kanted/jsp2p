@@ -62,8 +62,8 @@ public class SecureCommunication {
 		clientSocket = socket;
 		in = clientSocket.getInputStream();
 		out = clientSocket.getOutputStream();
-		CertificateUtility.checkCertificate(CACert,CACert.getPublicKey());
 		PublicKey CAPublicKey = CACert.getPublicKey();
+		CertificateUtility.checkCertificate(CACert,CAPublicKey);
 		if(!passive){
 			AliceProtocol ap = new AliceProtocol(clientSocket,keyPair,peerCertificate,CAPublicKey);
 			sessionKeySpec = ap.protocol();

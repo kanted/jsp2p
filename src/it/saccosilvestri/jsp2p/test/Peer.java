@@ -49,8 +49,8 @@ public class Peer {
 
 			System.out.println("Starting peer " + i);
 			System.out.println("Recuperando il certificato per il peer " + i);		
-			X509Certificate peerCert = CertificateUtility.readCertificate("ca_certificate.crt"); // TODO magari nel file di config.
-			X509Certificate caCert = CertificateUtility.readCertificate("certificate_for_peer_" + i +".crt"); // TODO magari nel file di config.
+			X509Certificate caCert = CertificateUtility.readCertificate("ca_certificate.crt"); // TODO magari nel file di config.
+			X509Certificate peerCert = CertificateUtility.readCertificate("certificate_for_peer_" + i +".crt"); // TODO magari nel file di config.
 			System.out.println("Recuperando le chiavi per il peer " + i);
 			KeyPair kp = FileUtility.readKeysFromFiles("public" + i + ".key", "private" + i
 					+ ".key"); // TODO magari path nel file di conf.

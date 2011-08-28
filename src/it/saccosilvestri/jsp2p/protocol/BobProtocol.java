@@ -82,8 +82,6 @@ public class BobProtocol extends Protocol{
 			byte[] plainText = cipher.doFinal(nB);
 			if(!Arrays.equals(plainText,nonceB))
 				throw new BadNonceException();
-
-			closeStreams();
 			
 			//(6) Generazione chiave di sessione
 			return sessionKey(nonceA, nonceB);
