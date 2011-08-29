@@ -28,11 +28,18 @@ import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class CertificationAuthority {
 
 	private KeyPair pair;
 	X509Certificate caCert;
 
+	 /**
+     * Genera il certificato per la CA, firmato dalla CA stessa.
+     */
 	private X509Certificate selfCertificate(KeyPair pair)
 			throws InvalidKeyException, NoSuchProviderException,
 			SignatureException, NoSuchAlgorithmException,
@@ -53,38 +60,26 @@ public class CertificationAuthority {
 		return certGen.generate(pair.getPrivate());
 	}
 
+	 /**
+     * Genera la chiava pubblica, la chiave privata ed il certificato per il peer i-esimo, firmato dalla CA.
+     */
 	public void generateCertificate(int i) throws NoSuchAlgorithmException,
 			InvalidKeyException, IllegalStateException,
 			NoSuchProviderException, SignatureException, CertificateException,
 			IOException, InvalidKeySpecException {
 		String filename = ("certificate_for_peer_" + i + ".crt");
 		X509Name subjectName = new X509Name("CN=Peer" + i);
-		Date startDate = new Date(System.currentTimeMillis() - 50000 * 60 * 60); // time
-																					// from
-		// which
-		// certificate
-		// is valid
+		Date startDate = new Date(System.currentTimeMillis() - 50000 * 60 * 60);
 		Date expiryDate = new Date(System.currentTimeMillis() + 50000 * 60 * 60
-				* 24); // time
-		// after
-		// which
-		// certificate
-		// is
-		// not
-		// valid
+				* 24);
 		BigInteger serialNumber = BigInteger
-				.valueOf(System.currentTimeMillis()); // serial number for
-														// certificate
-		PrivateKey caKey = pair.getPrivate(); // private key of the certifying
-												// authority (ca) certificate
+				.valueOf(System.currentTimeMillis()); 
+		PrivateKey caKey = pair.getPrivate(); 
 		// Building keys
 		LogManager.currentLogger.info("Building keys...");
 		KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA", "BC");
 		keyPairGen.initialize(1024);
-		KeyPair keyPair = keyPairGen.generateKeyPair(); // public/private key
-														// pair that we are
-														// creating certificate
-														// for
+		KeyPair keyPair = keyPairGen.generateKeyPair(); 
 		X509V3CertificateGenerator certGen = new X509V3CertificateGenerator();
 
 		certGen.setSerialNumber(serialNumber);
@@ -94,15 +89,15 @@ public class CertificationAuthority {
 		certGen.setSubjectDN(subjectName);
 		certGen.setPublicKey(keyPair.getPublic());
 		certGen.setSignatureAlgorithm("SHA1WithRSAEncryption");
-		X509Certificate cert = certGen.generate(caKey); // note: private key of
-														// CA
+		X509Certificate cert = certGen.generate(caKey); 
+		
 		KeyFactory fact = KeyFactory.getInstance("RSA", "BC");
 		RSAPublicKeySpec pub = (RSAPublicKeySpec) fact.getKeySpec(
 				keyPair.getPublic(), RSAPublicKeySpec.class);
 		RSAPrivateKeySpec priv = (RSAPrivateKeySpec) fact.getKeySpec(
 				keyPair.getPrivate(), RSAPrivateKeySpec.class);
 
-		// Controlli e salvataggi su file.
+		// Checking and exporting
 		CertificateUtility.checkAndExportCertificate(cert,
 				caCert.getPublicKey(), filename);
 		FileUtility.saveKeyToFile("public" + i + ".key", pub.getModulus(),
@@ -112,6 +107,9 @@ public class CertificationAuthority {
 
 	}
 
+	/**
+     * La CA si autocertifica ed esporta il suo certificato.
+     */
 	public CertificationAuthority() throws NoSuchAlgorithmException,
 			NoSuchProviderException, InvalidKeyException, SignatureException,
 			IllegalStateException, CertificateException, IOException, UnreachableLoggerConfigurationFileException {
@@ -130,7 +128,7 @@ public class CertificationAuthority {
 		LogManager.currentLogger.info("Building certificate...");
 		caCert = selfCertificate(pair);
 
-		// Controlli
+		// Check and export
 		CertificateUtility.checkAndExportCertificate(caCert,
 				caCert.getPublicKey(), filename);
 

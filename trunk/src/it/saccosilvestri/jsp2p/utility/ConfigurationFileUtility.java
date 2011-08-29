@@ -23,8 +23,16 @@ import java.util.Properties;
 
 import org.bouncycastle.openssl.PEMWriter;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class ConfigurationFileUtility {
 
+	/**
+	 * Legge il file di configurazione passato come argomento
+	 * e ritorna il valore di NUM_PEER in esso contenuto.
+	 */
 	public static int retrieveNumPeer(String filename)
 			throws UnreachableCAConfigurationFileException,
 			FileNotFoundException, IOException,

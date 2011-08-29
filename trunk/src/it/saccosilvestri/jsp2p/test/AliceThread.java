@@ -11,6 +11,11 @@ import java.security.KeyPair;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class AliceThread extends Thread {
 
 	Socket mySocket;
@@ -28,6 +33,12 @@ public class AliceThread extends Thread {
 		this.start();
 	}
 
+	/**
+	 * Accetta comandi per l'invio di messaggi ad altri peer.
+	 * E' necessario specificare l'id del peer con cui si vuole instaurare una sessione
+	 * (l'id verrˆ poi confrontato con quello presente nel certificato), l'ip e la porta
+	 * su cui il peer e' in ascolto.
+	 */
 	public void run() {
 		try {
 
@@ -37,11 +48,11 @@ public class AliceThread extends Thread {
 			System.out.println("send [message] to [peerID@ip:port]");
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					System.in));
-			while (!command.startsWith("quit")) {
+			while (true) {
 				System.out.print(">>");
 				command = br.readLine();
 				if (command.startsWith("send") && command.contains("to")
-						&& command.contains("@") && command.contains(":")) { // TODO regular expression
+						&& command.contains("@") && command.contains(":")) {
 					int toIndex = command.indexOf("to");
 					String message = command.substring(4, toIndex);
 					int atIndex = command.indexOf("@");
@@ -60,7 +71,6 @@ public class AliceThread extends Thread {
 				}
 				else if (command.startsWith("help")) {
 					System.out.println("---HELP---");
-					System.out.println("To exit type 'quit'"); //TODO in realta' non e' vero
 					System.out.println("Sintassi per inviare un messaggio:");
 					System.out.println("send [messagge] to [ip:port]");
 					System.out.println("---END---");

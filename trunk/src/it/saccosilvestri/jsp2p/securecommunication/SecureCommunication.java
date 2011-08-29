@@ -31,6 +31,10 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class SecureCommunication {
 
 	private Socket clientSocket;
@@ -39,6 +43,11 @@ public class SecureCommunication {
 	private Cipher cipher;
 	private SecretKeySpec sessionKeySpec;
 
+	/**
+	 * Invia un array di byte.
+	 * Lo scambio dei messaggi del protocollo e l'utilizzo della chiave di sessione 
+	 * vengono resi trasparenti per l'utente che utilizza questo metodo per inviare bytes sul socket.
+	 */
 	public void send(byte[] messageToBeSent) throws InvalidKeyException,
 			IOException, IllegalBlockSizeException, BadPaddingException {
 		cipher.init(Cipher.ENCRYPT_MODE, sessionKeySpec);
@@ -50,6 +59,11 @@ public class SecureCommunication {
 		out.flush();
 	}
 
+	/**
+	 * Riceve un array di byte.
+	 * Lo scambio dei messaggi del protocollo e l'utilizzo della chiave di sessione 
+	 * vengono resi trasparenti per l'utente che utilizza questo metodo per ricevere bytes sul socket.
+	 */
 	public byte[] receive() throws InvalidKeyException,
 			IllegalBlockSizeException, BadPaddingException, IOException {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
@@ -63,6 +77,11 @@ public class SecureCommunication {
 		return messageToBeReceived;
 	}
 
+	/**
+	 * Il costruttore inizializza il logger ed esegue la parte
+	 * di protocollo che gli compete decidendo in base al valore del 
+	 * booleano passive.
+	 */
 	public SecureCommunication(boolean passive, Socket socket, KeyPair keyPair,
 			X509Certificate peerCertificate, X509Certificate CACert, String peerName)
 			throws InvalidKeyException, CertificateException, SocketException,

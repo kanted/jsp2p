@@ -17,8 +17,15 @@ import java.util.Date;
 
 import org.bouncycastle.openssl.PEMWriter;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class ByteArrayUtility {
 
+	/**
+	 * Converte un array di byte nell'intero corrispondente.
+	 */
 	public static int byteArrayToInt(byte[] b) {
 		int value = 0;
 		for (int i = 0; i < b.length; i++) {

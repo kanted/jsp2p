@@ -28,8 +28,15 @@ import java.util.Date;
 
 import org.bouncycastle.openssl.PEMWriter;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class FileUtility {
 
+	/**
+	 * Salva una chiave su file.
+	 */
 	public static void saveKeyToFile(String fileName, BigInteger mod,
 			BigInteger exp) throws IOException {
 		ObjectOutputStream out = new ObjectOutputStream(
@@ -44,6 +51,10 @@ public class FileUtility {
 		}
 	}
 
+	
+	/**
+	 * Recupera chiave pubblica e privata da un file.
+	 */
 	public static KeyPair readKeysFromFiles(String publicKeyFileName,
 			String privateKeyFileName) throws IOException {
 		ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(

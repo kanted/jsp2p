@@ -37,6 +37,10 @@ import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.DHParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class AliceProtocol extends Protocol {
 
 	public AliceProtocol(Socket cs, KeyPair kp, X509Certificate c,
@@ -44,6 +48,9 @@ public class AliceProtocol extends Protocol {
 		super(cs, kp, c, capk, peerName);
 	}
 
+	 /**
+     * Protocollo per lo scambio della chiave di sessione.
+     */
 	public SecretKeySpec protocol() throws CertificateException, IOException,
 			SocketException, InvalidKeyException, NoSuchAlgorithmException,
 			NoSuchProviderException, SignatureException,
