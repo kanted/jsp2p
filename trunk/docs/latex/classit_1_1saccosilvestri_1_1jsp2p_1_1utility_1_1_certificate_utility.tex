@@ -1,0 +1,116 @@
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility}{
+\section{it.saccosilvestri.jsp2p.utility.\-Certificate\-Utility \-Class \-Reference}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility}\index{it.\-saccosilvestri.\-jsp2p.\-utility.\-Certificate\-Utility@{it.\-saccosilvestri.\-jsp2p.\-utility.\-Certificate\-Utility}}
+}
+\subsection*{\-Static \-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_aab387b79ca2c81278dd91c33fd4419cf}{check\-Certificate} (\-X509\-Certificate cert, \-Public\-Key pk)  throws Invalid\-Key\-Exception, Certificate\-Exception, 			\-No\-Such\-Algorithm\-Exception, No\-Such\-Provider\-Exception, 			\-Signature\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Controlla validita' e scandenza del certificato. \end{DoxyCompactList}\item 
+static void \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_ae9125e02718ab76b0018b216f918a001}{check\-Certificate\-With\-Name\-Authentication} (\-X509\-Certificate cert, \-Public\-Key pk, \-String peer\-Name)  throws Invalid\-Key\-Exception, Certificate\-Exception, No\-Such\-Algorithm\-Exception, No\-Such\-Provider\-Exception, Signature\-Exception
+\begin{DoxyCompactList}\small\item\em \-Controlla validita' e scandenza del certificato. \end{DoxyCompactList}\item 
+static void \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_ae7d954ab296416a70fad0d335d1168f2}{check\-And\-Export\-Certificate} (\-X509\-Certificate cert, \-Public\-Key pk, \-String filename)  throws I\-O\-Exception, 			\-Invalid\-Key\-Exception, Certificate\-Exception, 			\-No\-Such\-Algorithm\-Exception, No\-Such\-Provider\-Exception, 			\-Signature\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Controlla validita' e scandenza del certificato. \end{DoxyCompactList}\item 
+static \-X509\-Certificate \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_a1c8be1d0f9e0fbf8950243396e5c9405}{read\-Certificate} (\-String filename)  throws File\-Not\-Found\-Exception, Certificate\-Exception, 			\-No\-Such\-Provider\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Legge da file un certificato. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\begin{DoxyAuthor}{\-Author}
+\-Sacco \-Cosimo \& \-Silvestri \-Davide 
+\end{DoxyAuthor}
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_ae7d954ab296416a70fad0d335d1168f2}{
+\index{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility@{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility}!check\-And\-Export\-Certificate@{check\-And\-Export\-Certificate}}
+\index{check\-And\-Export\-Certificate@{check\-And\-Export\-Certificate}!it::saccosilvestri::jsp2p::utility::CertificateUtility@{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility}}
+\subsubsection[{check\-And\-Export\-Certificate}]{\setlength{\rightskip}{0pt plus 5cm}static void it.\-saccosilvestri.\-jsp2p.\-utility.\-Certificate\-Utility.\-check\-And\-Export\-Certificate (
+\begin{DoxyParamCaption}
+\item[{\-X509\-Certificate}]{cert, }
+\item[{\-Public\-Key}]{pk, }
+\item[{\-String}]{filename}
+\end{DoxyParamCaption}
+)  throws \-I\-O\-Exception, 			\-Invalid\-Key\-Exception, \-Certificate\-Exception, 			\-No\-Such\-Algorithm\-Exception, \-No\-Such\-Provider\-Exception, 			\-Signature\-Exception \hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_ae7d954ab296416a70fad0d335d1168f2}
+
+
+\-Controlla validita' e scandenza del certificato. 
+
+\-Inoltre lo salva su file. 
+
+\-Here is the call graph for this function\-:
+
+
+
+
+\-Here is the caller graph for this function\-:
+
+
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_aab387b79ca2c81278dd91c33fd4419cf}{
+\index{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility@{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility}!check\-Certificate@{check\-Certificate}}
+\index{check\-Certificate@{check\-Certificate}!it::saccosilvestri::jsp2p::utility::CertificateUtility@{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility}}
+\subsubsection[{check\-Certificate}]{\setlength{\rightskip}{0pt plus 5cm}static void it.\-saccosilvestri.\-jsp2p.\-utility.\-Certificate\-Utility.\-check\-Certificate (
+\begin{DoxyParamCaption}
+\item[{\-X509\-Certificate}]{cert, }
+\item[{\-Public\-Key}]{pk}
+\end{DoxyParamCaption}
+)  throws \-Invalid\-Key\-Exception, \-Certificate\-Exception, 			\-No\-Such\-Algorithm\-Exception, \-No\-Such\-Provider\-Exception, 			\-Signature\-Exception \hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_aab387b79ca2c81278dd91c33fd4419cf}
+
+
+\-Controlla validita' e scandenza del certificato. 
+
+
+
+\-Here is the caller graph for this function\-:
+
+
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_ae9125e02718ab76b0018b216f918a001}{
+\index{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility@{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility}!check\-Certificate\-With\-Name\-Authentication@{check\-Certificate\-With\-Name\-Authentication}}
+\index{check\-Certificate\-With\-Name\-Authentication@{check\-Certificate\-With\-Name\-Authentication}!it::saccosilvestri::jsp2p::utility::CertificateUtility@{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility}}
+\subsubsection[{check\-Certificate\-With\-Name\-Authentication}]{\setlength{\rightskip}{0pt plus 5cm}static void it.\-saccosilvestri.\-jsp2p.\-utility.\-Certificate\-Utility.\-check\-Certificate\-With\-Name\-Authentication (
+\begin{DoxyParamCaption}
+\item[{\-X509\-Certificate}]{cert, }
+\item[{\-Public\-Key}]{pk, }
+\item[{\-String}]{peer\-Name}
+\end{DoxyParamCaption}
+)  throws \-Invalid\-Key\-Exception, \-Certificate\-Exception, \-No\-Such\-Algorithm\-Exception, \-No\-Such\-Provider\-Exception, \-Signature\-Exception\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_ae9125e02718ab76b0018b216f918a001}
+
+
+\-Controlla validita' e scandenza del certificato. 
+
+\-Inoltre controlla che il certificato sia stato rilasciato al peer il cui id e' passato come argomento. 
+
+\-Here is the call graph for this function\-:
+
+
+
+
+\-Here is the caller graph for this function\-:
+
+
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_a1c8be1d0f9e0fbf8950243396e5c9405}{
+\index{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility@{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility}!read\-Certificate@{read\-Certificate}}
+\index{read\-Certificate@{read\-Certificate}!it::saccosilvestri::jsp2p::utility::CertificateUtility@{it\-::saccosilvestri\-::jsp2p\-::utility\-::\-Certificate\-Utility}}
+\subsubsection[{read\-Certificate}]{\setlength{\rightskip}{0pt plus 5cm}static \-X509\-Certificate it.\-saccosilvestri.\-jsp2p.\-utility.\-Certificate\-Utility.\-read\-Certificate (
+\begin{DoxyParamCaption}
+\item[{\-String}]{filename}
+\end{DoxyParamCaption}
+)  throws \-File\-Not\-Found\-Exception, \-Certificate\-Exception, 			\-No\-Such\-Provider\-Exception \hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility_a1c8be1d0f9e0fbf8950243396e5c9405}
+
+
+\-Legge da file un certificato. 
+
+
+
+\-Here is the caller graph for this function\-:
+
+
+
+
+\-The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+src/it/saccosilvestri/jsp2p/utility/\hyperlink{_certificate_utility_8java}{\-Certificate\-Utility.\-java}\end{DoxyCompactItemize}

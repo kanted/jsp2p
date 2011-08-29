@@ -1,0 +1,117 @@
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication}{
+\section{it.saccosilvestri.jsp2p.securecommunication.\-Secure\-Communication \-Class \-Reference}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication}\index{it.\-saccosilvestri.\-jsp2p.\-securecommunication.\-Secure\-Communication@{it.\-saccosilvestri.\-jsp2p.\-securecommunication.\-Secure\-Communication}}
+}
+
+
+\-Collaboration diagram for it.saccosilvestri.jsp2p.securecommunication.\-Secure\-Communication\-:
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_ab5b1a396ec73873683012ac34084e3f9}{send} (byte\mbox{[}$\,$\mbox{]} message\-To\-Be\-Sent)  throws Invalid\-Key\-Exception, 			\-I\-O\-Exception, Illegal\-Block\-Size\-Exception, Bad\-Padding\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Invia un array di byte. \end{DoxyCompactList}\item 
+byte\mbox{[}$\,$\mbox{]} \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a4bbde1476c9e908ee569b00d0e0f106c}{receive} ()  throws Invalid\-Key\-Exception, 			\-Illegal\-Block\-Size\-Exception, Bad\-Padding\-Exception, I\-O\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Riceve un array di byte. \end{DoxyCompactList}\item 
+\hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a4007043b898d6773ed536da026adea5f}{\-Secure\-Communication} (boolean passive, \-Socket socket, \-Key\-Pair key\-Pair, \-X509\-Certificate peer\-Certificate, \-X509\-Certificate \-C\-A\-Cert, \-String peer\-Name)  throws Invalid\-Key\-Exception, Certificate\-Exception, Socket\-Exception, 			\-No\-Such\-Algorithm\-Exception, No\-Such\-Provider\-Exception, 			\-Signature\-Exception, No\-Such\-Padding\-Exception, 			\-Illegal\-Block\-Size\-Exception, Bad\-Padding\-Exception, 			\-Invalid\-Key\-Spec\-Exception, I\-O\-Exception, Bad\-Nonce\-Exception, Unreachable\-Logger\-Configuration\-File\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Il costruttore inizializza il logger ed esegue la parte di protocollo che gli compete decidendo in base al valore del booleano passive. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Package \-Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\-Input\-Stream \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a007b240b59e1189f3994e735dae50ea5}{in}
+\item 
+\-Output\-Stream \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a35e77cca97b78b630af1d7a4084133ad}{out}
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\begin{DoxyAuthor}{\-Author}
+\-Sacco \-Cosimo \& \-Silvestri \-Davide 
+\end{DoxyAuthor}
+
+
+\subsection{\-Constructor \& \-Destructor \-Documentation}
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a4007043b898d6773ed536da026adea5f}{
+\index{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication@{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication}!\-Secure\-Communication@{\-Secure\-Communication}}
+\index{\-Secure\-Communication@{\-Secure\-Communication}!it::saccosilvestri::jsp2p::securecommunication::SecureCommunication@{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication}}
+\subsubsection[{\-Secure\-Communication}]{\setlength{\rightskip}{0pt plus 5cm}it.\-saccosilvestri.\-jsp2p.\-securecommunication.\-Secure\-Communication.\-Secure\-Communication (
+\begin{DoxyParamCaption}
+\item[{boolean}]{passive, }
+\item[{\-Socket}]{socket, }
+\item[{\-Key\-Pair}]{key\-Pair, }
+\item[{\-X509\-Certificate}]{peer\-Certificate, }
+\item[{\-X509\-Certificate}]{\-C\-A\-Cert, }
+\item[{\-String}]{peer\-Name}
+\end{DoxyParamCaption}
+)  throws \-Invalid\-Key\-Exception, \-Certificate\-Exception, \-Socket\-Exception, 			\-No\-Such\-Algorithm\-Exception, \-No\-Such\-Provider\-Exception, 			\-Signature\-Exception, \-No\-Such\-Padding\-Exception, 			\-Illegal\-Block\-Size\-Exception, \-Bad\-Padding\-Exception, 			\-Invalid\-Key\-Spec\-Exception, \-I\-O\-Exception, {\bf \-Bad\-Nonce\-Exception}, {\bf \-Unreachable\-Logger\-Configuration\-File\-Exception} }}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a4007043b898d6773ed536da026adea5f}
+
+
+\-Il costruttore inizializza il logger ed esegue la parte di protocollo che gli compete decidendo in base al valore del booleano passive. 
+
+
+
+\-Here is the call graph for this function\-:
+
+
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a4bbde1476c9e908ee569b00d0e0f106c}{
+\index{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication@{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication}!receive@{receive}}
+\index{receive@{receive}!it::saccosilvestri::jsp2p::securecommunication::SecureCommunication@{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication}}
+\subsubsection[{receive}]{\setlength{\rightskip}{0pt plus 5cm}byte \mbox{[}$\,$\mbox{]} it.\-saccosilvestri.\-jsp2p.\-securecommunication.\-Secure\-Communication.\-receive (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)  throws \-Invalid\-Key\-Exception, 			\-Illegal\-Block\-Size\-Exception, \-Bad\-Padding\-Exception, \-I\-O\-Exception }}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a4bbde1476c9e908ee569b00d0e0f106c}
+
+
+\-Riceve un array di byte. 
+
+\-Lo scambio dei messaggi del protocollo e l'utilizzo della chiave di sessione vengono resi trasparenti per l'utente che utilizza questo metodo per ricevere bytes sul socket. 
+
+\-Here is the call graph for this function\-:
+
+
+
+
+\-Here is the caller graph for this function\-:
+
+
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_ab5b1a396ec73873683012ac34084e3f9}{
+\index{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication@{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication}!send@{send}}
+\index{send@{send}!it::saccosilvestri::jsp2p::securecommunication::SecureCommunication@{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication}}
+\subsubsection[{send}]{\setlength{\rightskip}{0pt plus 5cm}void it.\-saccosilvestri.\-jsp2p.\-securecommunication.\-Secure\-Communication.\-send (
+\begin{DoxyParamCaption}
+\item[{byte\mbox{[}$\,$\mbox{]}}]{message\-To\-Be\-Sent}
+\end{DoxyParamCaption}
+)  throws \-Invalid\-Key\-Exception, 			\-I\-O\-Exception, \-Illegal\-Block\-Size\-Exception, \-Bad\-Padding\-Exception }}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_ab5b1a396ec73873683012ac34084e3f9}
+
+
+\-Invia un array di byte. 
+
+\-Lo scambio dei messaggi del protocollo e l'utilizzo della chiave di sessione vengono resi trasparenti per l'utente che utilizza questo metodo per inviare bytes sul socket. 
+
+\-Here is the caller graph for this function\-:
+
+
+
+
+\subsection{\-Member \-Data \-Documentation}
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a007b240b59e1189f3994e735dae50ea5}{
+\index{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication@{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication}!in@{in}}
+\index{in@{in}!it::saccosilvestri::jsp2p::securecommunication::SecureCommunication@{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication}}
+\subsubsection[{in}]{\setlength{\rightskip}{0pt plus 5cm}\-Input\-Stream {\bf it.\-saccosilvestri.\-jsp2p.\-securecommunication.\-Secure\-Communication.\-in}\hspace{0.3cm}{\ttfamily  \mbox{[}package\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a007b240b59e1189f3994e735dae50ea5}
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a35e77cca97b78b630af1d7a4084133ad}{
+\index{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication@{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication}!out@{out}}
+\index{out@{out}!it::saccosilvestri::jsp2p::securecommunication::SecureCommunication@{it\-::saccosilvestri\-::jsp2p\-::securecommunication\-::\-Secure\-Communication}}
+\subsubsection[{out}]{\setlength{\rightskip}{0pt plus 5cm}\-Output\-Stream {\bf it.\-saccosilvestri.\-jsp2p.\-securecommunication.\-Secure\-Communication.\-out}\hspace{0.3cm}{\ttfamily  \mbox{[}package\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication_a35e77cca97b78b630af1d7a4084133ad}
+
+
+\-The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+src/it/saccosilvestri/jsp2p/securecommunication/\hyperlink{_secure_communication_8java}{\-Secure\-Communication.\-java}\end{DoxyCompactItemize}
