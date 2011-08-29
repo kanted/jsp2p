@@ -76,7 +76,6 @@ public class AliceProtocol extends Protocol {
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		LogManager.currentLogger.info("ALICE -- Sending nonce A");
 		byte[] cipherText = cipher.doFinal(nonceA);
-		// TODO
 		send(cipherText);
 
 		// (4) Ricezione di (nA,nB) cifrati con la mia chiave pubblica
