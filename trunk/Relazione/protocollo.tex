@@ -1,20 +1,43 @@
-Il protocollo è stato pensato per garantire confidenzialità nella comunicazione in un sistema peer-to-peer in cui ciascun membro dispone di una coppia di chiavi pubblica e privata opportunamente certificata. 
-Al termine dell’esecuzione del protocollo, viene stabilita una chiave di sessione tra i due peer e, in particolare, ognuna delle due parti crede che l'altra disponga della chiave di sessione.
+\chapter{Protocollo}
+	Il sistema √® stato pensato per garantire confidenzialit√† nella comunicazione in un sistema 
+	peer-to-peer in cui ciascun membro dispone di una coppia di chiavi pubblica e privata 
+	opportunamente certificata. In particolare, la comunicazione tra i peer √® preceduta dall' 
+	esecuzione del protocollo per stabilire una chiave di sessione. Tale protocollo garantisce 
+	\emph{key authentication} (ovvero, ogni peer crede che la chiave stabilita sia la chiave
+	di sessione), \emph{key confirmation} (ovvero, ogni peer crede che la controparte sia
+	convinta sulla key authentication relativamente alla chiave di sessione) e infine
+	\emph{key freshness} (si garantisce che entrambe le parti siano convinte della freschezza
+	della chiave di sessione generata).
+	Viene illustrato, qui di seguito, il protocollo:
+	\[
+		\begin{aligned}
+			M1:\ & A \rightarrow B & & C_A\\
+			M2:\ & A \leftarrow B & & C_B\\
+			M3:\ & A \rightarrow B & & \encrypt{n_A}{\publickey{B}}\\
+			M4:\ & A \leftarrow B & & \encrypt{n_A,\ n_B}{\publickey{A}}\\
+			M5:\ & A \rightarrow B & & \encrypt{n_B}{\publickey{B}}\\
+		\end{aligned}
+	\]
+	Significato dei messaggi:
+	\begin{description}
+		\item[M1]: $A$ invia a $B$ il proprio certificato $C_A$;
+		\item[M2]: avendo verificato la validit√† del certificato di $A$, $B$ invia a $A$ il proprio certificato $C_B$;
+		\item[M3]: avendo verificato la validit√† del certificato di $B$, $A$ genera un nonce random $n_A$ e lo invia
+		cifrandolo con la chiave pubblica di $B$. In questo modo, solamente B potr√† leggere $M3$;
+		\item[M4]: $B$ decifra il nonce con la sua chiave privata, a sua volta crea un nonce random $n_B$ ed invia
+		ad $A$ $n_A$ ed $n_B$ cifrando il messaggio con la chiave pubblica di $A$. In questo modo, solo $A$ potr√† 
+		leggere $M4$;
+		\item[M5]: $A$ decifra il nonce $n_A$ e controlla che corrisponda a quello che ha inviato. In caso affermativo,
+		reinvia a $B$ il nonce $n_B$, dopo averlo decifrato con la sua chiave privata. Infine, $A$ genera la chiave di sessione.
+		$B$ verifica che il nonce $n_B$ ricevuto corrisponda a quello precedente inviato. In tal caso, procede a generare la chiave di sessione.
+	\end{description}
 
-A -> B : Ca
-A invia a B il proprio certificato.
-B -> A : Cb
-B controlla che il certificato sia valido e, in caso affermativo, risponde inviando il proprio certificato ad A.
-A -> B : (Na)Kb+
-A  controlla che il certificato di B sia valido. Se la verifica va a buon fine, A genera un nonce random Na e lo invia cifrandolo con la chiave pubblica di B. In questo modo, solamente B potrà leggere il messaggio 3.
-B -> A : (Na,Nb)Ka+
-B decifra il nonce con la sua chiave privata, a sua volta crea un nonce random Nb ed invia ad A Na ed Nb cifrando il messaggio con la chiave pubblica di A. In questo modo, solo A potrà leggere il messaggio 4.
-A -> B : (Nb)Kb+
-A decifra il nonce Na e controlla che corrisponda a quello che ha inviato. In caso affermativo, reinvia a B il nonce Nb, dopo averlo decifrato con la sua chiave privata. Infine, A genera la chiave di sessione.
-B verifica che il nonce Nb ricevuto corrisponda a quello precedente inviato. In tal caso, procede a generare la chiave di sessione.
-
-La chiave di sessione viene generata a partire dai nonce Na ed Nb. In questo modo entrambe le parti partecipano alla creazione della chiave, quindi non è necessario che i peer facciano assunzioni sulla capacità della controparte di generare nonce realmente freschi.
-L'algoritmo di generazione della chiave di sessione è il seguente:
- 			y = h ( Na||Nb ) ;
-			Kab =  T(y) ;
-dove per T si intendono i primi 128 bit di y.
+	La chiave di sessione viene generata a partire dai nonce $n_A$ ed $n_B$. In questo modo entrambe le parti partecipano
+	alla creazione dellachiave, quindi non √® necessario che i peer facciano assunzioni sulla capacit√†
+	della controparte di generare nonce realmente freschi.
+	L'algoritmo di generazione della chiave di sessione √® il seguente:
+	\[
+ 		y = h ( n_A || n_B ) ;
+		K_{AB} =  T(y) ;
+	\]
+	dove per $T(y)$ si intendone il troncamento di y ai suoi primi $128$ bit.
