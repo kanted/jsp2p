@@ -1,1 +1,20 @@
+Il protocollo è stato pensato per garantire confidenzialità nella comunicazione in un sistema peer-to-peer in cui ciascun membro dispone di una coppia di chiavi pubblica e privata opportunamente certificata. 
+Al termine dell’esecuzione del protocollo, viene stabilita una chiave di sessione tra i due peer e, in particolare, ognuna delle due parti crede che l'altra disponga della chiave di sessione.
 
+A -> B : Ca
+A invia a B il proprio certificato.
+B -> A : Cb
+B controlla che il certificato sia valido e, in caso affermativo, risponde inviando il proprio certificato ad A.
+A -> B : (Na)Kb+
+A  controlla che il certificato di B sia valido. Se la verifica va a buon fine, A genera un nonce random Na e lo invia cifrandolo con la chiave pubblica di B. In questo modo, solamente B potrà leggere il messaggio 3.
+B -> A : (Na,Nb)Ka+
+B decifra il nonce con la sua chiave privata, a sua volta crea un nonce random Nb ed invia ad A Na ed Nb cifrando il messaggio con la chiave pubblica di A. In questo modo, solo A potrà leggere il messaggio 4.
+A -> B : (Nb)Kb+
+A decifra il nonce Na e controlla che corrisponda a quello che ha inviato. In caso affermativo, reinvia a B il nonce Nb, dopo averlo decifrato con la sua chiave privata. Infine, A genera la chiave di sessione.
+B verifica che il nonce Nb ricevuto corrisponda a quello precedente inviato. In tal caso, procede a generare la chiave di sessione.
+
+La chiave di sessione viene generata a partire dai nonce Na ed Nb. In questo modo entrambe le parti partecipano alla creazione della chiave, quindi non è necessario che i peer facciano assunzioni sulla capacità della controparte di generare nonce realmente freschi.
+L'algoritmo di generazione della chiave di sessione è il seguente:
+ 			y = h ( Na||Nb ) ;
+			Kab =  T(y) ;
+dove per T si intendono i primi 128 bit di y.
