@@ -40,7 +40,7 @@ abstract class Protocol {
 
 	/**
      * Costruttore della classe base da cui derivano AliceProtocol e BobProtocol.
-     * @param clientSocket socket su cui effettuare lo scambio di messaggi del protocollo.
+     * @param cs socket su cui effettuare lo scambio di messaggi del protocollo.
      * @param kp chiave pubblica e chiave privata del peer.
      * @param c certificato del peer.
      * @param capk chiave pubblica della Certification Authority.
