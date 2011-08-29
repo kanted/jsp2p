@@ -46,7 +46,7 @@ public class SecureCommunication {
 	/**
 	 * Invia un array di byte.
 	 * Lo scambio dei messaggi del protocollo e l'utilizzo della chiave di sessione 
-	 * vengono resi trasparenti per l'utente che utilizza questo metodo per inviare bytes sul socket.
+	 * vengono resi trasparenti per l'utente attraverso l'utilizzo di questo metodo.
 	 */
 	public void send(byte[] messageToBeSent) throws InvalidKeyException,
 			IOException, IllegalBlockSizeException, BadPaddingException {
@@ -62,7 +62,7 @@ public class SecureCommunication {
 	/**
 	 * Riceve un array di byte.
 	 * Lo scambio dei messaggi del protocollo e l'utilizzo della chiave di sessione 
-	 * vengono resi trasparenti per l'utente che utilizza questo metodo per ricevere bytes sul socket.
+	 * vengono resi trasparenti all'utente attraverso l'utilizzo di questo metodo.
 	 */
 	public byte[] receive() throws InvalidKeyException,
 			IllegalBlockSizeException, BadPaddingException, IOException {
