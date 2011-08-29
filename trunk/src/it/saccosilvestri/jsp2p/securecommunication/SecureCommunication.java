@@ -68,7 +68,7 @@ public class SecureCommunication {
 			IllegalBlockSizeException, BadPaddingException, IOException {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
 		LogManager.currentLogger.info("Decrypting with session key...");
-		byte[] lengthBytes = new byte[3]; // TODO per stare tranquilli
+		byte[] lengthBytes = new byte[4];
 		in.read(lengthBytes, 0, 1);
 		int length = ByteArrayUtility.byteArrayToInt(lengthBytes);
 		byte[] ciphredText = new byte[length];
