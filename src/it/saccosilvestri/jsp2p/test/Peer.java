@@ -31,8 +31,16 @@ import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Properties;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class Peer {
 
+	/**
+	 * Recupera il certificato della CA ed il certificato e le chiavi (pubblica e privata) del peer.
+	 * Infine, avvia i due thread necessari all'esecuzione del protocollo.
+	 */
 	public static void main(String[] args) {
 
 		try {
@@ -53,20 +61,13 @@ public class Peer {
 			System.out.println("Starting peer " + i);
 			System.out.println("Recuperando il certificato per il peer " + i);
 			X509Certificate caCert = CertificateUtility
-					.readCertificate("ca_certificate.crt"); // TODO magari nel
-															// file di config.
+					.readCertificate("ca_certificate.crt");
 			X509Certificate peerCert = CertificateUtility
-					.readCertificate("certificate_for_peer_" + i + ".crt"); // TODO
-																			// magari
-																			// nel
-																			// file
-																			// di
-																			// config.
+					.readCertificate("certificate_for_peer_" + i + ".crt"); 
 			System.out.println("Recuperando le chiavi per il peer " + i);
 			KeyPair kp = FileUtility.readKeysFromFiles("public" + i + ".key",
-					"private" + i + ".key"); // TODO magari path nel file di
-												// conf.
-
+					"private" + i + ".key"); 
+			
 			// Un peer e' sia alice che bob contemporaneamente.
 			AliceThread a = new AliceThread(peerCert, caCert, port, kp);
 			BobThread b = new BobThread(peerCert, caCert, port, kp);

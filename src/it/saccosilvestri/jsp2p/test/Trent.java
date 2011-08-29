@@ -9,10 +9,18 @@ import it.saccosilvestri.jsp2p.certificationAuthority.CertificationAuthority;
 import it.saccosilvestri.jsp2p.utility.ConfigurationFileUtility;
 import it.saccosilvestri.jsp2p.utility.FileUtility;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class Trent {
 
 	private static int NUM_PEER;
 
+	/**
+	 * Inizializza opportunamente la variabile NUM_PEER
+	 * e genera un certificato per ogni peer che partecipera' al test.
+	 */
 	public static void main(String[] args) {
 
 		try {

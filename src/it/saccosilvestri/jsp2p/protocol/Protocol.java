@@ -24,6 +24,10 @@ import java.util.Date;
 
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 abstract class Protocol {
 
 	private Socket clientSocket;
@@ -34,6 +38,14 @@ abstract class Protocol {
 	private InputStream in;
 	private OutputStream out;
 
+	/**
+     * Costruttore della classe base da cui derivano AliceProtocol e BobProtocol.
+     * @param clientSocket socket su cui effettuare lo scambio di messaggi del protocollo.
+     * @param kp chiave pubblica e chiave privata del peer.
+     * @param c certificato del peer.
+     * @param capk chiave pubblica della Certification Authority.
+     * @param pn identificatore del peer con il quale ci si aspetta di comunicare.
+     */
 	public Protocol(Socket cs, KeyPair kp, X509Certificate c, PublicKey capk,
 			String pn) throws IOException {
 		clientSocket = cs;
@@ -45,6 +57,9 @@ abstract class Protocol {
 		peerName = pn;
 	}
 
+	/**
+	 * Invia il certificato del peer.
+	 */
 	protected void sendMyCertificate() throws IOException,
 			CertificateEncodingException {
 		byte[] certBytes = cert.getEncoded();
@@ -52,6 +67,9 @@ abstract class Protocol {
 		out.flush();
 	}
 
+	/**
+	 * Riceve un certificato e ne controlla validita' e scadenza.
+	 */
 	protected PublicKey receiveAndCheckCertificate()
 			throws CertificateException, NoSuchProviderException,
 			InvalidKeyException, NoSuchAlgorithmException, SignatureException {
@@ -62,6 +80,11 @@ abstract class Protocol {
 		return retrievedCert.getPublicKey();
 	}
 
+	/**
+	 * Riceve un certificato e ne controlla validita' e scadenza.
+	 * Inoltre si accerta che il certificato sia stato rilasciato al peer
+	 * il cui identificatore e' passato come argomento.
+	 */
 	protected PublicKey receiveAndCheckCertificateWithNameAuthentication(
 			String peerName) throws CertificateException, NoSuchProviderException,
 			InvalidKeyException, NoSuchAlgorithmException, SignatureException {
@@ -73,6 +96,9 @@ abstract class Protocol {
 		return retrievedCert.getPublicKey();
 	}
 
+	/**
+	 * Invia un array di byte.
+	 */
 	protected void send(byte[] toSend) throws IOException {
 		byte length = (new Integer(toSend.length)).byteValue();
 		out.write(length);
@@ -80,6 +106,9 @@ abstract class Protocol {
 		out.flush();
 	}
 
+	/**
+	 * Legge un nonce.
+	 */
 	protected byte[] readNonce() throws IOException {
 		byte[] lengthBytes = new byte[1];
 		in.read(lengthBytes, 0, 1);
@@ -93,6 +122,13 @@ abstract class Protocol {
 		return keyPair.getPrivate();
 	}
 
+	/**
+	 * Genera la chiave di sessione "mescolando" nonceA e nonceB.
+	 * In particolare viene calcolato y = h(nonceA||nonceB), dove h e'
+	 * una funzione hash (in questo caso SHA-1), e vengono quindi
+	 * presi i primi 128 bit di y per generare una chiave di sessione
+	 * per l'algoritmo AES.
+	 */
 	protected SecretKeySpec sessionKey(byte[] nonceA, byte[] nonceB)
 			throws NoSuchAlgorithmException, NoSuchProviderException {
 		byte[] key = new byte[nonceA.length + nonceB.length];

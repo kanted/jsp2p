@@ -23,8 +23,15 @@ import java.util.Date;
 import org.bouncycastle.asn1.x509.X509Name;
 import org.bouncycastle.openssl.PEMWriter;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class CertificateUtility {
 
+	/**
+	 * Controlla validita' e scandenza del certificato.
+	 */
 	public static void checkCertificate(X509Certificate cert, PublicKey pk)
 			throws InvalidKeyException, CertificateException,
 			NoSuchAlgorithmException, NoSuchProviderException,
@@ -36,6 +43,11 @@ public class CertificateUtility {
 		LogManager.currentLogger.info("Controlli eseguiti correttamente.");
 	}
 	
+	/**
+	 * Controlla validita' e scandenza del certificato.
+	 * Inoltre controlla che il certificato sia stato rilasciato
+	 * al peer il cui id e' passato come argomento.
+	 */
 	public static void checkCertificateWithNameAuthentication(X509Certificate cert, PublicKey pk, String peerName) throws InvalidKeyException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, SignatureException{
 		LogManager.currentLogger.info("Controllo che il certificato sia stato rilasciato a: "+peerName+".");
 		if (peerName.compareTo((cert.getSubjectDN().getName()))!=0)
@@ -43,6 +55,10 @@ public class CertificateUtility {
 		checkCertificate(cert,pk);
 	}
 
+	/**
+	 * Controlla validita' e scandenza del certificato.
+	 * Inoltre lo salva su file.
+	 */
 	public static void checkAndExportCertificate(X509Certificate cert,
 			PublicKey pk, String filename) throws IOException,
 			InvalidKeyException, CertificateException,
@@ -57,6 +73,9 @@ public class CertificateUtility {
 		LogManager.currentLogger.info("Certificato esportato.");
 	}
 
+	/**
+	 * Legge da file un certificato.
+	 */
 	public static X509Certificate readCertificate(String filename)
 			throws FileNotFoundException, CertificateException,
 			NoSuchProviderException {

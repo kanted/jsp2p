@@ -6,6 +6,10 @@ import java.io.File;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class LogManager {
 	
 	/**

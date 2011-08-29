@@ -9,6 +9,10 @@ import java.security.KeyPair;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
+/**
+* @author Sacco Cosimo & Silvestri Davide
+*/
+
 public class BobThread extends Thread {
 
 	Socket mySocket;
@@ -26,6 +30,9 @@ public class BobThread extends Thread {
 		this.start();
 	}
 
+	/**
+	 * Riceve messaggi dagli altri peer.
+	 */
 	public void run() {
 		try {
 			ServerSocket server = new ServerSocket(port);
