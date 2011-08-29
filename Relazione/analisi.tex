@@ -1,0 +1,204 @@
+\newlength{\symlen}
+\newlength{\barlen}
+
+\newcommand{\overstrike}[2]{\mbox{\settowidth{\symlen}{$#1$}%
+        $#1$\hspace{-\symlen}$#2$}}
+
+\settowidth{\barlen}{$|$}
+\newcommand{\vbarred}[1]{\,\overstrike{\hspace{-0.25 \barlen}|}{#1}\,}
+
+\newcommand{\sees}[2]{#1 \triangleleft #2}
+\newcommand{\said}[2]{#1 \vbarred{\sim} #2}
+\newcommand{\believes}[2]{#1 \vbarred{\equiv} #2}
+\newcommand{\fresh}[1]{\sharp\left(#1\right)}
+\newcommand{\sharedkey}[3]{#1\xleftrightarrow{#3}#2}
+\newcommand{\sharedsecret}[3]{#1\overset{#3}{\leftrightharpoons} #2}
+\newcommand{\publickeyowner}[2]{\stackrel{#1}{\mapsto}#2}
+\newcommand{\publickey}[1]{{K_{#1}}^+}
+\newcommand{\privatekey}[1]{{K_{#1}}^-}
+\newcommand{\encrypt}[2]{\left\{#1\right\}_{#2}}
+\newcommand{\decrypt}[2]{\left\{#1\right\}^{-1}_{#2}}
+\newcommand{\combine}[2]{\left\langle #1\right\rangle_{#2}}
+\newcommand{\jurisdiction}[2]{#1 \Rightarrow #2}
+
+\chapter{Analisi del protocollo di scambio chiavi}
+\section{\emph{Beliefs} da ottenere}
+\label{sec:beliefs}
+	Procediamo ad analizzare il protocollo esposto nel capitolo (RIFERIMENTO).
+	Si vuole provare che il protocollo produce, in ciascuna delle parti, i seguenti \emph{beliefs}:
+	\begin{center}
+		\begin{tabular}{| c | c | c |}
+			\hline
+			\ & {\bf A} & {\bf B} \\
+			\hline
+			{\bf key authentication} & $\believes{A}{\sharedkey{A}{B}{K}}$ & $\believes{B}{\sharedkey{A}{B}{K}}$\\
+			\hline
+			{\bf key confirmation} & $\believes{A}{\believes{B}{\sharedkey{A}{B}{K}}}$ &
+			                         $\believes{B}{\believes{A}{\sharedkey{A}{B}{K}}}$\\
+			\hline
+			{\bf key freshness} & $\believes{A}{\fresh{\sharedkey{A}{B}{K}}}$ & $\believes{B}{\fresh{\sharedkey{A}{B}{K}}}$\\
+			\hline
+		\end{tabular}
+	\end{center}
+\section{Protocollo idealizzato}
+	Viene riportato, qui di seguito, il \emph{protocollo idealizzato} relativo
+	al protocollo di scambio delle chiavi esposto nel capitolo (RIFERIMENTO).
+	\[
+		\begin{aligned}
+			M1:\ & A \rightarrow B & & \encrypt{\publickeyowner{\publickey{A}}{A}, \ L_A}{\privatekey{T}}\\
+			M2:\ & A \leftarrow B & & \encrypt{\publickeyowner{\publickey{B}}{B}, \ L_B}{\privatekey{T}}\\
+			M3:\ & A \rightarrow B & & \encrypt{n_A,\ \sharedsecret{A}{B}{n_A}}{\publickey{B}}\\
+			M4:\ & A \leftarrow B & & \encrypt{n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}}{\publickey{A}}\\
+			M5:\ & A \rightarrow B & & \encrypt{n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}}{\publickey{B}}\\
+		\end{aligned}
+	\]
+\section{Ipotesi}
+	\label{sec:ipotesi}
+	Vengono esplicitate, qui di seguito, le ipotesi sotto le quali il protocollo viene eseguito.
+	\begin{center}
+		\begin{tabular}{| c | c | c |}
+			\hline
+			\ & {\bf A} & {\bf B} \\
+			\hline
+			{\bf public keys} & $\believes{A}{\publickeyowner{\publickey{A}}{A}}$ & $\believes{B}{\publickeyowner{\publickey{B}}{B}}$\\
+			\hline
+			{\bf third party} & $\believes{A}{\publickeyowner{\publickey{T}}{T}}$ & $\believes{B}{\publickeyowner{\publickey{T}}{T}}$\\
+			                \ & $\believes{A}{\jurisdiction{T}{\publickeyowner{\publickey{X}}{X}}}$ %
+			                  & $\believes{B}{\jurisdiction{T}{\publickeyowner{\publickey{X}}{X}}}$\\
+			\hline
+			{\bf freshness} &  $\believes{A}{\fresh{n_A}}$ & $\believes{B}{\fresh{n_B}}$\\
+			              \ &  $\believes{A}{\fresh{L_B}}$ & $\believes{B}{\fresh{L_A}}$\\
+			\hline
+		\end{tabular}
+	\end{center}
+\section{Analisi dei \emph{beliefs}}
+	Procediamo, ora, con l' analisi dei singoli messaggi. Partendo dalle ipotesi esposte nella sezione
+	\ref{sec:ipotesi} e applicando le \emph{regole di inferenza} della logica BAN, ciascuna parte può ampliare
+	l' insieme dei propri \emph{beliefs}.
+	Se, tra i beliefs finali, compaiono quelli elencati nella sezione \ref{sec:beliefs},
+	allora possiamo affermare che il protocollo esposto è corretto.
+	\subsection{Messaggio $M1$}
+		Messaggio $M1$:
+		\[
+			\begin{aligned}
+				M1:\ & A \rightarrow B & & \encrypt{\publickeyowner{\publickey{A}}{A}, \ L_A}{\privatekey{T}}\\
+			\end{aligned}
+		\]
+		per la \emph{meaning rule}
+		\[
+			\frac{\believes{B}{\publickeyowner{\publickey{T}}{T}},\ \sees{B}{\encrypt{\publickeyowner{\publickey{A}}{A},\ L_A}{\privatekey{T}}}}
+			{\believes{B}{\said{T}{\left(\publickeyowner{\publickey{A}}{A},\ L_A\right)}}}
+		\]
+		e poiché
+		\[
+			\frac{\believes{B}{\fresh{L_A}}}{\believes{B}{\fresh{\publickeyowner{\publickey{A}}{A}, \ L_A}}}
+		\]
+		allora, per la \emph{nonce verification rule}
+		\[
+			\frac{\believes{B}{\said{T}{\left(\publickeyowner{\publickey{A}}{A},\ L_A\right)}},\ \believes{B}{\fresh{\publickeyowner{\publickey{A}}{A},\ L_A}}}
+			{\believes{B}{\believes{T}{\left(\publickeyowner{\publickey{A}}{A},\ L_A\right)}}}
+		\]
+		e, in particolare,
+		\[
+			\believes{B}{\believes{T}{\publickeyowner{\publickey{A}}{A}}}
+		\]
+		infine, per la \emph{jurisdiction rule}
+		\[
+			\frac{\believes{B}{\believes{T}{\publickeyowner{\publickey{A}}{A}}},\ \believes{B}{\jurisdiction{T}{\publickeyowner{\publickey{A}}{A}}}}
+			{\believes{B}{\publickeyowner{\publickey{A}}{A}}}
+		\]
+	\subsection{Messaggio $M2$}
+		In maniera del tutto analoga a quanto visto per il messaggio $M1$, il \emph{belief} ottenuto da $A$ dopo aver ricevuto
+		il messaggio $M2$ è
+		\[
+			\believes{A}{\publickeyowner{\publickey{B}}{B}}
+		\]
+	\subsection{Messaggio $M3$}
+	Messaggio $M3$:
+		\[
+			\begin{aligned}
+				M3:\ & A \rightarrow B & & \encrypt{n_A,\ \sharedsecret{A}{B}{n_A}}{\publickey{B}}\\
+			\end{aligned}
+		\]
+		L' applicazione delle regole di inferenza non porta, su $B$, alla realizzazione di alcun nuovo belief.
+		Tuttavia, poiché l' unica entità in grado di leggere il nonce $n_A$ è $B$\footnote{$B$, infatti, è l' unica
+		entità a possedere la chiave $\privatekey{B}$ necessaria per decifrare i messaggi cifrati con $\publickey{B}$.},
+		$A$ può ritenere che
+		\[
+			\believes{A}{\sharedsecret{A}{B}{n_A}}
+		\]
+	\subsection{Messaggio $M4$}
+	Messaggio $M4$:
+		\[
+			\begin{aligned}
+				M4:\ & A \leftarrow B & & \encrypt{n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}}{\publickey{A}}\\
+			\end{aligned}
+		\]
+		L' unica entità in grado di leggere il messaggio $M4$ è $A$\footnote{$A$, infatti, è l' unica
+		entità a possedere la chiave $\privatekey{A}$ necessaria per decifrare i messaggi cifrati con $\publickey{A}$.}.
+		Pertanto, $B$ può ritenere che
+		\[
+			\believes{B}{\sharedkey{A}{B}{\combine{n_A}{n_B}}}\ \ \ \ \ \ \text{\emph{B ottiene key authentication}}
+		\]
+		inoltre,
+		\[
+			\frac{\believes{B}{\fresh{n_B}}}
+			{\believes{B}{\fresh{\sharedkey{A}{B}{\combine{n_A}{n_B}}}}}\ \ \ \ \ \ \text{\emph{B ottiene key freshness}}
+		\]
+		per quanto riguarda $A$, invece, otteniamo
+		\[
+			\frac{\believes{A}{\fresh{n_A}}}
+			{\believes{A}{\fresh{n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}}}}
+		\]
+		e poiché, per la \emph{meaning rule}
+		\[
+			\frac{\believes{A}{\sharedsecret{A}{B}{n_A}},\ \sees{A}{\left(n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}}
+			{\believes{A}{\said{B}{\left(n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}}}
+		\]
+		allora, per la \emph{nonce verification rule}
+		\[
+			\frac{\believes{A}{\said{B}{\left(n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}},
+			\ \believes{A}{\fresh{n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}}}}
+			{\believes{A}{\believes{B}{\left(n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}}}
+		\]
+		e in particolare
+		\[
+			\believes{A}{\believes{B}{\sharedkey{A}{B}{\combine{n_A}{n_B}}}}\ \ \ \ \ \ \text{\emph{A ottiene key confirmation}}
+		\]
+	\subsection{Messaggio $M5$}
+	Messaggio $M5$:
+		\[
+			\begin{aligned}
+				M5:\ & A \rightarrow B & & \encrypt{n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}}{\publickey{B}}\\
+			\end{aligned}
+		\]
+		L' unica entità in grado di leggere il messaggio $M5$ è $B$.
+		Pertanto, $A$ può ritenere che
+		\[
+			\believes{A}{\sharedkey{A}{B}{\combine{n_A}{n_B}}}\ \ \ \ \ \ \text{\emph{A ottiene key authentication}}
+		\]
+		inoltre,
+		\[
+			\frac{\believes{A}{\fresh{n_A}}}
+			{\believes{A}{\fresh{\sharedkey{A}{B}{\combine{n_A}{n_B}}}}}\ \ \ \ \ \ \text{\emph{A ottiene key freshness}}
+		\]
+		per quanto riguarda $B$, invece, otteniamo
+		\[
+			\frac{\believes{B}{\fresh{n_B}}}
+			{\believes{B}{\fresh{n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}}}}
+		\]
+		e poiché, per la \emph{meaning rule}
+		\[
+			\frac{\believes{B}{\sharedkey{A}{B}{\combine{n_A}{n_B}}},\ \sees{B}{\left(n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}}
+			{\believes{B}{\said{A}{\left(n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}}}
+		\]
+		allora, per la \emph{nonce verification rule}
+		\[
+			\frac{\believes{B}{\said{A}{\left(n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}},
+			\ \believes{B}{\fresh{n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}}}}
+			{\believes{B}{\believes{A}{\left(n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}}}
+		\]
+		e in particolare
+		\[
+			\believes{B}{\believes{A}{\sharedkey{A}{B}{\combine{n_A}{n_B}}}}\ \ \ \ \ \ \text{\emph{B ottiene key confirmation}}
+		\]
