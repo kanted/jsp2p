@@ -1,25 +1,4 @@
-\newlength{\symlen}
-\newlength{\barlen}
 
-\newcommand{\overstrike}[2]{\mbox{\settowidth{\symlen}{$#1$}%
-        $#1$\hspace{-\symlen}$#2$}}
-
-\settowidth{\barlen}{$|$}
-\newcommand{\vbarred}[1]{\,\overstrike{\hspace{-0.25 \barlen}|}{#1}\,}
-
-\newcommand{\sees}[2]{#1 \triangleleft #2}
-\newcommand{\said}[2]{#1 \vbarred{\sim} #2}
-\newcommand{\believes}[2]{#1 \vbarred{\equiv} #2}
-\newcommand{\fresh}[1]{\sharp\left(#1\right)}
-\newcommand{\sharedkey}[3]{#1\xleftrightarrow{#3}#2}
-\newcommand{\sharedsecret}[3]{#1\overset{#3}{\leftrightharpoons} #2}
-\newcommand{\publickeyowner}[2]{\stackrel{#1}{\mapsto}#2}
-\newcommand{\publickey}[1]{{K_{#1}}^+}
-\newcommand{\privatekey}[1]{{K_{#1}}^-}
-\newcommand{\encrypt}[2]{\left\{#1\right\}_{#2}}
-\newcommand{\decrypt}[2]{\left\{#1\right\}^{-1}_{#2}}
-\newcommand{\combine}[2]{\left\langle #1\right\rangle_{#2}}
-\newcommand{\jurisdiction}[2]{#1 \Rightarrow #2}
 
 \chapter{Analisi del protocollo di scambio chiavi}
 \section{\emph{Beliefs} da ottenere}
