@@ -57,7 +57,7 @@ public class BobProtocol extends Protocol {
 
 		// (1) Ricezione del certificato del peer, verifica ed estrazione della
 		// chiave pubblica.
-		PublicKey pKey = receiveAndCheckCertificate();
+		PublicKey pKey = receiveAndCheckCertificateWithNameAuthentication(peerName);
 
 		// (2) Invio del certificato del peer
 		sendMyCertificate();
