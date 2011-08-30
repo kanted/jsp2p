@@ -69,9 +69,8 @@ public class Peer {
 					"private" + i + ".key"); 
 			
 			// Un peer e' sia alice che bob contemporaneamente.
-			CommunicationContainer cc = new CommunicationContainer();
-			AliceThread a = new AliceThread(new Integer(i).toString(), peerCert, caCert, port, kp, cc);
-			BobThread b = new BobThread(peerCert, caCert, port, kp, cc);
+			AliceThread a = new AliceThread(new Integer(i).toString(), peerCert, caCert,  kp);
+			BobThread b = new BobThread(peerCert, caCert, port, kp);
 
 		} catch (Exception e) {
 			System.out.println("EXCEPTION: " + e.getClass() + " - "

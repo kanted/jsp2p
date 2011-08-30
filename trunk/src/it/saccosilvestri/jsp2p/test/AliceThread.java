@@ -19,23 +19,19 @@ import java.security.cert.X509Certificate;
 
 public class AliceThread extends Thread {
 
-	// private Socket mySocket;
+	private Socket communicationSocket;
 	private String myID;
-	private int port;
 	private X509Certificate peerCert;
 	private X509Certificate caCert;
 	private KeyPair kp;
-	private CommunicationContainer cc;
+	private boolean connected = false;
 
 	public AliceThread(String peerID, X509Certificate peerCert,
-			X509Certificate caCert, int port, KeyPair kp,
-			CommunicationContainer cc) {
+			X509Certificate caCert, KeyPair kp) {
 		this.myID = peerID;
 		this.peerCert = peerCert;
 		this.caCert = caCert;
 		this.kp = kp;
-		this.port = port;
-		this.cc = cc;
 		this.start();
 	}
 
@@ -47,8 +43,7 @@ public class AliceThread extends Thread {
 	 */
 	public void run() {
 		try {
-
-			//SecureCommunication sc = null;
+			SecureCommunication sc = null;
 			String command = new String();
 			System.out.println("---LISTA DEI COMANDI---");
 			System.out.println("Connessione ad un peer:");
@@ -65,7 +60,7 @@ public class AliceThread extends Thread {
 				command = br.readLine();
 				if (command.startsWith("connect to") && command.contains("@")
 						&& command.contains(":")) {
-					if (cc.connected == false) {
+					if (connected == false) {
 						int toIndex = command.indexOf("to");
 						int atIndex = command.indexOf("@");
 						String peerID = command.substring(toIndex + 3, atIndex);
@@ -75,8 +70,8 @@ public class AliceThread extends Thread {
 						String ip = indirizzo.substring(0, colonIndex);
 						String portString = indirizzo.substring(colonIndex + 1);
 						int port = Integer.parseInt(portString);
-						cc.communicationSocket = new Socket(ip, port);
-						OutputStream out = cc.communicationSocket
+						communicationSocket = new Socket(ip, port);
+						OutputStream out = communicationSocket
 								.getOutputStream();
 						byte[] peerIDToSend = myID.getBytes();
 						byte length = (new Integer(peerIDToSend.length))
@@ -85,25 +80,25 @@ public class AliceThread extends Thread {
 						out.write(peerIDToSend);
 						out.flush();
 						String peerName = new String("CN=Peer" + numPeer);
-						cc.sc = new SecureCommunication(false,
-								cc.communicationSocket, kp, peerCert, caCert,
+						sc = new SecureCommunication(false,
+								communicationSocket, kp, peerCert, caCert,
 								peerName);
-						cc.connected = true;
-						System.out.println("Connesso al peer: " + numPeer);
-					}
-					else {
-						System.out.println("Esiste giˆ una connessione attiva.");
+						connected = true;
+						System.out.println("Session for sending message to peer: " + numPeer + " established.");
+					} else {
+						System.out
+								.println("Esiste giˆ una connessione attiva.");
 					}
 				} else if (command.startsWith("send")) {
-					if (cc.connected == true) {
+					if (connected == true) {
 						String message = command.substring(5);
-						cc.sc.send(message.getBytes());
+						sc.send(message.getBytes());
 					} else
 						System.out.println("Nessuna connessione attiva.");
 				} else if (command.startsWith("disconnect")) {
-					if (cc.connected == true) {
-						cc.sc.send("quit".getBytes());
-						cc.connected = false;
+					if (connected == true) {
+						sc.send("quit".getBytes());
+						connected = false;
 					} else
 						System.out.println("Nessuna connessione attiva.");
 				} else if (command.startsWith("help")) {
