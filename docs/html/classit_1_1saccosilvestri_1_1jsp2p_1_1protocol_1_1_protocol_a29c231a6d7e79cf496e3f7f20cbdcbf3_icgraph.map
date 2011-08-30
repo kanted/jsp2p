@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_alice_protocol.html#a60cbfe1906bfbd7b95a7d21cec977843" title="Protocollo per lo scambio della chiave di sessione." alt="" coords="369,5,695,32"/>
+<area shape="rect" id="node7" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_bob_protocol.html#af5e630fb51c6acf73adc5cd5a76017a2" title="Protocollo per lo scambio della chiave di sessione." alt="" coords="371,56,693,83"/>
+<area shape="rect" id="node5" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication.html#a4007043b898d6773ed536da026adea5f" title="Il costruttore inizializza il logger ed esegue la parte di protocollo che gli compete decidendo in ba..." alt="" coords="744,31,1291,57"/>
+</map>
