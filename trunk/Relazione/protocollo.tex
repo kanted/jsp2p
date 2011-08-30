@@ -1,4 +1,5 @@
 \chapter{Protocollo}
+\label{chap:protocollo}
 	Il sistema è stato pensato per garantire confidenzialità nella comunicazione in un sistema 
 	peer-to-peer in cui ciascun membro dispone di una coppia di chiavi pubblica e privata 
 	opportunamente certificata. In particolare, la comunicazione tra i peer è preceduta dall' 
@@ -33,11 +34,14 @@
 	\end{description}
 
 	La chiave di sessione viene generata a partire dai nonce $n_A$ ed $n_B$. In questo modo entrambe le parti partecipano
-	alla creazione dellachiave, quindi non è necessario che i peer facciano assunzioni sulla capacità
+	alla creazione della chiave, quindi non è necessario che i peer facciano assunzioni sulla capacità
 	della controparte di generare nonce realmente freschi.
 	L'algoritmo di generazione della chiave di sessione è il seguente:
 	\[
- 		y = h ( n_A || n_B ) ;
-		K_{AB} =  T(y) ;
+		\begin{cases}
+			y = h ( n_A || n_B )\\
+			K_{AB} =  T(y)
+		\end{cases}
 	\]
 	dove per $T(y)$ si intendone il troncamento di y ai suoi primi $128$ bit.
+\clearpage{\pagestyle{empty}\cleardoublepage}
