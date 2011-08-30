@@ -46,7 +46,7 @@ public class Peer {
 		try {
 			if (args.length < 2) {
 				System.out
-						.println("Sintassi: java Peer [numero identificativo del peer] [porta]");
+						.println("Sintax: java Peer [peer ID] [port]");
 				return;
 			}
 			// Recupero il numero del peer.
@@ -59,12 +59,12 @@ public class Peer {
 				return;
 			}
 			System.out.println("Starting peer " + i);
-			System.out.println("Recuperando il certificato per il peer " + i);
+			System.out.println("Retrieving certificate for peer " + i);
 			X509Certificate caCert = CertificateUtility
 					.readCertificate("ca_certificate.crt");
 			X509Certificate peerCert = CertificateUtility
 					.readCertificate("certificate_for_peer_" + i + ".crt"); 
-			System.out.println("Recuperando le chiavi per il peer " + i);
+			System.out.println("Retrieving keys for peer " + i);
 			KeyPair kp = FileUtility.readKeysFromFiles("public" + i + ".key",
 					"private" + i + ".key"); 
 			
