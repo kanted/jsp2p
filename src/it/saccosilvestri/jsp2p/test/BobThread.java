@@ -54,6 +54,7 @@ public class BobThread extends Thread {
 						peerCert, caCert, namePeer);
 				System.out.println("Session for receiving message from peer: " + peerID + " established.");
 				while (true) {
+					System.out.print(">>");
 					byte[] b = sc.receive();
 					String message = new String(b, "US-ASCII");
 					if (message.equals("quit")) {
