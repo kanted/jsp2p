@@ -1,5 +1,6 @@
 package it.saccosilvestri.jsp2p.securecommunication;
 
+import it.saccosilvestri.jsp2p.exceptions.BadHashCodeException;
 import it.saccosilvestri.jsp2p.exceptions.BadNonceException;
 import it.saccosilvestri.jsp2p.exceptions.UnreachableLoggerConfigurationFileException;
 import it.saccosilvestri.jsp2p.logging.LogManager;
@@ -11,11 +12,13 @@ import it.saccosilvestri.jsp2p.utility.CertificateUtility;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyPair;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
@@ -48,13 +51,18 @@ public class SecureCommunication {
 	 * Invia un array di byte.
 	 * Lo scambio dei messaggi del protocollo e l'utilizzo della chiave di sessione 
 	 * vengono resi trasparenti per l'utente attraverso l'utilizzo di questo metodo.
+	 * @throws NoSuchProviderException 
+	 * @throws NoSuchAlgorithmException 
 	 */
 	public void send(byte[] messageToBeSent) throws InvalidKeyException,
-			IOException, IllegalBlockSizeException, BadPaddingException {
+			IOException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchProviderException {
+		LogManager.currentLogger.info("Calculating message hash...");
+		byte[] message = appendHash(messageToBeSent);
 		cipher.init(Cipher.ENCRYPT_MODE, sessionKeySpec);
 		LogManager.currentLogger.info("Encrypting with session key...");
-		byte[] ciphredText = cipher.doFinal(messageToBeSent);
+		byte[] ciphredText = cipher.doFinal(message);
 		byte length = (new Integer(ciphredText.length)).byteValue();
+		LogManager.currentLogger.info("Sending message...");
 		out.write(length);
 		out.write(ciphredText);
 		out.flush();
@@ -64,20 +72,60 @@ public class SecureCommunication {
 	 * Riceve un array di byte.
 	 * Lo scambio dei messaggi del protocollo e l'utilizzo della chiave di sessione 
 	 * vengono resi trasparenti all'utente attraverso l'utilizzo di questo metodo.
+	 * @throws BadHashCodeException 
+	 * @throws NoSuchProviderException 
+	 * @throws NoSuchAlgorithmException 
 	 */
 	public byte[] receive() throws InvalidKeyException,
-			IllegalBlockSizeException, BadPaddingException, IOException {
+			IllegalBlockSizeException, BadPaddingException, IOException, NoSuchAlgorithmException, NoSuchProviderException, BadHashCodeException {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
 		byte[] lengthBytes = new byte[4];
 		in.read(lengthBytes, 0, 1);
+		LogManager.currentLogger.info("Receiving message...");
 		int length = ByteArrayUtility.byteArrayToInt(lengthBytes);
 		byte[] ciphredText = new byte[length];
 		in.read(ciphredText, 0, length);
 		LogManager.currentLogger.info("Decrypting with session key...");
-		byte[] messageToBeReceived = cipher.doFinal(ciphredText);
-		return messageToBeReceived;
+		byte[] messageReceived = cipher.doFinal(ciphredText);
+		LogManager.currentLogger.info("Checking hash...");
+		byte[] message = checkHash(messageReceived);
+		return message;
 	}
 
+	/**
+	 * Aggiunge l'hash del messaggio in coda al messaggio stesso.
+	 * Messaggio ed hash sono divisi da un opportuno separatore.
+	 */
+	public byte[] appendHash(byte[] messageToBeSent) throws NoSuchAlgorithmException, NoSuchProviderException, UnsupportedEncodingException {
+		MessageDigest sha = MessageDigest.getInstance("SHA-1", "BC");
+		byte[] separator = "||".getBytes();
+		byte[] hash  = sha.digest(messageToBeSent);
+		byte[] message = new byte[messageToBeSent.length + hash.length + separator.length];
+		System.arraycopy(messageToBeSent, 0, message, 0, messageToBeSent.length);
+		System.arraycopy(separator, 0, message, messageToBeSent.length, separator.length);
+		System.arraycopy(hash, 0, message, messageToBeSent.length+separator.length, hash.length);
+		return message;
+	}
+	
+	/**
+	 * Controlla che l'hash in coda al messaggio 
+	 * corrisponda all'hash del messaggio stesso.
+	 */
+	public byte[] checkHash(byte[] messageReceived) throws NoSuchAlgorithmException, NoSuchProviderException, BadHashCodeException, UnsupportedEncodingException {
+		String messageReceivedString = new String(messageReceived, "US-ASCII");
+		int index = messageReceivedString.indexOf("||") + 2;
+		MessageDigest sha = MessageDigest.getInstance("SHA-1", "BC");
+		byte[] message = new byte[index-2];
+		System.arraycopy(messageReceived, 0, message, 0, index-2);
+		byte[] digesta  = sha.digest(message);
+		byte[] digestb = new byte [messageReceived.length - index];
+		System.arraycopy(messageReceived, index, digestb, 0, messageReceived.length - index);
+		if(!MessageDigest.isEqual(digesta, digestb))
+			throw new BadHashCodeException();
+		return message;
+	}
+	
+	
 	/**
 	 * Il costruttore inizializza il logger ed esegue la parte
 	 * di protocollo che gli compete decidendo in base al valore del 
