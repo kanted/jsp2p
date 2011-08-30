@@ -3,7 +3,7 @@
 \chapter{Analisi del protocollo di scambio chiavi}
 \section{\emph{Beliefs} da ottenere}
 \label{sec:beliefs}
-	Procediamo ad analizzare il protocollo esposto nel capitolo (RIFERIMENTO).
+	Procediamo ad analizzare il protocollo esposto nel capitolo \ref{chap:protocollo}.
 	Si vuole provare che il protocollo produce, in ciascuna delle parti, i seguenti \emph{beliefs}:
 	\begin{center}
 		\begin{tabular}{| c | c | c |}
@@ -21,7 +21,7 @@
 	\end{center}
 \section{Protocollo idealizzato}
 	Viene riportato, qui di seguito, il \emph{protocollo idealizzato} relativo
-	al protocollo di scambio delle chiavi esposto nel capitolo (RIFERIMENTO).
+	al protocollo di scambio delle chiavi esposto nel capitolo \ref{chap:protocollo}.
 	\[
 		\begin{aligned}
 			M1:\ & A \rightarrow B & & \encrypt{\publickeyowner{\publickey{A}}{A}, \ L_A}{\privatekey{T}}\\
@@ -181,3 +181,4 @@
 		\[
 			\believes{B}{\believes{A}{\sharedkey{A}{B}{\combine{n_A}{n_B}}}}\ \ \ \ \ \ \text{\emph{B ottiene key confirmation}}
 		\]
+\clearpage{\pagestyle{empty}\cleardoublepage}
