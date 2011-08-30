@@ -69,7 +69,7 @@ public class Peer {
 					"private" + i + ".key"); 
 			
 			// Un peer e' sia alice che bob contemporaneamente.
-			AliceThread a = new AliceThread(peerCert, caCert, port, kp);
+			AliceThread a = new AliceThread(new Integer(i).toString(), peerCert, caCert, port, kp);
 			BobThread b = new BobThread(peerCert, caCert, port, kp);
 
 		} catch (Exception e) {
