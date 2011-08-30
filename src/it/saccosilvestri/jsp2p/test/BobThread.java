@@ -18,18 +18,20 @@ import java.security.cert.X509Certificate;
 
 public class BobThread extends Thread {
 
-	Socket mySocket;
+	// private Socket mySocket;
 	private int port;
 	private X509Certificate peerCert;
 	private X509Certificate caCert;
 	private KeyPair kp;
+	private CommunicationContainer cc;
 
 	public BobThread(X509Certificate peerCert, X509Certificate caCert,
-			int port, KeyPair kp) {
+			int port, KeyPair kp, CommunicationContainer cc) {
 		this.peerCert = peerCert;
 		this.caCert = caCert;
 		this.kp = kp;
 		this.port = port;
+		this.cc = cc;
 		this.start();
 	}
 
@@ -40,35 +42,35 @@ public class BobThread extends Thread {
 		try {
 			ServerSocket server = new ServerSocket(port);
 			while (true) {
-				mySocket = server.accept();
-				InputStream in = mySocket.getInputStream();
-				byte[] lengthBytes = new byte[1];
-				in.read(lengthBytes, 0, 1);
-				int length = ByteArrayUtility.byteArrayToInt(lengthBytes);
-				byte[] peerIndex = new byte[length];
-				in.read(peerIndex, 0, length);
-				String peerID = new String(peerIndex, "US-ASCII");
-				String namePeer = "CN=Peer" + peerID;
-				SecureCommunication sc = new SecureCommunication(true,
-						mySocket, kp, peerCert, caCert, namePeer);
-				System.out.println("Connesso al peer: " + peerID);
-				try {
-					while (true) {
-						System.out.print(">>");
-						byte[] b = sc.receive();
-						String message = new String(b, "US-ASCII");
-						if (message.equals("quit")) {
-							break;
-						}
-						System.out.println("Ricevuto: "+message);
-					}
-				} catch (SocketException e) {
-					System.out.println(" Socket Exception - "
-							+ e.getMessage());
+				if (cc.connected == false) {
+					cc.communicationSocket = server.accept();
+					InputStream in = cc.communicationSocket.getInputStream();
+					byte[] lengthBytes = new byte[1];
+					in.read(lengthBytes, 0, 1);
+					int length = ByteArrayUtility.byteArrayToInt(lengthBytes);
+					byte[] peerIndex = new byte[length];
+					in.read(peerIndex, 0, length);
+					String peerID = new String(peerIndex, "US-ASCII");
+					String namePeer = "CN=Peer" + peerID;
+					cc.sc = new SecureCommunication(true,
+							cc.communicationSocket, kp, peerCert, caCert,
+							namePeer);
+					cc.connected = true;
+					System.out.println("Connesso al peer: " + peerID);
 				}
-				System.out.println("Disconnesso dal peer: " + peerID);
 				System.out.print(">>");
+				byte[] b = cc.sc.receive();
+				String message = new String(b, "US-ASCII");
+				if (message.equals("quit")) {
+					break;
+				}
+				System.out.println("Ricevuto: " + message);
 			}
+			System.out.println("Disconnesso.");
+			System.out.print(">>");
+		} catch (SocketException e) {
+			System.out.println(" Socket Exception - " + e.getMessage());
+			cc.connected = false;
 		} catch (Exception e) {
 			System.out.println("EXCEPTION: " + e.getClass() + " - "
 					+ e.getMessage());
