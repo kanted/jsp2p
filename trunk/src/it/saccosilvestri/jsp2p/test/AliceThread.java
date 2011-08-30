@@ -47,7 +47,7 @@ public class AliceThread extends Thread {
 			String command = new String();
 			System.out.println("---LISTA DEI COMANDI---");
 			System.out.println("Connessione ad un peer:");
-			System.out.println("connect to [ip:port]");
+			System.out.println("connect to [peerID]@[ip]:[port]");
 			System.out.println("Inviare un messaggio al peer corrente:");
 			System.out.println("send [message]");
 			System.out.println("Disconnessione dal peer corrente:");
@@ -104,7 +104,7 @@ public class AliceThread extends Thread {
 				} else if (command.startsWith("help")) {
 					System.out.println("---HELP---");
 					System.out.println("Connessione ad un peer:");
-					System.out.println("connect to [ip:port]");
+					System.out.println("connect to [peerID]@[ip]:[port]");
 					System.out
 							.println("Inviare un messaggio al peer corrente:");
 					System.out.println("send [message]");
