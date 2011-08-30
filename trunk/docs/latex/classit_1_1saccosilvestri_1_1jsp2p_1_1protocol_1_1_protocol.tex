@@ -1,0 +1,304 @@
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol}{
+\section{it.saccosilvestri.jsp2p.protocol.\-Protocol \-Class \-Reference}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol}\index{it.\-saccosilvestri.\-jsp2p.\-protocol.\-Protocol@{it.\-saccosilvestri.\-jsp2p.\-protocol.\-Protocol}}
+}
+
+
+\-Inheritance diagram for it.saccosilvestri.jsp2p.protocol.\-Protocol\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a41b3f8af2182ce1d95ac4622c689110c}{\-Protocol} (\-Socket cs, \-Key\-Pair kp, \-X509\-Certificate c, \-Public\-Key capk, \-String pn)  throws I\-O\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Costruttore della classe base da cui derivano \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_alice_protocol}{\-Alice\-Protocol} e \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_bob_protocol}{\-Bob\-Protocol}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Protected \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6422be451c4fbb04daf3a9095b602983}{send\-My\-Certificate} ()  throws I\-O\-Exception, 			\-Certificate\-Encoding\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Invia il certificato del peer. \end{DoxyCompactList}\item 
+\-Public\-Key \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6628dda63e060c54636d853d6ddca302}{receive\-And\-Check\-Certificate} ()  throws Certificate\-Exception, No\-Such\-Provider\-Exception, 			\-Invalid\-Key\-Exception, No\-Such\-Algorithm\-Exception, Signature\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Riceve un certificato e ne controlla validita' e scadenza. \end{DoxyCompactList}\item 
+\-Public\-Key \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a885c549e3b4144c1e8b3bb0d625ab470}{receive\-And\-Check\-Certificate\-With\-Name\-Authentication} (\-String \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6dcf1366f63023a80091ab663ecd3060}{peer\-Name})  throws Certificate\-Exception, No\-Such\-Provider\-Exception, 			\-Invalid\-Key\-Exception, No\-Such\-Algorithm\-Exception, Signature\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Riceve un certificato e ne controlla validita' e scadenza. \end{DoxyCompactList}\item 
+void \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_aa3b2ceec3724182847671516bdcff638}{send} (byte\mbox{[}$\,$\mbox{]} to\-Send)  throws I\-O\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Invia un array di byte. \end{DoxyCompactList}\item 
+byte\mbox{[}$\,$\mbox{]} \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a29c231a6d7e79cf496e3f7f20cbdcbf3}{read\-Nonce} ()  throws I\-O\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Legge un nonce. \end{DoxyCompactList}\item 
+\-Key \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_ac851b36e727125969fce606dfc047f23}{get\-Private} ()
+\item 
+\-Secret\-Key\-Spec \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a3fe429bdbe79c9b734d578071727cdfb}{session\-Key} (byte\mbox{[}$\,$\mbox{]} nonce\-A, byte\mbox{[}$\,$\mbox{]} nonce\-B)  throws No\-Such\-Algorithm\-Exception, No\-Such\-Provider\-Exception 
+\begin{DoxyCompactList}\small\item\em \-Genera la chiave di sessione \char`\"{}mescolando\char`\"{} nonce\-A e nonce\-B. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Protected \-Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\-String \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6dcf1366f63023a80091ab663ecd3060}{peer\-Name}
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\begin{DoxyAuthor}{\-Author}
+\-Sacco \-Cosimo \& \-Silvestri \-Davide 
+\end{DoxyAuthor}
+
+
+\subsection{\-Constructor \& \-Destructor \-Documentation}
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a41b3f8af2182ce1d95ac4622c689110c}{
+\index{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}!\-Protocol@{\-Protocol}}
+\index{\-Protocol@{\-Protocol}!it::saccosilvestri::jsp2p::protocol::Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}}
+\subsubsection[{\-Protocol}]{\setlength{\rightskip}{0pt plus 5cm}it.\-saccosilvestri.\-jsp2p.\-protocol.\-Protocol.\-Protocol (
+\begin{DoxyParamCaption}
+\item[{\-Socket}]{cs, }
+\item[{\-Key\-Pair}]{kp, }
+\item[{\-X509\-Certificate}]{c, }
+\item[{\-Public\-Key}]{capk, }
+\item[{\-String}]{pn}
+\end{DoxyParamCaption}
+)  throws \-I\-O\-Exception }}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a41b3f8af2182ce1d95ac4622c689110c}
+
+
+\-Costruttore della classe base da cui derivano \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_alice_protocol}{\-Alice\-Protocol} e \hyperlink{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_bob_protocol}{\-Bob\-Protocol}. 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em cs} & socket su cui effettuare lo scambio di messaggi del protocollo. \\
+\hline
+{\em kp} & chiave pubblica e chiave privata del peer. \\
+\hline
+{\em c} & certificato del peer. \\
+\hline
+{\em capk} & chiave pubblica della \-Certification \-Authority. \\
+\hline
+{\em pn} & identificatore del peer con il quale ci si aspetta di comunicare. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{\-Member \-Function \-Documentation}
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_ac851b36e727125969fce606dfc047f23}{
+\index{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}!get\-Private@{get\-Private}}
+\index{get\-Private@{get\-Private}!it::saccosilvestri::jsp2p::protocol::Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}}
+\subsubsection[{get\-Private}]{\setlength{\rightskip}{0pt plus 5cm}\-Key it.\-saccosilvestri.\-jsp2p.\-protocol.\-Protocol.\-get\-Private (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_ac851b36e727125969fce606dfc047f23}
+
+
+\-Here is the caller graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_ac851b36e727125969fce606dfc047f23_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a29c231a6d7e79cf496e3f7f20cbdcbf3}{
+\index{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}!read\-Nonce@{read\-Nonce}}
+\index{read\-Nonce@{read\-Nonce}!it::saccosilvestri::jsp2p::protocol::Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}}
+\subsubsection[{read\-Nonce}]{\setlength{\rightskip}{0pt plus 5cm}byte \mbox{[}$\,$\mbox{]} it.\-saccosilvestri.\-jsp2p.\-protocol.\-Protocol.\-read\-Nonce (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)  throws \-I\-O\-Exception \hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a29c231a6d7e79cf496e3f7f20cbdcbf3}
+
+
+\-Legge un nonce. 
+
+
+
+\-Here is the call graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a29c231a6d7e79cf496e3f7f20cbdcbf3_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+\-Here is the caller graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a29c231a6d7e79cf496e3f7f20cbdcbf3_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6628dda63e060c54636d853d6ddca302}{
+\index{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}!receive\-And\-Check\-Certificate@{receive\-And\-Check\-Certificate}}
+\index{receive\-And\-Check\-Certificate@{receive\-And\-Check\-Certificate}!it::saccosilvestri::jsp2p::protocol::Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}}
+\subsubsection[{receive\-And\-Check\-Certificate}]{\setlength{\rightskip}{0pt plus 5cm}\-Public\-Key it.\-saccosilvestri.\-jsp2p.\-protocol.\-Protocol.\-receive\-And\-Check\-Certificate (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)  throws \-Certificate\-Exception, \-No\-Such\-Provider\-Exception, 			\-Invalid\-Key\-Exception, \-No\-Such\-Algorithm\-Exception, \-Signature\-Exception \hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6628dda63e060c54636d853d6ddca302}
+
+
+\-Riceve un certificato e ne controlla validita' e scadenza. 
+
+
+
+\-Here is the call graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6628dda63e060c54636d853d6ddca302_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+\-Here is the caller graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6628dda63e060c54636d853d6ddca302_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a885c549e3b4144c1e8b3bb0d625ab470}{
+\index{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}!receive\-And\-Check\-Certificate\-With\-Name\-Authentication@{receive\-And\-Check\-Certificate\-With\-Name\-Authentication}}
+\index{receive\-And\-Check\-Certificate\-With\-Name\-Authentication@{receive\-And\-Check\-Certificate\-With\-Name\-Authentication}!it::saccosilvestri::jsp2p::protocol::Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}}
+\subsubsection[{receive\-And\-Check\-Certificate\-With\-Name\-Authentication}]{\setlength{\rightskip}{0pt plus 5cm}\-Public\-Key it.\-saccosilvestri.\-jsp2p.\-protocol.\-Protocol.\-receive\-And\-Check\-Certificate\-With\-Name\-Authentication (
+\begin{DoxyParamCaption}
+\item[{\-String}]{peer\-Name}
+\end{DoxyParamCaption}
+)  throws \-Certificate\-Exception, \-No\-Such\-Provider\-Exception, 			\-Invalid\-Key\-Exception, \-No\-Such\-Algorithm\-Exception, \-Signature\-Exception \hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a885c549e3b4144c1e8b3bb0d625ab470}
+
+
+\-Riceve un certificato e ne controlla validita' e scadenza. 
+
+\-Inoltre si accerta che il certificato sia stato rilasciato al peer il cui identificatore e' passato come argomento. 
+
+\-Here is the call graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a885c549e3b4144c1e8b3bb0d625ab470_cgraph}
+\end{center}
+\end{figure}
+
+
+
+
+\-Here is the caller graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a885c549e3b4144c1e8b3bb0d625ab470_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_aa3b2ceec3724182847671516bdcff638}{
+\index{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}!send@{send}}
+\index{send@{send}!it::saccosilvestri::jsp2p::protocol::Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}}
+\subsubsection[{send}]{\setlength{\rightskip}{0pt plus 5cm}void it.\-saccosilvestri.\-jsp2p.\-protocol.\-Protocol.\-send (
+\begin{DoxyParamCaption}
+\item[{byte\mbox{[}$\,$\mbox{]}}]{to\-Send}
+\end{DoxyParamCaption}
+)  throws \-I\-O\-Exception \hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_aa3b2ceec3724182847671516bdcff638}
+
+
+\-Invia un array di byte. 
+
+
+
+\-Here is the caller graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_aa3b2ceec3724182847671516bdcff638_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6422be451c4fbb04daf3a9095b602983}{
+\index{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}!send\-My\-Certificate@{send\-My\-Certificate}}
+\index{send\-My\-Certificate@{send\-My\-Certificate}!it::saccosilvestri::jsp2p::protocol::Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}}
+\subsubsection[{send\-My\-Certificate}]{\setlength{\rightskip}{0pt plus 5cm}void it.\-saccosilvestri.\-jsp2p.\-protocol.\-Protocol.\-send\-My\-Certificate (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)  throws \-I\-O\-Exception, 			\-Certificate\-Encoding\-Exception \hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6422be451c4fbb04daf3a9095b602983}
+
+
+\-Invia il certificato del peer. 
+
+
+
+\-Here is the caller graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6422be451c4fbb04daf3a9095b602983_icgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a3fe429bdbe79c9b734d578071727cdfb}{
+\index{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}!session\-Key@{session\-Key}}
+\index{session\-Key@{session\-Key}!it::saccosilvestri::jsp2p::protocol::Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}}
+\subsubsection[{session\-Key}]{\setlength{\rightskip}{0pt plus 5cm}\-Secret\-Key\-Spec it.\-saccosilvestri.\-jsp2p.\-protocol.\-Protocol.\-session\-Key (
+\begin{DoxyParamCaption}
+\item[{byte\mbox{[}$\,$\mbox{]}}]{nonce\-A, }
+\item[{byte\mbox{[}$\,$\mbox{]}}]{nonce\-B}
+\end{DoxyParamCaption}
+)  throws \-No\-Such\-Algorithm\-Exception, \-No\-Such\-Provider\-Exception \hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a3fe429bdbe79c9b734d578071727cdfb}
+
+
+\-Genera la chiave di sessione \char`\"{}mescolando\char`\"{} nonce\-A e nonce\-B. 
+
+\-In particolare viene calcolato y = h(nonce\-A$|$$|$nonce\-B), dove h e' una funzione hash (in questo caso \-S\-H\-A-\/1), e vengono quindi presi i primi 128 bit di y per generare una chiave di sessione per l'algoritmo \-A\-E\-S. 
+
+\-Here is the caller graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a3fe429bdbe79c9b734d578071727cdfb_icgraph}
+\end{center}
+\end{figure}
+
+
+
+
+\subsection{\-Member \-Data \-Documentation}
+\hypertarget{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6dcf1366f63023a80091ab663ecd3060}{
+\index{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}!peer\-Name@{peer\-Name}}
+\index{peer\-Name@{peer\-Name}!it::saccosilvestri::jsp2p::protocol::Protocol@{it\-::saccosilvestri\-::jsp2p\-::protocol\-::\-Protocol}}
+\subsubsection[{peer\-Name}]{\setlength{\rightskip}{0pt plus 5cm}\-String {\bf it.\-saccosilvestri.\-jsp2p.\-protocol.\-Protocol.\-peer\-Name}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol_a6dcf1366f63023a80091ab663ecd3060}
+
+
+\-The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+src/it/saccosilvestri/jsp2p/protocol/\hyperlink{_protocol_8java}{\-Protocol.\-java}\end{DoxyCompactItemize}

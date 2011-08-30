@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_configuration_file_utility.html#a0358e912d7a2e9d8f9ffe6f94985b9ee" title="Legge il file di configurazione passato come argomento e ritorna il valore di NUM_PEER in esso conten..." alt="" coords="336,5,749,32"/>
+<area shape="rect" id="node5" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1certification_authority_1_1_certification_authority.html#acac40170eef762342866fedbee961113" title="Genera la chiava pubblica, la chiave privata ed il certificato per il peer i&#45;esimo, firmato dalla CA." alt="" coords="291,56,795,83"/>
+<area shape="rect" id="node7" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility.html#ae7d954ab296416a70fad0d335d1168f2" title="Controlla validita&#39; e scandenza del certificato." alt="" coords="843,31,1277,57"/>
+<area shape="rect" id="node11" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_file_utility.html#aab13a11d048dd52812c8b3b5c9193ffe" title="Salva una chiave su file." alt="" coords="897,81,1223,108"/>
+<area shape="rect" id="node9" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility.html#aab387b79ca2c81278dd91c33fd4419cf" title="Controlla validita&#39; e scandenza del certificato." alt="" coords="1325,31,1699,57"/>
+</map>

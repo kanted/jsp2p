@@ -1,0 +1,10 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol.html#a6628dda63e060c54636d853d6ddca302" title="Riceve un certificato e ne controlla validita&#39; e scadenza." alt="" coords="376,5,787,32"/>
+<area shape="rect" id="node7" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol.html#a6422be451c4fbb04daf3a9095b602983" title="Invia il certificato del peer." alt="" coords="403,56,759,83"/>
+<area shape="rect" id="node9" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol.html#a29c231a6d7e79cf496e3f7f20cbdcbf3" title="Legge un nonce." alt="" coords="424,107,739,133"/>
+<area shape="rect" id="node13" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol.html#ac851b36e727125969fce606dfc047f23" title="it.saccosilvestri.jsp2p.protocol.Protocol.getPrivate" alt="" coords="427,157,736,184"/>
+<area shape="rect" id="node15" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol.html#aa3b2ceec3724182847671516bdcff638" title="Invia un array di byte." alt="" coords="441,208,721,235"/>
+<area shape="rect" id="node17" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol.html#a3fe429bdbe79c9b734d578071727cdfb" title="Genera la chiave di sessione &quot;mescolando&quot; nonceA e nonceB." alt="" coords="421,259,741,285"/>
+<area shape="rect" id="node5" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_certificate_utility.html#aab387b79ca2c81278dd91c33fd4419cf" title="Controlla validita&#39; e scandenza del certificato." alt="" coords="835,5,1208,32"/>
+<area shape="rect" id="node11" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1utility_1_1_byte_array_utility.html#a595f511cfd7faf60b35a75c1900a9e2d" title="Converte un array di byte nell&#39;intero corrispondente." alt="" coords="840,107,1203,133"/>
+</map>

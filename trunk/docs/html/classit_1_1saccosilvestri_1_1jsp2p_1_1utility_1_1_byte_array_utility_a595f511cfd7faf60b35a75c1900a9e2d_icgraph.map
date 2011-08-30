@@ -1,0 +1,8 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_protocol.html#a29c231a6d7e79cf496e3f7f20cbdcbf3" title="Legge un nonce." alt="" coords="487,56,801,83"/>
+<area shape="rect" id="node12" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication.html#a4bbde1476c9e908ee569b00d0e0f106c" title="Riceve un array di byte." alt="" coords="416,107,872,133"/>
+<area shape="rect" id="node5" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_alice_protocol.html#a60cbfe1906bfbd7b95a7d21cec977843" title="Protocollo per lo scambio della chiave di sessione." alt="" coords="921,5,1247,32"/>
+<area shape="rect" id="node9" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1protocol_1_1_bob_protocol.html#af5e630fb51c6acf73adc5cd5a76017a2" title="Protocollo per lo scambio della chiave di sessione." alt="" coords="923,56,1245,83"/>
+<area shape="rect" id="node7" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1securecommunication_1_1_secure_communication.html#a4007043b898d6773ed536da026adea5f" title="Il costruttore inizializza il logger ed esegue la parte di protocollo che gli compete decidendo in ba..." alt="" coords="1296,31,1843,57"/>
+<area shape="rect" id="node14" href="$classit_1_1saccosilvestri_1_1jsp2p_1_1test_1_1_bob_thread.html#ae9866d921fa3d15081060df6c9e873e9" title="Riceve messaggi dagli altri peer." alt="" coords="954,107,1214,133"/>
+</map>
