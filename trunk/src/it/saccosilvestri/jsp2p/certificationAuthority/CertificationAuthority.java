@@ -29,6 +29,7 @@ import org.bouncycastle.openssl.PEMWriter;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
 /**
+* @brief Servizio per la creazione dei certificati e delle chiavi pubbliche e private per i peer.
 * @author Sacco Cosimo & Silvestri Davide
 */
 

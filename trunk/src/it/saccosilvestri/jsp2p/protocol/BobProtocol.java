@@ -35,6 +35,7 @@ import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
+* @brief Parte del protocollo che compete al peer che riceve una richiesta di comunicazione.
 * @author Sacco Cosimo & Silvestri Davide
 */
 
@@ -60,7 +61,7 @@ public class BobProtocol extends Protocol {
 
 		// (2) Invio del certificato del peer
 		sendMyCertificate();
-		LogManager.currentLogger.info("BOB -- Invio il certificato...");
+		LogManager.currentLogger.info("BOB -- Sending certificate...");
 
 		// (3) Ricezione di nA
 		LogManager.currentLogger.info("BOB -- Receiving nonce A");
