@@ -38,6 +38,7 @@ import javax.crypto.spec.DHParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
+* @brief Parte del protocollo che compete al peer che richiede la comunicazione.
 * @author Sacco Cosimo & Silvestri Davide
 */
 
@@ -59,7 +60,7 @@ public class AliceProtocol extends Protocol {
 
 		// (1) Invio del certificato del peer
 		sendMyCertificate();
-		LogManager.currentLogger.info("ALICE -- Invio del certificato...");
+		LogManager.currentLogger.info("ALICE -- Sending certificate...");
 
 		// (2) Ricezione del certificato del peer, verifica ed estrazione della
 		// chiave pubblica.

@@ -32,6 +32,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
+* @brief Maschera all'utente il protocollo di scambio della chiave di sessione.
 * @author Sacco Cosimo & Silvestri Davide
 */
 

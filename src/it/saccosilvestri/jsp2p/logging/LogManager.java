@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
+* @brief Servizio di logging.
 * @author Sacco Cosimo & Silvestri Davide
 */
 
