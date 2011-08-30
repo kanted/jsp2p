@@ -4,7 +4,9 @@ import it.saccosilvestri.jsp2p.securecommunication.SecureCommunication;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.KeyPair;
@@ -19,13 +21,15 @@ import java.security.cert.X509Certificate;
 public class AliceThread extends Thread {
 
 	Socket mySocket;
+	private String peerID;
 	private int port;
 	private X509Certificate peerCert;
 	private X509Certificate caCert;
 	private KeyPair kp;
 
-	public AliceThread(X509Certificate peerCert, X509Certificate caCert,
+	public AliceThread(String peerID, X509Certificate peerCert, X509Certificate caCert,
 			int port, KeyPair kp) {
+		this.peerID = peerID;
 		this.peerCert = peerCert;
 		this.caCert = caCert;
 		this.kp = kp;
@@ -42,19 +46,24 @@ public class AliceThread extends Thread {
 	public void run() {
 		try {
 
-			SecureCommunication sc;
+			SecureCommunication sc = null;
 			String command = new String();
-			System.out.println("Sintassi per inviare un messaggio:");
-			System.out.println("send [message] to [peerID@ip:port]");
+			System.out.println("---LISTA DEI COMANDI---");
+			System.out.println("Connessione ad un peer:");
+			System.out.println("connect to [ip:port]");
+			System.out.println("Inviare un messaggio al peer corrente:");
+			System.out.println("send [message]");
+			System.out.println("Disconnessione dal peer corrente:");
+			System.out.println("disconnect");
+			System.out.println("---FINE---");
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					System.in));
 			while (true) {
 				System.out.print(">>");
 				command = br.readLine();
-				if (command.startsWith("send") && command.contains("to")
+				if (command.startsWith("connect to")
 						&& command.contains("@") && command.contains(":")) {
 					int toIndex = command.indexOf("to");
-					String message = command.substring(4, toIndex);
 					int atIndex = command.indexOf("@");
 					String peerID = command.substring(toIndex + 3, atIndex);
 					int numPeer = Integer.parseInt(peerID);
@@ -64,16 +73,45 @@ public class AliceThread extends Thread {
 					String portString = indirizzo.substring(colonIndex + 1);
 					int port = Integer.parseInt(portString);
 					mySocket = new Socket(ip, port);
+					OutputStream out = mySocket.getOutputStream();
+					byte[] peerIDToSend = peerID.getBytes();
+					byte length = (new Integer(peerIDToSend.length)).byteValue();
+					out.write(length);
+					out.write(peerIDToSend);
+					out.flush();
 					String peerName = new String("CN=Peer" + numPeer);
 					sc = new SecureCommunication(false, mySocket, kp, peerCert,
 							caCert, peerName);
+					System.out.println("Connesso al peer: "+numPeer);
+				}
+				else if (command.startsWith("send")){
+					if(sc!=null){
+					String message = command.substring(5);
 					sc.send(message.getBytes());
+					}
+					else 
+						System.out.println("Nessuna connessione attiva.");
+				}
+				else if (command.startsWith("disconnect")){
+					if(sc!=null){
+						sc.send("quit".getBytes());
+						sc = null;
+					}
+					else 
+						System.out.println("Nessuna connessione attiva.");
 				}
 				else if (command.startsWith("help")) {
 					System.out.println("---HELP---");
-					System.out.println("Sintassi per inviare un messaggio:");
-					System.out.println("send [messagge] to [ip:port]");
+					System.out.println("Connessione ad un peer:");
+					System.out.println("connect to [ip:port]");
+					System.out.println("Inviare un messaggio al peer corrente:");
+					System.out.println("send [message]");
+					System.out.println("Disconnessione dal peer corrente:");
+					System.out.println("disconnect");
 					System.out.println("---END---");
+				}
+				else {
+					System.out.println("Comando non riconosciuto");
 				}
 			}
 

@@ -68,12 +68,12 @@ public class SecureCommunication {
 	public byte[] receive() throws InvalidKeyException,
 			IllegalBlockSizeException, BadPaddingException, IOException {
 		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
-		LogManager.currentLogger.info("Decrypting with session key...");
 		byte[] lengthBytes = new byte[4];
 		in.read(lengthBytes, 0, 1);
 		int length = ByteArrayUtility.byteArrayToInt(lengthBytes);
 		byte[] ciphredText = new byte[length];
 		in.read(ciphredText, 0, length);
+		LogManager.currentLogger.info("Decrypting with session key...");
 		byte[] messageToBeReceived = cipher.doFinal(ciphredText);
 		return messageToBeReceived;
 	}
