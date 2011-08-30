@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.11 (TeX Live 2010/Arch Linux) (format=pdflatex 2011.5.6)  29 AUG 2011 19:37
+This is pdfTeX, Version 3.1415926-1.40.11 (TeX Live 2010/Arch Linux) (format=pdflatex 2011.5.6)  30 AUG 2011 10:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -693,41 +693,68 @@ Capitolo 1.
 [1
 
 
-]) (./analisi.tex [2]
+]) (./ca.tex [2]
 Capitolo 2.
-[3
+) (./analisi.tex [3
 
-] [4] [5] [6]) [7] (./sicurezza.aux) ) 
+] [4
+
+]
+Capitolo 3.
+[5] [6] [7] [8]) (./installazione.tex [9] [10
+
+]
+Capitolo 4.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 4.
+(/usr/share/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 4.
+
+Overfull \hbox (9.89465pt too wide) in paragraph at lines 11--13
+[]\OT1/cmr/m/n/10.95 modificare il fi-le []\OT1/cmtt/m/n/10.95 <JAVA_HOME>/jre/
+lib/security/java.security
+ []
+
+
+Overfull \hbox (109.75674pt too wide) in paragraph at lines 18--19
+ []\OT1/cmtt/m/n/10.95 security.provider.\OT1/cmr/m/it/10.95 n+1[]\OT1/cmtt/m/n
+/10.95 =org.bouncycastle.jce.provider.BouncyCastleProvider 
+ []
+
+) [11] (./sicurezza.aux) ) 
 Here is how much of TeX's memory you used:
- 5438 strings out of 493772
- 73147 string characters out of 3150565
+ 5463 strings out of 493772
+ 73515 string characters out of 3150565
  144408 words of memory out of 3000000
- 8592 multiletter control sequences out of 15000+200000
- 18109 words of font info for 69 fonts, out of 3000000 for 9000
+ 8607 multiletter control sequences out of 15000+200000
+ 18277 words of font info for 70 fonts, out of 3000000 for 9000
  715 hyphenation exceptions out of 8191
- 38i,19n,43p,258b,219s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mbx12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></
-usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmmi12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmm
-i6.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/sh
-are/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmr6.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/
-share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/share/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmsy6.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><
-/usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/tex
-mf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on sicurezza.pdf (11 pages, 224158 bytes).
+ 38i,19n,43p,258b,326s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmbx10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></
+usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/share/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/texmf-dist/font
+s/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mmi12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr
+/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmr12.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></
+usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmsl10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pf
+b></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texmf-dist/font
+s/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-dist/fonts/type1/public
+/amsfonts/symbols/msam10.pfb>
+Output written on sicurezza.pdf (15 pages, 244028 bytes).
 PDF statistics:
- 124 PDF objects out of 1000 (max. 8388607)
- 89 compressed objects within 1 object stream
+ 142 PDF objects out of 1000 (max. 8388607)
+ 101 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
