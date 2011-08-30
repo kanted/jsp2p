@@ -59,9 +59,9 @@ public class BobThread extends Thread {
 					if (message.equals("quit")) {
 						break;
 					}
-					System.out.println("Ricevuto: " + message);
+					System.out.println("Message received: " + message);
 				}
-				System.out.println("Disconnesso.");
+				System.out.println("Disconnected.");
 				System.out.print(">>");
 			}
 		} catch (Exception e) {
