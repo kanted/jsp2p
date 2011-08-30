@@ -66,13 +66,10 @@ public class AliceProtocol extends Protocol {
 		PublicKey pKey = receiveAndCheckCertificateWithNameAuthentication(peerName);
 
 		// (3) Invio di un nonce cifrato con pKey
-		// Create a secure random number generator
 		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-		// Get 1024 random bits
 		byte[] nonceA = new byte[64];
 		sr.nextBytes(nonceA);
 		Cipher cipher = Cipher.getInstance("RSA", "BC");
-		// encrypt the plaintext using the public key
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		LogManager.currentLogger.info("ALICE -- Sending nonce A");
 		byte[] cipherText = cipher.doFinal(nonceA);

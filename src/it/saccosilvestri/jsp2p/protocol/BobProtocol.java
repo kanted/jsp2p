@@ -71,13 +71,10 @@ public class BobProtocol extends Protocol {
 		nonceA = cipher.doFinal(nA);
 
 		// (4) Invio di (nA,nB) cifrati con la chiave pubblica di A
-		// Create a secure random number generator
 		SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-		// Get 64 random bits
 		LogManager.currentLogger.info("BOB -- Sending nonce A and nonce B");
 		byte[] nonceB = new byte[64];
 		sr.nextBytes(nonceB);
-		// encrypt the plaintext using the public key
 		cipher.init(Cipher.ENCRYPT_MODE, pKey);
 		byte[] ciphredA = cipher.doFinal(nonceA);
 		send(ciphredA);
