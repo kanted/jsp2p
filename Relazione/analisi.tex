@@ -51,6 +51,8 @@
 			{\bf freshness} &  $\believes{A}{\fresh{n_A}}$ & $\believes{B}{\fresh{n_B}}$\\
 			              \ &  $\believes{A}{\fresh{L_B}}$ & $\believes{B}{\fresh{L_A}}$\\
 			\hline
+			{\bf secrets}   &  $\believes{A}{\sharedsecret{A}{B}{n_A}}$ & $\believes{B}{\sharedsecret{A}{B}{n_B}}$\\
+			\hline
 		\end{tabular}
 	\end{center}
 \section{Analisi dei \emph{beliefs}}
@@ -105,10 +107,11 @@
 		L' applicazione delle regole di inferenza non porta, su $B$, alla realizzazione di alcun nuovo belief.
 		Tuttavia, poiché l' unica entità in grado di leggere il nonce $n_A$ è $B$\footnote{$B$, infatti, è l' unica
 		entità a possedere la chiave $\privatekey{B}$ necessaria per decifrare i messaggi cifrati con $\publickey{B}$.},
-		$A$ può ritenere che
+		l' ipotesi
 		\[
 			\believes{A}{\sharedsecret{A}{B}{n_A}}
 		\]
+		risulta essere ben fondata.
 	\subsection{Messaggio $M4$}
 	Messaggio $M4$:
 		\[
@@ -118,7 +121,11 @@
 		\]
 		L' unica entità in grado di leggere il messaggio $M4$ è $A$\footnote{$A$, infatti, è l' unica
 		entità a possedere la chiave $\privatekey{A}$ necessaria per decifrare i messaggi cifrati con $\publickey{A}$.}.
-		Pertanto, $B$ può ritenere che
+		Pertanto, poiché l' ipotesi
+		\[
+			\believes{B}{\sharedsecret{A}{B}{n_B}}
+		\]
+		risulta ben fondata, $B$ può ritenere che
 		\[
 			\believes{B}{\sharedkey{A}{B}{\combine{n_A}{n_B}}}\ \ \ \ \ \ \text{\emph{B ottiene key authentication}}
 		\]
