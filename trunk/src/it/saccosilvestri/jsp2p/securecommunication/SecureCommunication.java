@@ -134,6 +134,7 @@ public class SecureCommunication {
 			SignatureException, NoSuchPaddingException,
 			IllegalBlockSizeException, BadPaddingException,
 			InvalidKeySpecException, IOException, BadNonceException, UnreachableLoggerConfigurationFileException {
+		
 		LogManager.initialization("logger.conf");
 		LogManager.currentLogger.info("STARTING secure communication.");
 		clientSocket = socket;
