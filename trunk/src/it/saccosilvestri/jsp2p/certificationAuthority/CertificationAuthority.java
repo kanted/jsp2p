@@ -36,7 +36,7 @@ import org.bouncycastle.x509.X509V3CertificateGenerator;
 public class CertificationAuthority {
 
 	private KeyPair pair;
-	X509Certificate caCert;
+	private X509Certificate caCert;
 
 	 /**
      * Genera il certificato per la CA, firmato dalla CA stessa.
@@ -76,13 +76,13 @@ public class CertificationAuthority {
 		BigInteger serialNumber = BigInteger
 				.valueOf(System.currentTimeMillis()); 
 		PrivateKey caKey = pair.getPrivate(); 
-		// Building keys
+		
 		LogManager.currentLogger.info("Building keys...");
 		KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA", "BC");
 		keyPairGen.initialize(1024);
 		KeyPair keyPair = keyPairGen.generateKeyPair(); 
+		
 		X509V3CertificateGenerator certGen = new X509V3CertificateGenerator();
-
 		certGen.setSerialNumber(serialNumber);
 		certGen.setIssuerDN((X509Name) caCert.getIssuerDN());
 		certGen.setNotBefore(startDate);
