@@ -40,6 +40,8 @@ import javax.crypto.spec.SecretKeySpec;
 */
 
 public class BobProtocol extends Protocol {
+	
+	int alicePeer;
 
 	public BobProtocol(Socket cs, KeyPair kp, X509Certificate c,
 			PublicKey capk, String peerName) throws IOException {
@@ -57,7 +59,7 @@ public class BobProtocol extends Protocol {
 
 		// (1) Ricezione del certificato del peer, verifica ed estrazione della
 		// chiave pubblica.
-		PublicKey pKey = receiveAndCheckCertificateWithNameAuthentication(peerName);
+		PublicKey pKey = receiveAndCheckCertificate();
 
 		// (2) Invio del certificato del peer
 		sendMyCertificate();
