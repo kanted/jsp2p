@@ -111,11 +111,11 @@ public class SecureCommunication {
 	 */
 	public byte[] checkHash(byte[] messageReceived) throws NoSuchAlgorithmException, NoSuchProviderException, BadHashCodeException, UnsupportedEncodingException {
 		MessageDigest sha = MessageDigest.getInstance("SHA-1", "BC");
-		byte[] message = new byte[messageReceived.length - 16];
-		System.arraycopy(messageReceived, 0, message, 0, messageReceived.length - 16);
+		byte[] message = new byte[messageReceived.length - 20];
+		System.arraycopy(messageReceived, 0, message, 0, messageReceived.length - 20);
 		byte[] digesta  = sha.digest(message);
-		byte[] digestb = new byte [16];
-		System.arraycopy(messageReceived, messageReceived.length - 16, digestb, 0, 16);
+		byte[] digestb = new byte [20];
+		System.arraycopy(messageReceived, messageReceived.length - 20, digestb, 0, 20);
 		if(!MessageDigest.isEqual(digesta, digestb))
 			throw new BadHashCodeException();
 		return message;
