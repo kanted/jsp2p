@@ -45,7 +45,7 @@ public class SecureCommunication {
 	InputStream in;
 	OutputStream out;
 	private Cipher cipher;
-	private SecretKeySpec sessionKeySpec;
+	private SecretKeySpec sessionKey;
 
 	/**
 	 * Invia un array di byte.
@@ -58,7 +58,7 @@ public class SecureCommunication {
 			IOException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, NoSuchProviderException {
 		LogManager.currentLogger.info("Calculating message hash...");
 		byte[] message = appendHash(messageToBeSent);
-		cipher.init(Cipher.ENCRYPT_MODE, sessionKeySpec);
+		cipher.init(Cipher.ENCRYPT_MODE, sessionKey);
 		LogManager.currentLogger.info("Encrypting with session key...");
 		byte[] ciphredText = cipher.doFinal(message);
 		byte length = (new Integer(ciphredText.length)).byteValue();
@@ -78,7 +78,7 @@ public class SecureCommunication {
 	 */
 	public byte[] receive() throws InvalidKeyException,
 			IllegalBlockSizeException, BadPaddingException, IOException, NoSuchAlgorithmException, NoSuchProviderException, BadHashCodeException {
-		cipher.init(Cipher.DECRYPT_MODE, sessionKeySpec);
+		cipher.init(Cipher.DECRYPT_MODE, sessionKey);
 		byte[] lengthBytes = new byte[4];
 		in.read(lengthBytes, 0, 1);
 		LogManager.currentLogger.info("Receiving message...");
@@ -148,11 +148,11 @@ public class SecureCommunication {
 		if (!passive) {
 			AliceProtocol ap = new AliceProtocol(clientSocket, keyPair,
 					peerCertificate, CAPublicKey, peerName);
-			sessionKeySpec = ap.protocol();
+			sessionKey = ap.protocol();
 		} else {
 			BobProtocol bp = new BobProtocol(clientSocket, keyPair,
 					peerCertificate, CAPublicKey, peerName);
-			sessionKeySpec = bp.protocol();
+			sessionKey = bp.protocol();
 		}
 
 		LogManager.currentLogger.info("Session key established.");
