@@ -42,8 +42,8 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecureCommunication {
 
 	private Socket clientSocket;
-	InputStream in;
-	OutputStream out;
+	private InputStream in;
+	private OutputStream out;
 	private Cipher cipher;
 	private SecretKeySpec sessionKey;
 
