@@ -98,12 +98,10 @@ public class SecureCommunication {
 	 */
 	public byte[] appendHash(byte[] messageToBeSent) throws NoSuchAlgorithmException, NoSuchProviderException, UnsupportedEncodingException {
 		MessageDigest sha = MessageDigest.getInstance("SHA-1", "BC");
-		byte[] separator = "||".getBytes();
 		byte[] hash  = sha.digest(messageToBeSent);
-		byte[] message = new byte[messageToBeSent.length + hash.length + separator.length];
+		byte[] message = new byte[messageToBeSent.length + hash.length];
 		System.arraycopy(messageToBeSent, 0, message, 0, messageToBeSent.length);
-		System.arraycopy(separator, 0, message, messageToBeSent.length, separator.length);
-		System.arraycopy(hash, 0, message, messageToBeSent.length+separator.length, hash.length);
+		System.arraycopy(hash, 0, message, messageToBeSent.length, hash.length);
 		return message;
 	}
 	
@@ -112,14 +110,12 @@ public class SecureCommunication {
 	 * corrisponda all'hash del messaggio stesso.
 	 */
 	public byte[] checkHash(byte[] messageReceived) throws NoSuchAlgorithmException, NoSuchProviderException, BadHashCodeException, UnsupportedEncodingException {
-		String messageReceivedString = new String(messageReceived, "US-ASCII");
-		int index = messageReceivedString.indexOf("||") + 2;
 		MessageDigest sha = MessageDigest.getInstance("SHA-1", "BC");
-		byte[] message = new byte[index-2];
-		System.arraycopy(messageReceived, 0, message, 0, index-2);
+		byte[] message = new byte[messageReceived.length - 16];
+		System.arraycopy(messageReceived, 0, message, 0, messageReceived.length - 16);
 		byte[] digesta  = sha.digest(message);
-		byte[] digestb = new byte [messageReceived.length - index];
-		System.arraycopy(messageReceived, index, digestb, 0, messageReceived.length - index);
+		byte[] digestb = new byte [16];
+		System.arraycopy(messageReceived, messageReceived.length - 16, digestb, 0, 16);
 		if(!MessageDigest.isEqual(digesta, digestb))
 			throw new BadHashCodeException();
 		return message;
