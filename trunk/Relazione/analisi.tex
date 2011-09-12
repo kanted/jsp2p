@@ -59,8 +59,6 @@
 	Procediamo, ora, con l' analisi dei singoli messaggi. Partendo dalle ipotesi esposte nella sezione
 	\ref{sec:ipotesi} e applicando le \emph{regole di inferenza} della logica BAN, ciascuna parte può ampliare
 	l' insieme dei propri \emph{beliefs}.
-	Se, tra i beliefs finali, compaiono quelli elencati nella sezione \ref{sec:beliefs},
-	allora possiamo affermare che il protocollo esposto è corretto.
 	\subsection{Messaggio $M1$}
 		Messaggio $M1$:
 		\[
@@ -73,13 +71,9 @@
 			\frac{\believes{B}{\publickeyowner{\publickey{T}}{T}},\ \sees{B}{\encrypt{\publickeyowner{\publickey{A}}{A},\ L_A}{\privatekey{T}}}}
 			{\believes{B}{\said{T}{\left(\publickeyowner{\publickey{A}}{A},\ L_A\right)}}}
 		\]
-		e poiché
-		\[
-			\frac{\believes{B}{\fresh{L_A}}}{\believes{B}{\fresh{\publickeyowner{\publickey{A}}{A}, \ L_A}}}
-		\]
 		allora, per la \emph{nonce verification rule}
 		\[
-			\frac{\believes{B}{\said{T}{\left(\publickeyowner{\publickey{A}}{A},\ L_A\right)}},\ \believes{B}{\fresh{\publickeyowner{\publickey{A}}{A},\ L_A}}}
+			\frac{\believes{B}{\said{T}{\left(\publickeyowner{\publickey{A}}{A},\ L_A\right)}},\ \believes{B}{\fresh{L_A}}}
 			{\believes{B}{\believes{T}{\left(\publickeyowner{\publickey{A}}{A},\ L_A\right)}}}
 		\]
 		e, in particolare,
@@ -134,12 +128,7 @@
 			\frac{\believes{B}{\fresh{n_B}}}
 			{\believes{B}{\fresh{\sharedkey{A}{B}{\combine{n_A}{n_B}}}}}\ \ \ \ \ \ \text{\emph{B ottiene key freshness}}
 		\]
-		per quanto riguarda $A$, invece, otteniamo
-		\[
-			\frac{\believes{A}{\fresh{n_A}}}
-			{\believes{A}{\fresh{n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}}}}
-		\]
-		e poiché, per la \emph{meaning rule}
+		per quanto riguarda $A$, invece, otteniamo, per la meaning rule
 		\[
 			\frac{\believes{A}{\sharedsecret{A}{B}{n_A}},\ \sees{A}{\left(n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}}
 			{\believes{A}{\said{B}{\left(n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}}}
@@ -147,7 +136,7 @@
 		allora, per la \emph{nonce verification rule}
 		\[
 			\frac{\believes{A}{\said{B}{\left(n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}},
-			\ \believes{A}{\fresh{n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}}}}
+			\ \believes{A}{\fresh{n_A}}}
 			{\believes{A}{\believes{B}{\left(n_A,\ n_B,\ \sharedkey{A}{B}{\combine{n_A}{n_B}}\right)}}}
 		\]
 		e in particolare
