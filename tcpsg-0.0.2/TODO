@@ -1,0 +1,8 @@
+TO DO
+ - Some optimizations
+ - Suport for host names, and not only IP numbers;
+ - Suport for IPv6 addresses;
+ - Support for UDP Sockets;
+ - Write messages/errors/warnings to syslog;
+
+
