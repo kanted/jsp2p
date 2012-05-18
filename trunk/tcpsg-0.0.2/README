@@ -1,0 +1,27 @@
+TCP Simple Gateway
+
+Copyright (C) 2002 Juan Fajardo
+
+TCPSG is just a simple tcp port forwarder designed to distribute a service 
+using a virtual server. 
+
+main features:
+
+- TCP Port Simple redirect
+- Simple load balancing 
+- Priority based service distribution 
+- Availability based service distribution
+
+Homepage:   http://tcpsg.sourceforge.net/
+
+The main code is pretty simple, and part of it is based on portfw developed by
+Bruno A. Costa (bcostaf@codata.com.br)
+
+NOTE> It's just a pre-alpha, so maybe there are many bugs, please don't forget
+send me any comments or suggestions
+
+thanks for using tcpsg.
+
+jfajardo@unillanos.edu.co
+
+
