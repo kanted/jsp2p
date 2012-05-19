@@ -23,7 +23,7 @@
 
 
 #define DATA "The sea is calm tonight, the tide is full . . ."
-#define SERVER_PORT 23000
+#define SERVER_PORT 2300
 #define BUFFER_SIZE 1024
 
 
