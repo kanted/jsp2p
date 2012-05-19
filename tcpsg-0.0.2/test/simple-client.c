@@ -19,6 +19,7 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 
 
 #define DATA "The sea is calm tonight, the tide is full . . ."

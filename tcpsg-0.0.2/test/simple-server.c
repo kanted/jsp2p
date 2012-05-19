@@ -18,6 +18,7 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 
 
 #define DATA "Danger Will Roger . . ."
