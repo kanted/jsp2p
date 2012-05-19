@@ -1,78 +1,125 @@
-/* simple-client.c
+/**********************************************************************
+ * client.c --- Demonstrate a simple client.
+ * Tom Kelliher
  *
- * Copyright (c) 2000 Sean Walton and Macmillan Publishers.  Use may be in
- * whole or in part in accordance to the General Public License (GPL).
+ * This program will connect to a simple iterative server and exchange
+ * messages.  The single command line argument is the server's hostname.
+ * The server is expected to be accepting connection requests from
+ * SERVER_PORT.
  *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
-*/
+ * The same message is sent three times over separate connections, 
+ * demonstrating that different ephemeral ports are used for each
+ * connection.
+ **********************************************************************/
 
-/*****************************************************************************/
-/*** simple-client.c                                                       ***/
-/***                                                                       ***/
-/*****************************************************************************/
 
-/**************************************************************************
-*   This is a simple client socket reader.  It opens a socket, connects
-*   to a server, reads the message, and closes.
-**************************************************************************/
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
+#include <sys/types.h>
 #include <sys/socket.h>
-#include <resolv.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#define PORT_TIME       13              /* "time" (not available on RedHat) */
-#define PORT_FTP        21              /* FTP connection port */
-#define SERVER_ADDR     "127.0.0.1"     /* localhost */
-#define MAXBUF          1024
 
-int main()
-{   int sockfd;
-    struct sockaddr_in dest;
-    char buffer[MAXBUF];
+#define DATA "The sea is calm tonight, the tide is full . . ."
+#define SERVER_PORT 5001
+#define BUFFER_SIZE 1024
 
-    /*---Open socket for streaming---*/
-    if ( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
-    {
-        perror("Socket");
-        exit(errno);
-    }
 
-    /*---Initialize server address/port struct---*/
-    bzero(&dest, sizeof(dest));
-    dest.sin_family = AF_INET;
-    dest.sin_port = htons(PORT_FTP);
-    if ( inet_aton(SERVER_ADDR, &dest.sin_addr.s_addr) == 0 )
-    {
-        perror(SERVER_ADDR);
-        exit(errno);
-    }
+/* prototypes */
+void die(const char *);
+void pdie(const char *);
 
-    /*---Connect to server---*/
-    if ( connect(sockfd, (struct sockaddr*)&dest, sizeof(dest)) != 0 )
-    {
-        perror("Connect ");
-        exit(errno);
-    }
 
-    /*---Get "Hello?"---*/
-    bzero(buffer, MAXBUF);
-    recv(sockfd, buffer, sizeof(buffer), 0);
-    printf("%s", buffer);
+/**********************************************************************
+ * main
+ **********************************************************************/
 
-    /*---Clean up---*/
-    close(sockfd);
-    return 0;
+int main(int argc, char *argv[]) {
+
+   int sock;   /* fd for socket connection */
+   struct sockaddr_in server;   /* Socket info. for server */
+   struct sockaddr_in client;   /* Socket info. about us */
+   int clientLen;   /* Length of client socket struct. */
+   struct hostent *hp;   /* Return value from gethostbyname() */
+   char buf[BUFFER_SIZE];   /* Received data buffer */
+   int i;   /* loop counter */
+
+   if (argc != 2)
+      die("Usage: client hostname");
+
+   /* Open 3 sockets and send same message each time. */
+
+   for (i = 0; i < 3; ++i)
+   {
+      /* Open a socket --- not bound yet. */
+      /* Internet TCP type. */
+      if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+         pdie("Opening stream socket");
+      
+      /* Prepare to connect to server. */
+      bzero((char *) &server, sizeof(server));
+      server.sin_family = AF_INET;
+      if ((hp = gethostbyname(argv[1])) == NULL) {
+         sprintf(buf, "%s: unknown host\n", argv[1]);
+         die(buf);
+      }
+      bcopy(hp->h_addr, &server.sin_addr, hp->h_length);
+      server.sin_port = htons((u_short) SERVER_PORT);
+      
+      /* Try to connect */
+      if (connect(sock, (struct sockaddr *) &server, sizeof(server)) < 0)
+         pdie("Connecting stream socket");
+      
+      /* Determine what port client's using. */
+      clientLen = sizeof(client);
+      if (getsockname(sock, (struct sockaddr *) &client, &clientLen))
+         pdie("Getting socket name");
+      
+      if (clientLen != sizeof(client))
+         die("getsockname() overwrote name structure");
+      
+      printf("Client socket has port %hu\n", ntohs(client.sin_port));
+      
+      /* Write out message. */
+      if (write(sock, DATA, sizeof(DATA)) < 0)
+         pdie("Writing on stream socket");
+      
+      /* Prepare our buffer for a read and then read. */
+      bzero(buf, sizeof(buf));
+      if (read(sock, buf, BUFFER_SIZE) < 0)
+         pdie("Reading stream message");
+      
+      printf("C: %s\n", buf);
+      
+      /* Close this connection. */
+      close(sock);
+   }
+
+   exit(0);
+
 }
 
+
+/**********************************************************************
+ * pdie --- Call perror() to figure out what's going on and die.
+ **********************************************************************/
+
+void pdie(const char *mesg) {
+
+   perror(mesg);
+   exit(1);
+}
+
+
+/**********************************************************************
+ * die --- Print a message and die.
+ **********************************************************************/
+
+void die(const char *mesg) {
+
+   fputs(mesg, stderr);
+   fputc('\n', stderr);
+   exit(1);
+}
 
