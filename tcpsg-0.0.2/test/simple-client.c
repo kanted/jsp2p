@@ -22,7 +22,7 @@
 #include <strings.h>
 
 
-#define DATA "The sea is calm tonight, the tide is full . . ."
+#define DATA "Nel mezzo del cammin di nostra vita . . ."
 #define SERVER_PORT 2300
 #define BUFFER_SIZE 1024
 
