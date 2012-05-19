@@ -541,18 +541,18 @@ int main(int argc, char **argv)
                     }
                     state[server_id]=WORKING; 
 
-		   if (main_opt.sslflag)
+		  /* if (main_opt.sslflag) TODO
 	 	   {
 			if(secureRedirect(connfd, 
 			   main_opt.serverhost[server_id],
 		           &main_opt.serverport) < 0)
 				writemsg("Failed to attempt to redirect data");
 		   }
-		   else{
+		   else{*/
                    	if (redirect(connfd, main_opt.serverhost[server_id], 
                                           &main_opt.serverport) < 0)
                          writemsg("Failed attempting to redirect data");
-		   }
+		  // }
    		    close(connfd);			/* Child closes his connected socket */
               
 	            state[server_id]=IDLE;  
