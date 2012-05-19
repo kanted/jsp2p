@@ -21,7 +21,7 @@
 #include <strings.h>
 
 
-#define DATA "Danger Will Roger . . ."
+#define DATA ". . . mi ritrovai per una selva oscura"
 #define TRUE 1
 #define SERVER_PORT 23
 #define BUFFER_SIZE 1024
