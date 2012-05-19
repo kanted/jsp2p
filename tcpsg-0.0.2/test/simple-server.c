@@ -1,91 +1,131 @@
-/* simple-server.c
+/**********************************************************************
+ * server.c --- Demonstrate a simple iterative server.
+ * Tom Kelliher
  *
- * Copyright (c) 2000 Sean Walton and Macmillan Publishers.  Use may be in
- * whole or in part in accordance to the General Public License (GPL).
+ * This program demonstrates a simple iterative server.  The server
+ * opens a TCP connection on port SERVER_PORT and begins accepting
+ * connections from anywhere.  It sits in an endless loop, so one must
+ * send an INTR to terminate it.
  *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
-*/
+ * The server reads a message from the client, printing it to stdout.
+ * Then, the server sends a simple message back to the client.
+ **********************************************************************/
 
-/*****************************************************************************/
-/*** simple-server.c                                                       ***/
-/***                                                                       ***/
-/*****************************************************************************/
 
-/**************************************************************************
-*	This is a simple echo server.  This demonstrates the steps to set up
-*	a streaming server.
-**************************************************************************/
-#include <stdio.h>
-#include <errno.h>
+#include <sys/types.h>
 #include <sys/socket.h>
-#include <resolv.h>
-#include <arpa/inet.h>
-#include <errno.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#define MY_PORT		9999
-#define MAXBUF		1024
 
-int main(int Count, char *Strings[])
-{   int sockfd;
-	struct sockaddr_in self;
-	char buffer[MAXBUF];
+#define DATA "Danger Will Roger . . ."
+#define TRUE 1
+#define SERVER_PORT 5001
+#define BUFFER_SIZE 1024
 
-	/*---Create streaming socket---*/
-    if ( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
-	{
-		perror("Socket");
-		exit(errno);
-	}
 
-	/*---Initialize address/port structure---*/
-	bzero(&self, sizeof(self));
-	self.sin_family = AF_INET;
-	self.sin_port = htons(MY_PORT);
-	self.sin_addr.s_addr = INADDR_ANY;
+/* prototypes */
+void die(const char *);
+void pdie(const char *);
 
-	/*---Assign a port number to the socket---*/
-    if ( bind(sockfd, (struct sockaddr*)&self, sizeof(self)) != 0 )
-	{
-		perror("socket--bind");
-		exit(errno);
-	}
 
-	/*---Make it a "listening socket"---*/
-	if ( listen(sockfd, 20) != 0 )
-	{
-		perror("socket--listen");
-		exit(errno);
-	}
+/**********************************************************************
+ * main
+ **********************************************************************/
 
-	/*---Forever... ---*/
-	while (1)
-	{	int clientfd;
-		struct sockaddr_in client_addr;
-		int addrlen=sizeof(client_addr);
+int main(void) {
 
-		/*---accept a connection (creating a data pipe)---*/
-		clientfd = accept(sockfd, (struct sockaddr*)&client_addr, &addrlen);
-		printf("%s:%d connected\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
+   int sock;   /* fd for main socket */
+   int msgsock;   /* fd from accept return */
+   struct sockaddr_in server;   /* socket struct for server connection */
+   struct sockaddr_in client;   /* socket struct for client connection */
+   int clientLen;   /* returned length of client from accept() */
+   int rval;   /* return value from read() */
+   char buf[BUFFER_SIZE];   /* receive buffer */
 
-		/*---Echo back anything sent---*/
-		send(clientfd, buffer, recv(clientfd, buffer, MAXBUF, 0), 0);
+   /* Open a socket, not bound yet.  Type is Internet TCP. */
+   if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+      pdie("Opening stream socket");
 
-		/*---Close data connection---*/
-		close(clientfd);
-	}
+   /*
+      Prepare to bind.  Permit Internet connections from any client
+      to our SERVER_PORT.
+   */
+   bzero((char *) &server, sizeof(server));
+   server.sin_family = AF_INET;
+   server.sin_addr.s_addr = INADDR_ANY;
+   server.sin_port = htons(SERVER_PORT);
+   if (bind(sock, (struct sockaddr *) &server, sizeof(server)))
+      pdie("Binding stream socket");
 
-	/*---Clean up (should never get here!)---*/
-	close(sockfd);
-	return 0;
+   printf("Socket has port %hu\n", ntohs(server.sin_port));
+
+   /* Set the listen queue to 5, the maximum. */
+   listen(sock, 5);
+
+   /* Loop, waiting for client connections. */
+   /* This is an interactive server. */
+   while (TRUE) {
+
+      clientLen = sizeof(client);
+      if ((msgsock = accept(sock, (struct sockaddr *) &client,
+                            &clientLen)) == -1)
+         pdie("Accept");
+      else {
+         /* Print information about the client. */
+         if (clientLen != sizeof(client))
+            pdie("Accept overwrote sockaddr structure.");
+
+         printf("Client IP: %s\n", inet_ntoa(client.sin_addr));
+         printf("Client Port: %hu\n", ntohs(client.sin_port));
+
+         do {   /* Read from client until it's closed the connection. */
+            /* Prepare read buffer and read. */
+            bzero(buf, sizeof(buf));
+            if ((rval = read(msgsock, buf, BUFFER_SIZE)) < 0)
+               pdie("Reading stream message");
+
+            if (rval == 0)   /* Client has closed the connection */
+               fprintf(stderr, "Ending connection\n");
+            else
+               printf("S: %s\n", buf);
+
+            /* Write back to client. */
+            if (write(msgsock, DATA, sizeof(DATA)) < 0)
+               pdie("Writing on stream socket");
+
+         } while (rval != 0);
+      }   /* else */
+
+      close(msgsock);
+   }
+
+   exit(0);
+
+}
+
+
+/**********************************************************************
+ * pdie --- Call perror() to figure out what's going on and die.
+ **********************************************************************/
+
+void pdie(const char *mesg) {
+
+   perror(mesg);
+   exit(1);
+}
+
+
+/**********************************************************************
+ * die --- Print a message and die.
+ **********************************************************************/
+
+void die(const char *mesg) {
+
+   fputs(mesg, stderr);
+   fputc('\n', stderr);
+   exit(1);
 }
 
