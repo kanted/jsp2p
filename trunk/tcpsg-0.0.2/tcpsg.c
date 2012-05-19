@@ -321,6 +321,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 	SSL* ssl;
 	int r;
 	fd_set frwd_fds;
+    BIO *io,*ssl_bio;
 	char frwd_buffer[BUFFER_SIZE]; /* Buffer to forward data */
 	int server_sockfd, nbytes;
 
@@ -343,27 +344,38 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 		FD_SET(server_sockfd, &frwd_fds);
 		FD_SET(client_sockfd, &frwd_fds);
 		select(FD_SETSIZE, &frwd_fds, NULL, NULL, NULL);
+    
+        io=BIO_new(BIO_f_buffer());
+        ssl_bio=BIO_new(BIO_f_ssl());
+        BIO_set_ssl(ssl_bio,ssl,BIO_CLOSE);
+        BIO_push(io,ssl_bio);
 		
 		if (FD_ISSET(client_sockfd, &frwd_fds)) {
 			/* Read from client and write to server... */
-			if ( (nbytes = recv(client_sockfd, frwd_buffer, BUFFER_SIZE, 0)) < 1 )
-				return(nbytes);
+            r = BIO_gets(io,buf,BUFSIZZ-1);
+            if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
+                return -1;//TODO
 
-			if ( (nbytes = send(server_sockfd, frwd_buffer, nbytes, 0)) < 1 )
+            if ( (nbytes = send(server_sockfd, frwd_buffer, nbytes, 0)) < 1 )
 				return(nbytes);
+			
 		}
 		
 		if (FD_ISSET(server_sockfd, &frwd_fds)) {
 			/* Read from server and write to client... */
 			if ( (nbytes = recv(server_sockfd, frwd_buffer, BUFFER_SIZE, 0)) < 1 )
 				return(nbytes);
-		
-			if ( (nbytes = send(client_sockfd, frwd_buffer, nbytes, 0)) < 1 )
-				return(nbytes);
+                
+            r=BIO_puts(io,frwd_buffer, nbytes);
+			if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
+                return -1;//TODO
+            if((r=BIO_flush(io))<0)
+                return -1;//TODO
 		}
 		
 		bzero (frwd_buffer, BUFFER_SIZE);
-	} 
+	}
+    SSL_shutdown(ssl);
 	close(client_sockfd);
 	close(server_sockfd);
 	return(0);
