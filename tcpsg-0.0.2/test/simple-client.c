@@ -23,7 +23,7 @@
 
 
 #define DATA "The sea is calm tonight, the tide is full . . ."
-#define SERVER_PORT 5001
+#define SERVER_PORT 2300
 #define BUFFER_SIZE 1024
 
 
@@ -46,13 +46,11 @@ int main(int argc, char *argv[]) {
    char buf[BUFFER_SIZE];   /* Received data buffer */
    int i;   /* loop counter */
 
-   if (argc != 2)
-      die("Usage: client hostname");
 
    /* Open 3 sockets and send same message each time. */
 
-   for (i = 0; i < 3; ++i)
-   {
+   //for (i = 0; i < 3; ++i)
+   //{
       /* Open a socket --- not bound yet. */
       /* Internet TCP type. */
       if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -61,7 +59,7 @@ int main(int argc, char *argv[]) {
       /* Prepare to connect to server. */
       bzero((char *) &server, sizeof(server));
       server.sin_family = AF_INET;
-      if ((hp = gethostbyname(argv[1])) == NULL) {
+      if ((hp = gethostbyname("localhost")) == NULL) {
          sprintf(buf, "%s: unknown host\n", argv[1]);
          die(buf);
       }
@@ -95,7 +93,7 @@ int main(int argc, char *argv[]) {
       
       /* Close this connection. */
       close(sock);
-   }
+   //}
 
    exit(0);
 

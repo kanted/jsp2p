@@ -23,7 +23,7 @@
 
 #define DATA "Danger Will Roger . . ."
 #define TRUE 1
-#define SERVER_PORT 5001
+#define SERVER_PORT 23
 #define BUFFER_SIZE 1024
 
 
