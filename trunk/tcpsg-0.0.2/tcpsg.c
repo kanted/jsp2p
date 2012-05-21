@@ -313,7 +313,7 @@ int connect_to(char *address, int *portno){
  * Returns: 0 if OK. A negative value on errors.
  *
  */
-/*int secureRedirect(int client_sockfd, char *serv_address, int 
+int secureRedirect(int client_sockfd, char *serv_address, int 
 *serv_portno){
 
 	BIO* sbio;
@@ -379,7 +379,7 @@ int connect_to(char *address, int *portno){
 	close(client_sockfd);
 	close(server_sockfd);
 	return(0);
-}*/
+}
 /*
  * Redirect all arriving data to the real server.
  * There is a separate instance of this function for
