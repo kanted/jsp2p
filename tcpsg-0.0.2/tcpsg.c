@@ -87,7 +87,7 @@
 /* Errors when getting configuration from file /etc/tcpsg.conf */
 
 char *errors[]={"No error","Unable to open file","undefined localport",
-                "undefined serverport","undefined maxclients","undefined servers"};
+                "undefined serverport","undefined maxclients","undefined servers","undefined keyfile","undefined dhfile"};
 
 
 static int child_count;
@@ -517,7 +517,7 @@ int main(int argc, char **argv)
         state=(int *) shmat(shm_id,0,0); 
         error=set_config();
     if(argc < 2){
-        printf("Usage tcpsg keyfilepassword");
+        printf("Usage tcpsg keyfilepassword \n");
         exit(0);
     }
 	if (error==0)
