@@ -602,11 +602,12 @@ int main(int argc, char **argv)
 		}
 		close(connfd);				/* Parent closes his connected socket */
 	}
+       }
+   }
        else
        {
           printf("\n Configuration error: %s \n",errors[error]);  
        }
-    }
   return 0;
 }
 		
