@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
          pdie("Connecting stream socket");
 
          /* Build our SSL context*/
-    ctx=initialize_ctx(argv[2],argv[3]);
+    ctx=initialize_ctx("client.pem","password");
 
      /* Connect the SSL socket */
     ssl=SSL_new(ctx);
