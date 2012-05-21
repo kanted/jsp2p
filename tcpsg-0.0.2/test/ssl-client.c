@@ -51,7 +51,6 @@ int main(int argc, char *argv[]) {
     SSL_CTX *ctx;
     SSL *ssl;
     BIO *sbio;
-    int sock;
 
 
    /* Open 3 sockets and send same message each time. */
@@ -78,7 +77,7 @@ int main(int argc, char *argv[]) {
          pdie("Connecting stream socket");
 
          /* Build our SSL context*/
-    ctx=initialize_ctx(KEYFILE,PASSWORD);
+    ctx=initialize_ctx(argv[2],argv[3]);
 
      /* Connect the SSL socket */
     ssl=SSL_new(ctx);
