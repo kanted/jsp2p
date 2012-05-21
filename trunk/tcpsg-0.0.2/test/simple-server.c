@@ -82,6 +82,7 @@ int main(void) {
          printf("Client IP: %s\n", inet_ntoa(client.sin_addr));
          printf("Client Port: %hu\n", ntohs(client.sin_port));
 
+        #if 0
          do {   /* Read from client until it's closed the connection. */
             /* Prepare read buffer and read. */
             bzero(buf, sizeof(buf));
@@ -98,6 +99,7 @@ int main(void) {
                pdie("Writing on stream socket");
 
          } while (rval != 0);
+        #endif
       }   /* else */
 
       close(msgsock);
