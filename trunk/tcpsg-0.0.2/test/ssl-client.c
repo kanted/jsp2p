@@ -46,8 +46,12 @@ int main(int argc, char *argv[]) {
    char buf[BUFFER_SIZE];   /* Received data buffer */
    int i;   /* loop counter */
    char *request=0;
-   char buf[256];
    int r;
+    SSL_CTX *ctx;
+    SSL *ssl;
+    BIO *sbio;
+    int sock;
+
 
    /* Open 3 sockets and send same message each time. */
 
