@@ -79,7 +79,8 @@ int main(int argc, char *argv[]) {
          die("getsockname() overwrote name structure");
       
       printf("Client socket has port %hu\n", ntohs(client.sin_port));
-      
+
+       #if 0
       /* Write out message. */
       if (write(sock, DATA, sizeof(DATA)) < 0)
          pdie("Writing on stream socket");
@@ -90,7 +91,7 @@ int main(int argc, char *argv[]) {
          pdie("Reading stream message");
       
       printf("C: %s\n", buf);
-      
+       #endif
       /* Close this connection. */
       close(sock);
    //}
