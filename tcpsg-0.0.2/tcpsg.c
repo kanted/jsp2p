@@ -98,8 +98,9 @@ struct options {
 	int serverport;
 	char serverhost[MAX_SERVERS][20];
         int num_servers;
-    char keyfile[KEYFILE_LENGTH];
     int sslflag;
+    char keyfile[KEYFILE_LENGTH];
+    char dhfile[KEYFILE_LENGTH];
 } main_opt;
 
 
@@ -195,6 +196,14 @@ int read_config(char *configFileName)
            strncpy(main_opt.keyfile,tmpString,KEYFILE_LENGTH);
            kf=TRUE;
   	 }
+        if (strcasecmp(tmpString,"dhfile")==0) 
+         {
+           bzero(tmpString, 500);
+           bzero(main_opt.dhfile, KEYFILE_LENGTH);
+           fscanf(configFileHandle,"%s",tmpString);
+           strncpy(main_opt.dhfile,tmpString,KEYFILE_LENGTH);
+           df=TRUE;
+  	 }
         if (strcasecmp(tmpString,"sslflag")==0) 
          {
            fscanf(configFileHandle,"%s",tmpString);
@@ -230,8 +239,9 @@ int read_config(char *configFileName)
         if (!sp) return 3;
         if (!mc) return 4;
         if (main_opt.num_servers==0) return 5;
-        if (!kf) return 6;
-        if (!sf) return 7;
+        if (!sf) return 6;
+        if (!kf) return 7;
+        if (!df) return 8;
   }
  else
  {
