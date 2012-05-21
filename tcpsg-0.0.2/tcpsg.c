@@ -577,7 +577,7 @@ int main(int argc, char **argv)
                     }
                     state[server_id]=WORKING; 
 
-		   if (main_opt.sslflag) TODO
+		   if (main_opt.sslflag)
 	 	   {
 			if(secureRedirect(connfd, 
 			   main_opt.serverhost[server_id],
@@ -602,11 +602,11 @@ int main(int argc, char **argv)
 		}
 		close(connfd);				/* Parent closes his connected socket */
 	}
-       }
        else
        {
           printf("\n Configuration error: %s \n",errors[error]);  
        }
+    }
   return 0;
 }
 		
