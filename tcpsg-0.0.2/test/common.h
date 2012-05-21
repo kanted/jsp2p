@@ -16,9 +16,9 @@
 
 #include <openssl/ssl.h>
 
-#define CA_LIST "test/root.pem"
+#define CA_LIST "root.pem"
 #define HOST	"localhost"
-#define RANDOM  "test/random.pem"
+#define RANDOM  "random.pem"
 #define PORT	4433
 #define BUFSIZZ 1024
 
