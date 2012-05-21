@@ -80,11 +80,9 @@ int main(int argc, char *argv[]) {
       
       printf("Client socket has port %hu\n", ntohs(client.sin_port));
 
-       #if 0
       /* Write out message. */
       if (write(sock, DATA, sizeof(DATA)) < 0)
          pdie("Writing on stream socket");
-      #endif
       /* Prepare our buffer for a read and then read. */
       bzero(buf, sizeof(buf));
       if (read(sock, buf, BUFFER_SIZE) < 0)
