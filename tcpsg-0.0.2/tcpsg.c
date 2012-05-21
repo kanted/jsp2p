@@ -313,7 +313,7 @@ int connect_to(char *address, int *portno){
  * Returns: 0 if OK. A negative value on errors.
  *
  */
-int secureRedirect(int client_sockfd, char *serv_address, int 
+/*int secureRedirect(int client_sockfd, char *serv_address, int 
 *serv_portno){
 
 	BIO* sbio;
@@ -322,7 +322,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 	int r;
 	fd_set frwd_fds;
     BIO *io,*ssl_bio;
-	char frwd_buffer[BUFFER_SIZE]; /* Buffer to forward data */
+	char frwd_buffer[BUFFER_SIZE]; // Buffer to forward data 
 	int server_sockfd, nbytes;
 
 	if ( (server_sockfd = connect_to(serv_address, serv_portno)) < 0 )
@@ -351,7 +351,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
         BIO_push(io,ssl_bio);
 		
 		if (FD_ISSET(client_sockfd, &frwd_fds)) {
-			/* Read from client and write to server... */
+			// Read from client and write to server... 
             r = BIO_gets(io,buf,BUFSIZZ-1);
             if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
                 return -1;//TODO
@@ -362,7 +362,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 		}
 		
 		if (FD_ISSET(server_sockfd, &frwd_fds)) {
-			/* Read from server and write to client... */
+			// Read from server and write to client... 
 			if ( (nbytes = recv(server_sockfd, frwd_buffer, BUFFER_SIZE, 0)) < 1 )
 				return(nbytes);
                 
@@ -379,7 +379,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 	close(client_sockfd);
 	close(server_sockfd);
 	return(0);
-}
+}*/
 /*
  * Redirect all arriving data to the real server.
  * There is a separate instance of this function for
