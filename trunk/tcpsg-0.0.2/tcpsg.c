@@ -384,7 +384,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 		
 		if (FD_ISSET(client_sockfd, &frwd_fds)) {
 			// Read from client and write to server... 
-            r = BIO_gets(io,buf,BUFSIZZ-1);
+            r = BIO_gets(io,frwd_buffer,BUFFER_SIZE);
             if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
                 return -1;//TODO
 
