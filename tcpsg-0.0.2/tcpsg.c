@@ -167,8 +167,8 @@ int read_config(char *configFileName)
  char tmpString[500];
  char tmpChar;
  unsigned long configFileLength;
- int lp,sp,mc,kf,sf;
- lp=sp=mc=kf=sf=FALSE;
+ int lp,sp,mc,kf,sf,df;
+ lp=sp=mc=kf=sf=df=FALSE;
 
  main_opt.num_servers=0;
  if ((configFileHandle=fopen(configFileName,"rb"))!=NULL) 
