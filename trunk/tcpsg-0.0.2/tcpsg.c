@@ -398,7 +398,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 			if ( (nbytes = recv(server_sockfd, frwd_buffer, BUFFER_SIZE, 0)) < 1 )
 				return(nbytes);
                 
-            r=BIO_puts(io,frwd_buffer, nbytes);
+            r=BIO_puts(io,frwd_buffer);
 			if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
                 return -1;//TODO
             if((r=BIO_flush(io))<0)
