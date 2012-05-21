@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include "../common.h"
 
 
 #define DATA "Nel mezzo del cammin di nostra vita . . ."
