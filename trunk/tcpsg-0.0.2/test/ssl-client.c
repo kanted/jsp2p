@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
     if(SSL_connect(ssl)<=0)
       berr_exit("SSL connect error");
     if(require_server_auth)
-      check_cert(ssl,host);
+      check_cert(ssl,"127.0.0.1");
  
     /* Determine what port client's using. */
       clientLen = sizeof(client);
@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
          pdie("Writing on stream socket");
       /* Prepare our buffer for a read and then read. */
       bzero(buf, sizeof(buf));
-      if (SSL_read(sock, buf, BUFFER_SIZE) < 0)
+      if (SSL_read(ssl, buf, BUFFER_SIZE) < 0)
          pdie("Reading stream message");
       
       printf("C: %s\n", buf);
