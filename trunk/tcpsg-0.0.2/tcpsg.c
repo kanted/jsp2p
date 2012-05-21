@@ -44,6 +44,7 @@
 #include <netdb.h>
 
 /* Security Headers */
+#include "common.h"
 #include <openssl/ssl.h>
 
 /* 
@@ -505,6 +506,10 @@ int main(int argc, char **argv)
         shm_id= shmget(IPC_PRIVATE,sizeof(int)*MAX_SERVERS,IPC_CREAT | SHM_R | SHM_W);
         state=(int *) shmat(shm_id,0,0); 
         error=set_config();
+    if(argc < 2){
+        printf("Usage tcpsg keyfilepassword");
+        exit(0);
+    }
 	if (error==0)
         {
 	/* Daemonize our process */
@@ -566,7 +571,7 @@ int main(int argc, char **argv)
 	 	   {
 			if(secureRedirect(connfd, 
 			   main_opt.serverhost[server_id],
-		           &main_opt.serverport, password) < 0)
+		           &main_opt.serverport, argv[1]) < 0)
 				writemsg("Failed to attempt to redirect data");
 		   }
 		   else{
