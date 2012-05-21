@@ -368,7 +368,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 	sbio = BIO_new_socket(client_sockfd,BIO_NOCLOSE);
 	ssl = SSL_new(ctx);
 	SSL_set_bio(ssl,sbio,sbio);
-	if(r = SSL_accept(ssl)<=0)
+	if((r = SSL_accept(ssl))<=0)
 		return r;
 
 	while(TRUE){
