@@ -59,7 +59,7 @@
 
 
 #define MAX_BACKLOG 10
-#define BUFFER_SIZE 8//4096
+#define BUFFER_SIZE 4096
 #define MAX_SERVERS 10
 
 #define TRUE 1
