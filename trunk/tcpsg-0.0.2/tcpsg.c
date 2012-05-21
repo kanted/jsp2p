@@ -69,6 +69,9 @@
 #define WORKING 1
 #define DOWN 2
 
+#define KEYFILE_LENGTH 256
+#define PWD_LENGTH 128
+
 
 /*
  * *****************************************************************
@@ -93,7 +96,9 @@ struct options {
 	int localport;
 	int serverport;
 	char serverhost[MAX_SERVERS][20];
-        int num_servers;        
+        int num_servers;
+    char keyfile[KEYFILE_LENGTH];
+    int sslflag;
 } main_opt;
 
 
@@ -160,8 +165,8 @@ int read_config(char *configFileName)
  char tmpString[500];
  char tmpChar;
  unsigned long configFileLength;
- int lp,sp,mc;
- lp=sp=mc=FALSE;
+ int lp,sp,mc,kf,sf;
+ lp=sp=mc=kf=sf=FALSE;
 
  main_opt.num_servers=0;
  if ((configFileHandle=fopen(configFileName,"rb"))!=NULL) 
@@ -181,6 +186,20 @@ int read_config(char *configFileName)
               while ((tmpChar!='\r')&&(tmpChar!='\n')&&(ftell(configFileHandle)<configFileLength));
 		tmpString[0]=0;	   
          }
+         if (strcasecmp(tmpString,"keyfile")==0) 
+         {
+           bzero(tmpString, 500);
+           bzero(main_opt.keyfile, KEYFILE_LENGTH);
+           fscanf(configFileHandle,"%s",tmpString);
+           strncpy(main_opt.keyfile,tmpString,KEYFILE_LENGTH);
+           kf=TRUE;
+  	 }
+        if (strcasecmp(tmpString,"sslflag")==0) 
+         {
+           fscanf(configFileHandle,"%s",tmpString);
+	   main_opt.sslflag=atoi(tmpString);
+           sf=TRUE;
+  	 }
          if (strcasecmp(tmpString,"localport")==0) 
          {
            fscanf(configFileHandle,"%s",tmpString);
@@ -210,6 +229,8 @@ int read_config(char *configFileName)
         if (!sp) return 3;
         if (!mc) return 4;
         if (main_opt.num_servers==0) return 5;
+        if (!kf) return 6;
+        if (!sf) return 7;
   }
  else
  {
@@ -314,7 +335,7 @@ int connect_to(char *address, int *portno){
  *
  */
 int secureRedirect(int client_sockfd, char *serv_address, int 
-*serv_portno){
+*serv_portno, char* password){
 
 	BIO* sbio;
 	SSL_CTX* ctx;
@@ -331,7 +352,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 	nbytes = 0;
 	memset (&frwd_buffer, 0, BUFFER_SIZE);
 
-	ctx = initialize_ctx(main_opt.keyfile,main_opt.password);
+	ctx = initialize_ctx(main_opt.keyfile,password);
 	load_dh_params(ctx,main_opt.dhfile);
 	sbio = BIO_new_socket(s,BIO_NOCLOSE);
 	ssl = SSL_NEW(ctx);
@@ -541,14 +562,14 @@ int main(int argc, char **argv)
                     }
                     state[server_id]=WORKING; 
 
-		  /* if (main_opt.sslflag) TODO
+		   if (main_opt.sslflag) TODO
 	 	   {
 			if(secureRedirect(connfd, 
 			   main_opt.serverhost[server_id],
-		           &main_opt.serverport) < 0)
+		           &main_opt.serverport, password) < 0)
 				writemsg("Failed to attempt to redirect data");
 		   }
-		   else{*/
+		   else{
                    	if (redirect(connfd, main_opt.serverhost[server_id], 
                                           &main_opt.serverport) < 0)
                          writemsg("Failed attempting to redirect data");
