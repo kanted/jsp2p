@@ -84,14 +84,14 @@ int main(int argc, char *argv[]) {
       /* Write out message. */
       if (write(sock, DATA, sizeof(DATA)) < 0)
          pdie("Writing on stream socket");
-      
+      #endif
       /* Prepare our buffer for a read and then read. */
       bzero(buf, sizeof(buf));
       if (read(sock, buf, BUFFER_SIZE) < 0)
          pdie("Reading stream message");
       
       printf("C: %s\n", buf);
-       #endif
+       
       /* Close this connection. */
       close(sock);
    //}
