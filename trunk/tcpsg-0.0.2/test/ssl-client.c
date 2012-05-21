@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
     SSL_CTX *ctx;
     SSL *ssl;
     BIO *sbio;
+   int require_server_auth=1;
 
 
    /* Open 3 sockets and send same message each time. */
