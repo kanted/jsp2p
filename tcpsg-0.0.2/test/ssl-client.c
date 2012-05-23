@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
 	printf("C: Ho scritto al TCPSG %s\n", DATA);
       /* Prepare our buffer for a read and then read. */
       bzero(buf, sizeof(buf));
-      printf("C: Aspetto di leggere dal TCPSG"); 
+      printf("C: Aspetto di leggere dal TCPSG\n"); 
       if (SSL_read(ssl, buf, BUFFER_SIZE) < 0)
          pdie("Reading stream message");
       
@@ -148,6 +148,7 @@ int main(int argc, char *argv[]) {
        
       /* Close this connection. */
       close(sock);
+      printf("C: Per me il socket e' chiuso\n", buf);
    //}
 
    exit(0);

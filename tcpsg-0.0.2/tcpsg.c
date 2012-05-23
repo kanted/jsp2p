@@ -549,6 +549,7 @@ int main(int argc, char **argv)
 	 * in this case, force a loop in the while().
 	 */
 	while(TRUE){
+         printf("TCPSG: Faccio la ACCEPT\n");
 			if ( (connfd = accept( listenfd, (struct sockaddr *) NULL, NULL) ) < 0 ) 
 			{
 				if (errno == EINTR)
@@ -559,7 +560,7 @@ int main(int argc, char **argv)
 			}
 		}
 
-		
+		printf("TCPSG: Faccio il figlio e lui mi va nell'event loop\n");
 		/*
 		 * Create a child process to handle each new connection.
 		 * Each file descriptor will be shared (duplicated) with
