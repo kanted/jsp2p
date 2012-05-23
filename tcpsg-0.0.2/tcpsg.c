@@ -383,22 +383,25 @@ int secureRedirect(int client_sockfd, char *serv_address, int
         BIO_push(io,ssl_bio);
 		
 		if (FD_ISSET(client_sockfd, &frwd_fds)) {
-			// Read from client and write to server... 
-            r = BIO_gets(io,frwd_buffer,BUFFER_SIZE);
-            if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
+	printf("S: Ho letto\n");		
+	// Read from client and write to server... 
+            //r = BIO_gets(io,frwd_buffer,BUFFER_SIZE);
+            r=SSL_read(ssl,frwd_buffer,BUFFER_SIZE);
+	     if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
                 return -1;//TODO
 
             if ( (nbytes = send(server_sockfd, frwd_buffer, nbytes, 0)) < 1 )
 				return(nbytes);
 			
 		}
-		
+		printf("S: Ho scritto al server\n");
 		if (FD_ISSET(server_sockfd, &frwd_fds)) {
 			// Read from server and write to client... 
 			if ( (nbytes = recv(server_sockfd, frwd_buffer, BUFFER_SIZE, 0)) < 1 )
 				return(nbytes);
                 
             r=BIO_puts(io,frwd_buffer);
+		printf("S: Ho scritto al client\n");
 			if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
                 return -1;//TODO
             if((r=BIO_flush(io))<0)

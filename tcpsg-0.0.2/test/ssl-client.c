@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
     SSL_CTX *ctx;
     SSL *ssl;
     BIO *sbio;
-   int require_server_auth=1;
+   int require_server_auth=0;
 
 
    /* Open 3 sockets and send same message each time. */
@@ -130,6 +130,8 @@ int main(int argc, char *argv[]) {
       /* Write out message. */
       if (SSL_write(ssl, DATA, sizeof(DATA)) < 0)
          pdie("Writing on stream socket");
+
+	printf("C: Ho scritto\n");
       /* Prepare our buffer for a read and then read. */
       bzero(buf, sizeof(buf));
       if (SSL_read(ssl, buf, BUFFER_SIZE) < 0)
