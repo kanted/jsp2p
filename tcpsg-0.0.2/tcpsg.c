@@ -370,23 +370,22 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 	SSL_set_bio(ssl,sbio,sbio);
 	if((r = SSL_accept(ssl))<=0)
 		return r;
+    io=BIO_new(BIO_f_buffer());
+    ssl_bio=BIO_new(BIO_f_ssl());
+    BIO_set_ssl(ssl_bio,ssl,BIO_CLOSE);
+    BIO_push(io,ssl_bio);
 
 	while(TRUE){
 		FD_ZERO(&frwd_fds);
 		FD_SET(server_sockfd, &frwd_fds);
 		FD_SET(client_sockfd, &frwd_fds);
 		select(FD_SETSIZE, &frwd_fds, NULL, NULL, NULL);
-    
-        io=BIO_new(BIO_f_buffer());
-        ssl_bio=BIO_new(BIO_f_ssl());
-        BIO_set_ssl(ssl_bio,ssl,BIO_CLOSE);
-        BIO_push(io,ssl_bio);
 		
 		if (FD_ISSET(client_sockfd, &frwd_fds)) {
 	printf("S: Ho letto\n");		
 	// Read from client and write to server... 
-            //r = BIO_gets(io,frwd_buffer,BUFFER_SIZE);
-            r=SSL_read(ssl,frwd_buffer,BUFFER_SIZE);
+            r = BIO_gets(io,frwd_buffer,BUFFER_SIZE);
+            //r=SSL_read(ssl,frwd_buffer,BUFFER_SIZE);
 	     if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
                 return -1;//TODO
 
