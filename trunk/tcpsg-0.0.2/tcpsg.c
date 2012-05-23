@@ -411,6 +411,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 		bzero (frwd_buffer, BUFFER_SIZE);
 	}
     SSL_shutdown(ssl);
+    destroy_ctx(ctx);
 	close(client_sockfd);
 	close(server_sockfd);
 	return(0);
@@ -592,7 +593,7 @@ int main(int argc, char **argv)
                    	if (redirect(connfd, main_opt.serverhost[server_id], 
                                           &main_opt.serverport) < 0)
                          writemsg("Failed attempting to redirect data");
-		  // }
+		    }
    		    close(connfd);			/* Child closes his connected socket */
               
 	            state[server_id]=IDLE;  
@@ -606,7 +607,6 @@ int main(int argc, char **argv)
 		}
 		close(connfd);				/* Parent closes his connected socket */
 	}
-       }
    }
        else
        {
