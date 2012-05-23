@@ -85,7 +85,7 @@ int main(void) {
          do {   /* Read from client until it's closed the connection. */
             /* Prepare read buffer and read. */
             bzero(buf, sizeof(buf));
-            printf("S: vivo in attesa di roba da leggere\n", buf);
+            printf("S: vivo in attesa di roba da leggere\n");
             if ((rval = read(msgsock, buf, BUFFER_SIZE)) < 0)
                pdie("Reading stream message");
 
@@ -93,7 +93,7 @@ int main(void) {
                fprintf(stderr, "Ending connection\n");
             else
                printf("S: Ho letto %s\n", buf);
-
+            printf("S: Scrivo %s\n", DATA);
             /* Write back to client. */
             if (write(msgsock, DATA, sizeof(DATA)) < 0)
                pdie("Writing on stream socket");
