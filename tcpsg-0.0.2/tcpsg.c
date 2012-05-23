@@ -390,6 +390,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
             printf("TCPSG: ho letto dal client: %s\n",frwd_buffer);		
             if ( (nbytes = send(server_sockfd, frwd_buffer, nbytes, 0)) < 1 )
 				return(nbytes);
+             printf("TCPSG: ho mandato al server: %s\n",frwd_buffer);		
 			
 		}
 		printf("TECPSG: Ho scritto al server\n");
@@ -397,10 +398,10 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 			// Read from server and write to client... 
 			if ( (nbytes = recv(server_sockfd, frwd_buffer, BUFFER_SIZE, 0)) < 1 )
 				return(nbytes);
-                
+             printf("TCPSG: ho letto dal server: %s\n",frwd_buffer);		
             //r=BIO_puts(io,frwd_buffer);
             r=SSL_write(ssl,frwd_buffer,BUFFER_SIZE);
-            printf("TCPSG: Ho scritto al client\n");
+            printf("TCPSG: Ho scritto al client: %s\n",frwd_buffer);
 			if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
                 return -1;//TODO
             //if((r=BIO_flush(io))<0)
