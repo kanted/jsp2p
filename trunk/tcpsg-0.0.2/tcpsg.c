@@ -384,7 +384,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 		if (FD_ISSET(client_sockfd, &frwd_fds)) {
             printf("TCPSG: sto per leggere dal client\n");		
             // Read from client and write to server... 
-            r = BIO_gets(io,frwd_buffer,BUFFER_SIZE);
+            r = BIO_gets(io,frwd_buffer,BUFFER_SIZE-1);
             //r=SSL_read(ssl,frwd_buffer,BUFFER_SIZE);
             if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
                 return -1;//TODO
