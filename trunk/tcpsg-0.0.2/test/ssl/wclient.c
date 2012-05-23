@@ -12,7 +12,7 @@ static char *REQUEST_TEMPLATE=
 
 static char *host=HOST;
 static int port=PORT;
-static int require_server_auth=1;
+static int require_server_auth=0;
 
 static int http_request(ssl)
   SSL *ssl;
