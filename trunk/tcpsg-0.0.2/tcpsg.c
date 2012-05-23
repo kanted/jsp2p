@@ -353,7 +353,6 @@ int secureRedirect(int client_sockfd, char *serv_address, int
 	SSL* ssl;
 	int r;
 	fd_set frwd_fds;
-    BIO *io,*ssl_bio;
 	char frwd_buffer[BUFFER_SIZE]; // Buffer to forward data 
 	int server_sockfd, nbytes;
 
