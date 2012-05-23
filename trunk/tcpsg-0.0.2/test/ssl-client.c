@@ -148,7 +148,7 @@ int main(int argc, char *argv[]) {
        
       /* Close this connection. */
       close(sock);
-      printf("C: Per me il socket e' chiuso\n", buf);
+      printf("C: Per me il socket e' chiuso\n");
    //}
 
    exit(0);
