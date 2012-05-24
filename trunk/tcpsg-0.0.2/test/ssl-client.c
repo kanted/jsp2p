@@ -79,8 +79,6 @@ int main(int argc, char *argv[]) {
     SSL_CTX *ctx;
     SSL *ssl;
     BIO *sbio;
-    BIO *io;
-    BIO *ssl_bio;
    int require_server_auth=0;
 
 
@@ -114,10 +112,6 @@ int main(int argc, char *argv[]) {
     ssl=SSL_new(ctx);
     sbio=BIO_new_socket(sock,BIO_NOCLOSE);
     SSL_set_bio(ssl,sbio,sbio);
-    io=BIO_new(BIO_f_buffer());
-    ssl_bio=BIO_new(BIO_f_ssl());
-    BIO_set_ssl(ssl_bio,ssl,BIO_CLOSE);
-    BIO_push(io,ssl_bio);
     if(SSL_connect(ssl)<=0)
       berr_exit("SSL connect error");
     if(require_server_auth)
@@ -134,31 +128,29 @@ int main(int argc, char *argv[]) {
       printf("Client socket has port %hu\n", ntohs(client.sin_port));
 
       /* Write out message. */
-      //r = SSL_write(ssl, DATA, sizeof(DATA));
-      r = BIO_puts(io,DATA);
-      /*switch(SSL_get_error(ssl,r)){      
+      r = SSL_write(ssl, DATA, sizeof(DATA));
+      switch(SSL_get_error(ssl,r)){      
       case SSL_ERROR_NONE:
         if(sizeof(DATA)!=r)
           err_exit("Incomplete write!");
         break;
         default:
           berr_exit("SSL write problem");
-      }*/
+      }
     
 
 	  printf("C: Ho scritto al TCPSG %s\n", DATA);
       /* Prepare our buffer for a read and then read. */
       bzero(buf, sizeof(buf));
       printf("C: Aspetto di leggere dal TCPSG\n"); 
-      //r = SSL_read(ssl, buf, BUFFER_SIZE);
-      r = BIO_gets(io,buf,BUFFER_SIZE);
-      /*switch(SSL_get_error(ssl,r)){
+      r = SSL_read(ssl, buf, BUFFER_SIZE);
+      switch(SSL_get_error(ssl,r)){
         case SSL_ERROR_NONE:
           break;
         default:
           printf("SSL read problem, error: %i",SSL_get_error(ssl,r));
           exit(1);
-      }*/
+      }
       
       printf("C: Ho letto dal TCPSG %s\n", buf);
       SSL_shutdown(ssl);
