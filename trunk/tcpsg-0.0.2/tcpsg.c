@@ -355,7 +355,7 @@ int connect_to(char *address, int *portno){
  * Returns: 0 if OK. A negative value on errors.
  *
  */
-int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char* password)
+int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char* password) //TODO perchè alcuni con main_opt altri per argomento?
 {
     SSLSocket* secureSocket;
     int error;
@@ -366,7 +366,7 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
         return(serverSocket);
     nbytes = 0;
     memset(&buffer, 0, BUFFER_SIZE);
-    secureSocket = SSL_socket(clientSocket, main_opt.keyfile, main_opt.password);
+    secureSocket = SSL_socket(clientSocket, main_opt.keyfile, password);
     if((error = SSL_accept(secureSocket->ssl)) <= 0) return error;
     while(TRUE)
     {
