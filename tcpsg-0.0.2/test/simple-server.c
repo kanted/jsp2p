@@ -89,9 +89,9 @@ int main(void) {
             if ((rval = read(msgsock, buf, BUFFER_SIZE)) < 0)
                pdie("Reading stream message");
 
-            //if (rval == 0)   /* Client has closed the connection */
-              // fprintf(stderr, "Ending connection\n");
-            //else
+            if (rval == 0)   /* Client has closed the connection */
+               fprintf(stderr, "Ending connection\n");
+            else
                printf("S: Ho letto %s\n", buf);
             printf("S: Scrivo %s\n", DATA);
             /* Write back to client. */
