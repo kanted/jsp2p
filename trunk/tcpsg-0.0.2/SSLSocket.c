@@ -1,4 +1,4 @@
-#include "SSLsocket.h"
+#include "SSLSocket.h"
 
 static int passwordCopy(char* buffer, int n, int rwFlag,void* userData)
 {

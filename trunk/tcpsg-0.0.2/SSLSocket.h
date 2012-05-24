@@ -31,3 +31,5 @@ typedef struct
 SSLSocket* SSL_socket(int baseSocket, char* keyFile, char* password);
 
 void SSL_close(SSLSocket* secureSocket);
+
+#endif
