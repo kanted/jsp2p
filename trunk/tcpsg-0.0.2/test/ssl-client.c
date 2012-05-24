@@ -136,8 +136,8 @@ int main(int argc, char *argv[]) {
       /* Write out message. */
       //r = SSL_write(ssl, DATA, sizeof(DATA));
       r = BIO_puts(io,DATA);
-      switch(SSL_get_error(ssl,r)){      
-      /*case SSL_ERROR_NONE:
+      /*switch(SSL_get_error(ssl,r)){      
+      case SSL_ERROR_NONE:
         if(sizeof(DATA)!=r)
           err_exit("Incomplete write!");
         break;
