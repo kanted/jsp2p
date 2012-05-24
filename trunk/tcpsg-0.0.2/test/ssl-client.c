@@ -24,8 +24,10 @@
 
 
 #define DATA "Nel mezzo del cammin di nostra vita . . ."
+#define SERVER_ADDR "127.0.0.1"
 #define SERVER_PORT 2300
 #define BUFFER_SIZE 1024
+#define require_server_auth 1
 
 
 /* prototypes */
@@ -79,7 +81,6 @@ int main(int argc, char *argv[]) {
     SSL_CTX *ctx;
     SSL *ssl;
     BIO *sbio;
-   int require_server_auth=0;
 
 
    /* Open 3 sockets and send same message each time. */
@@ -115,7 +116,7 @@ int main(int argc, char *argv[]) {
     if(SSL_connect(ssl)<=0)
       berr_exit("SSL connect error");
     if(require_server_auth)
-      check_cert(ssl,"127.0.0.1");
+      check_cert(ssl,SERVER_ADDR);//TODO 127.0.0.1 da sostituire col parametro
  
     /* Determine what port client's using. */
       clientLen = sizeof(client);
