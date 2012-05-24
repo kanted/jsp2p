@@ -148,7 +148,8 @@ int main(int argc, char *argv[]) {
         case SSL_ERROR_NONE:
           break;
         default:
-          berr_exit("SSL read problem, error: %i",SSL_get_error(ssl,r));
+          printf("SSL read problem, error: %i",SSL_get_error(ssl,r));
+          exit(1);
       }
       
       printf("C: Ho letto dal TCPSG %s\n", buf);
