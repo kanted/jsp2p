@@ -131,7 +131,7 @@ int main(int argc, char *argv[]) {
       r = SSL_write(ssl, DATA, sizeof(DATA));
       switch(SSL_get_error(ssl,r)){      
       case SSL_ERROR_NONE:
-        if(request_len!=r)
+        if(sizeof(DATA)!=r)
           err_exit("Incomplete write!");
         break;
         default:
