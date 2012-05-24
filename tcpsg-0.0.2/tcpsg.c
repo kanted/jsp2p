@@ -87,7 +87,7 @@
 /* Errors when getting configuration from file /etc/tcpsg.conf */
 
 char *errors[]={"No error","Unable to open file","undefined localport",
-                "undefined serverport","undefined maxclients","undefined servers","undefined keyfile","undefined dhfile"};
+                "undefined serverport","undefined maxclients","undefined servers","undefined keyfile","undefined dhfile","undefined password"};
 
 
 static int child_count;
@@ -168,8 +168,8 @@ int read_config(char *configFileName)
  char tmpString[500];
  char tmpChar;
  unsigned long configFileLength;
- int lp,sp,mc,kf,sf,df;
- lp=sp=mc=kf=sf=df=FALSE;
+ int lp,sp,mc,kf,sf,df,pw;
+ lp=sp=mc=kf=sf=df=pw=FALSE;
 
  main_opt.num_servers=0;
  if ((configFileHandle=fopen(configFileName,"rb"))!=NULL)
@@ -211,7 +211,7 @@ int read_config(char *configFileName)
                bzero(main_opt.password, KEYFILE_LENGTH);
                fscanf(configFileHandle,"%s",tmpString);
                strncpy(main_opt.password,tmpString,KEYFILE_LENGTH);
-               df=TRUE;
+               pw=TRUE;
      }
         if (strcasecmp(tmpString,"sslflag")==0)
          {
@@ -251,6 +251,7 @@ int read_config(char *configFileName)
         if (!sf) return 6;
         if (!kf) return 7;
         if (!df) return 8;
+        if (!pw) return 9;
   }
  else
  {
@@ -527,10 +528,7 @@ int main(int argc, char **argv)
         shm_id= shmget(IPC_PRIVATE,sizeof(int)*MAX_SERVERS,IPC_CREAT | SHM_R | SHM_W);
         state=(int *) shmat(shm_id,0,0);
         error=set_config();
-    if(argc < 2){
-        printf("Usage tcpsg keyfilepassword \n");
-        exit(0);
-    }
+   
     if (error==0)
         {
     /* Daemonize our process */
@@ -593,7 +591,7 @@ int main(int argc, char **argv)
            {
             if(secureRedirect(connfd,
                main_opt.serverhost[server_id],
-                   &main_opt.serverport, argv[1]) < 0)
+                   &main_opt.serverport, &main_opt.password) < 0)
                 writemsg("Failed to attempt to redirect data");
            }
            else{
