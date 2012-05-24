@@ -101,6 +101,7 @@ struct options {
     int sslflag;
     char keyfile[KEYFILE_LENGTH];
     char dhfile[KEYFILE_LENGTH];
+    char password[KEYFILE_LENGTH];//TODO 
 } main_opt;
 
 
@@ -203,6 +204,14 @@ int read_config(char *configFileName)
            fscanf(configFileHandle,"%s",tmpString);
            strncpy(main_opt.dhfile,tmpString,KEYFILE_LENGTH);
            df=TRUE;
+     }
+         if (strcasecmp(tmpString,"password")==0)
+             {
+               bzero(tmpString, 500);
+               bzero(main_opt.password, KEYFILE_LENGTH);
+               fscanf(configFileHandle,"%s",tmpString);
+               strncpy(main_opt.password,tmpString,KEYFILE_LENGTH);
+               df=TRUE;
      }
         if (strcasecmp(tmpString,"sslflag")==0)
          {
