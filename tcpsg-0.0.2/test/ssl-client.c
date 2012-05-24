@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
 
    /* Open 3 sockets and send same message each time. */
 
-   for (i = 0; i < 3; ++i)
+   for (i = 0; i < 378000; ++i)
    {
       /* Open a socket --- not bound yet. */
       /* Internet TCP type. */
