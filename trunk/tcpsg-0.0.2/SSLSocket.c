@@ -24,7 +24,7 @@ SSLSocket* SSL_socket(int baseSocket, char* keyFile, char* password)
     SSL_CTX_set_default_passwd_cb(secureSocket->ctx, passwordCopy);
     if
     (
-        !(SSL_CTX_use_PrivateKey_file(secureSocket->ctx, keyfile, SSL_FILETYPE_PEM))
+        !(SSL_CTX_use_PrivateKey_file(secureSocket->ctx, keyFile, SSL_FILETYPE_PEM))
         ||
         !(SSL_CTX_load_verify_locations(secureSocket->ctx, CA_LIST, 0))
     ) goto exceptionHandler;
