@@ -389,7 +389,7 @@ int secureRedirect(int client_sockfd, char *serv_address, int
                 return -1;//TODO
             printf("TCPSG: ho letto dal client: %s\n",frwd_buffer);		
             if ( (nbytes = send(server_sockfd, frwd_buffer, nbytes, 0)) < 1 ){
-                printf("IL BIO");
+                printf("TCPSG: ho scritto al server: %s per %i byte\n",frwd_buffer,nbytes);		
                 return(nbytes);
             }
              printf("TCPSG: ho mandato al server: %s\n",frwd_buffer);		
