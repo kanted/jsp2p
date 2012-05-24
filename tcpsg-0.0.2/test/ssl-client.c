@@ -137,13 +137,13 @@ int main(int argc, char *argv[]) {
       //r = SSL_write(ssl, DATA, sizeof(DATA));
       r = BIO_puts(io,DATA);
       switch(SSL_get_error(ssl,r)){      
-      case SSL_ERROR_NONE:
+      /*case SSL_ERROR_NONE:
         if(sizeof(DATA)!=r)
           err_exit("Incomplete write!");
         break;
         default:
           berr_exit("SSL write problem");
-      }
+      }*/
     
 
 	  printf("C: Ho scritto al TCPSG %s\n", DATA);
@@ -152,13 +152,13 @@ int main(int argc, char *argv[]) {
       printf("C: Aspetto di leggere dal TCPSG\n"); 
       //r = SSL_read(ssl, buf, BUFFER_SIZE);
       r = BIO_gets(io,buf,BUFFER_SIZE);
-      switch(SSL_get_error(ssl,r)){
+      /*switch(SSL_get_error(ssl,r)){
         case SSL_ERROR_NONE:
           break;
         default:
           printf("SSL read problem, error: %i",SSL_get_error(ssl,r));
           exit(1);
-      }
+      }*/
       
       printf("C: Ho letto dal TCPSG %s\n", buf);
       SSL_shutdown(ssl);
