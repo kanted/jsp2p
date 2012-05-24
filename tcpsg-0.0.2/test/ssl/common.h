@@ -19,7 +19,7 @@
 #define CA_LIST "root.pem"
 #define HOST	"localhost"
 #define RANDOM  "random.pem"
-#define PORT	2300//4433
+#define PORT	4433
 #define BUFSIZZ 1024
 
 extern BIO *bio_err;
