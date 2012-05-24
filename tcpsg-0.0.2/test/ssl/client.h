@@ -2,7 +2,7 @@
 #define _client_h
 
 #define KEYFILE "client.pem"
-#define PASSWORD "password"
+#define PASSWORD "abcd"
 
 int tcp_connect(char *host,int port);
 void check_cert(SSL *ssl,char *host);

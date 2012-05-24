@@ -27,6 +27,7 @@
 #define SERVER_ADDR "127.0.0.1"
 #define SERVER_PORT 2300
 #define BUFFER_SIZE 1024
+#define PASSWORD "abcd"
 #define require_server_auth 1
 
 
@@ -107,7 +108,7 @@ int main(int argc, char *argv[]) {
          pdie("Connecting stream socket");
 
          /* Build our SSL context*/
-    ctx=initialize_ctx("client.pem","password");
+    ctx=initialize_ctx("client.pem",PASSWORD);
 
      /* Connect the SSL socket */
     ssl=SSL_new(ctx);
