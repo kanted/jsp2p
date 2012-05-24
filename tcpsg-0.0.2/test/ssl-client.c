@@ -146,7 +146,6 @@ int main(int argc, char *argv[]) {
       r = SSL_read(ssl, buf, BUFFER_SIZE);
       switch(SSL_get_error(ssl,r)){
         case SSL_ERROR_NONE:
-          len=r;
           break;
         default:
           berr_exit("SSL read problem");
