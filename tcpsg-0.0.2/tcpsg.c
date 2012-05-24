@@ -591,7 +591,7 @@ int main(int argc, char **argv)
            {
             if(secureRedirect(connfd,
                main_opt.serverhost[server_id],
-                   &main_opt.serverport, &main_opt.password) < 0)
+                   main_opt.serverport, main_opt.password) < 0)
                 writemsg("Failed to attempt to redirect data");
            }
            else{
