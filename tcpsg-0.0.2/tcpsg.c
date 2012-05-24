@@ -44,7 +44,7 @@
 #include <netdb.h>
 
 /* Security Headers */
-#include "common.h"
+#include "SSLSocket.h"
 #include <openssl/ssl.h>
 
 /*
