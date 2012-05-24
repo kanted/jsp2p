@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
 
       /* Write out message. */
       //r = SSL_write(ssl, DATA, sizeof(DATA));
-      r = BIO_puts(io,DATA,sizeof(DATA));
+      r = BIO_puts(io,DATA);
       switch(SSL_get_error(ssl,r)){      
       case SSL_ERROR_NONE:
         if(sizeof(DATA)!=r)
