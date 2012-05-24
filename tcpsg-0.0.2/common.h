@@ -16,27 +16,16 @@
 
 #include <openssl/ssl.h>
 
-#define CA_LIST "test/root.pem"
+#define CA_LIST "root.pem"
 #define HOST	"localhost"
-#define RANDOM  "test/random.pem"
+#define RANDOM  "random.pem"
 #define PORT	4433
 #define BUFSIZZ 1024
 
 extern BIO *bio_err;
-int berr_exit (char *string);
-int err_exit(char *string);
 
-SSL_CTX *initialize_ctx(char *keyfile, char *password);
-void destroy_ctx(SSL_CTX *ctx);
-
-void load_dh_params(SSL_CTX *ctx,char *file);
-void generate_eph_rsa_key(SSL_CTX *ctx);
-
-#ifndef ALLOW_OLD_VERSIONS
-#if (OPENSSL_VERSION_NUMBER < 0x00905100L)
-#error "Must use OpenSSL 0.9.6 or later"
-#endif
-#endif
+void initialize_SSL(char* keyfile,char* password,int socket,SSL** ssl, SSL_CTX** ctx);
+void destroy_SSL(SSL_CTX *ctx, SSL *ssl);
 
 #endif
 

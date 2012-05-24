@@ -39,12 +39,9 @@ static int password_cb(char *buf,int num,
 static void sigpipe_handle(int x){
 }
 
-SSL_CTX *initialize_ctx(keyfile,password)
-  char *keyfile;
-  char *password;
+void initialize_SSL(char* keyfile,char* password,int socket,SSL** ssl, SSL_CTX** ctx)
   {
     SSL_METHOD *meth;
-    SSL_CTX *ctx;
     
     if(!bio_err){
       /* Global system initialization*/
@@ -60,29 +57,34 @@ SSL_CTX *initialize_ctx(keyfile,password)
     
     /* Create our context*/
     meth=SSLv23_method();
-    ctx=SSL_CTX_new(meth);
+    *ctx=SSL_CTX_new(meth);
 
     /* Load our keys and certificates*/
-    if(!(SSL_CTX_use_certificate_chain_file(ctx,
+    if(!(SSL_CTX_use_certificate_chain_file(*ctx,
       keyfile)))
       berr_exit("Can't read certificate file");
 
     pass=password;
-    SSL_CTX_set_default_passwd_cb(ctx,
+    SSL_CTX_set_default_passwd_cb(*ctx,
       password_cb);
-    if(!(SSL_CTX_use_PrivateKey_file(ctx,
+    if(!(SSL_CTX_use_PrivateKey_file(*ctx,
       keyfile,SSL_FILETYPE_PEM)))
       berr_exit("Can't read key file");
 
     /* Load the CAs we trust*/
-    if(!(SSL_CTX_load_verify_locations(ctx,
+    if(!(SSL_CTX_load_verify_locations(*ctx,
       CA_LIST,0)))
       berr_exit("Can't read CA list");
 #if (OPENSSL_VERSION_NUMBER < 0x00905100L)
-    SSL_CTX_set_verify_depth(ctx,1);
+    SSL_CTX_set_verify_depth(*ctx,1);
 #endif
+
+    load_dh_params(*ctx,main_opt.dhfile);
+	sbio = BIO_new_socket(client_sockfd,BIO_NOCLOSE);
+	*ssl = SSL_new(*ctx);
+	SSL_set_bio(*ssl,sbio,sbio);
     
-    return ctx;
+    return;
   }
      
 void destroy_ctx(ctx)
