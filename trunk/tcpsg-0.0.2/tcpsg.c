@@ -366,7 +366,7 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
         return(serverSocket);
     nbytes = 0;
     memset(&buffer, 0, BUFFER_SIZE);
-    secureSocket = SSL_socket(clientSocket, main_opt.keyfile, password);
+    secureSocket = SSL_socket(clientSocket, main_opt.keyfile, password); //TODO errori??
     if((error = SSL_accept(secureSocket->ssl)) <= 0) return error;
     while(TRUE)
     {
@@ -391,7 +391,7 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
             printf("TCPSG: ho letto dal client: %s\n", buffer);
             if((nbytes = send(serverSocket, buffer, nbytes, 0)) < 1 )
             {
-                printf("TCPSG: ho scritto al server: %s per %i byte\n", buffer, nbytes);
+                printf("TCPSG: ho scritto al server: %s per %i byte\n", buffer, nbytes); //TODO exception handler per fare le free
                 return(nbytes);
             }
              printf("TCPSG: ho mandato al server: %s\n", buffer);
@@ -412,7 +412,7 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
                     break;
                 else
                 {
-                      printf("TCPSG: SSL write problem, error: %i", error);
+                      printf("TCPSG: SSL write problem, error: %i", error); //TODO exception handler per fare le free - vd. valgrind
                       exit(1);
                 }
             }
