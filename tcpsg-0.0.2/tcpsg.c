@@ -1,6 +1,6 @@
 /*
  * tcpsg - TCP Simple Gateway
- * 
+ *
  * Released under GNU Public License v2.0 (see included COPYING file)
  *
  * Copyright (C) 2002  Juan Fajardo (jfajardo@unillanos.edu.co)
@@ -47,14 +47,14 @@
 #include "common.h"
 #include <openssl/ssl.h>
 
-/* 
+/*
  * ****************************************************************
  * Define section
- * 
- * MAX_BACKLOG:		Maximum number of simultaneous connections.
- * BUFFER_SIZE:		Size of the forward buffer: 4096.
+ *
+ * MAX_BACKLOG:     Maximum number of simultaneous connections.
+ * BUFFER_SIZE:     Size of the forward buffer: 4096.
  * MAX_SERVERS:     Maximun number of servers to work with
- * 
+ *
  * ****************************************************************
  */
 
@@ -77,10 +77,10 @@
 /*
  * *****************************************************************
  * Global Variables Section
- * 
- * child_count:		    Store the number of child processes running.
- * main_opt:			Struct to store various options.
- * 
+ *
+ * child_count:         Store the number of child processes running.
+ * main_opt:            Struct to store various options.
+ *
  * *****************************************************************
  */
 
@@ -93,10 +93,10 @@ char *errors[]={"No error","Unable to open file","undefined localport",
 static int child_count;
 static int *state;
 struct options {
-	int max_clients;
-	int localport;
-	int serverport;
-	char serverhost[MAX_SERVERS][20];
+    int max_clients;
+    int localport;
+    int serverport;
+    char serverhost[MAX_SERVERS][20];
         int num_servers;
     int sslflag;
     char keyfile[KEYFILE_LENGTH];
@@ -112,51 +112,51 @@ struct options {
 
 /* Write messages/alerts/errors */
 void writemsg(char *message){
-	if (errno > 0)
-		perror(message);
-	else if (message)
-		printf("\n%s\n", message);
+    if (errno > 0)
+        perror(message);
+    else if (message)
+        printf("\n%s\n", message);
 }
 /* Signal handling functions */
 void (*Signal (int signo, void (*sig_handler)(int))) (int){
-	struct sigaction sa_new, sa_old;
+    struct sigaction sa_new, sa_old;
 
-	sa_new.sa_handler = sig_handler;
-	sigemptyset(&sa_new.sa_mask);
-	sa_new.sa_flags = 0;
-	if (signo == SIGALRM) {
+    sa_new.sa_handler = sig_handler;
+    sigemptyset(&sa_new.sa_mask);
+    sa_new.sa_flags = 0;
+    if (signo == SIGALRM) {
 #ifdef SA_INTERRUPT
-		sa_new.sa_flags |= SA_INTERRUPT;
+        sa_new.sa_flags |= SA_INTERRUPT;
 #endif
-	} else {
+    } else {
 #ifdef SA_RESTART
-		sa_new.sa_flags |= SA_RESTART;
+        sa_new.sa_flags |= SA_RESTART;
 #endif
-	}
-	if ( sigaction(signo, &sa_new, &sa_old) < 0 )
-		return(SIG_ERR);
-	return(sa_old.sa_handler);
+    }
+    if ( sigaction(signo, &sa_new, &sa_old) < 0 )
+        return(SIG_ERR);
+    return(sa_old.sa_handler);
 }
 
 /*
  * Handler for the SIG_CHLD signal
  * We use waitpid() inside a while to prevent loss of signals
  * when two or more children terminate at aproximately the same time.
- * 
+ *
  * Notice that to use waitpid() inside a loop, we need to set it non
  * blocking, with the parameter WNOHANG.
- * 
+ *
  */
 static void catch_sigchld(int signo){
-	pid_t pid;
-	int stat;
+    pid_t pid;
+    int stat;
 
-	while ( (pid = waitpid(-1, &stat, WNOHANG)) > 0 ) {
-		if (child_count > 0)
-			child_count--;
-		else
-			writemsg("WARNING: SIGCHLD received when child_count < 1");
-	}
+    while ( (pid = waitpid(-1, &stat, WNOHANG)) > 0 ) {
+        if (child_count > 0)
+            child_count--;
+        else
+            writemsg("WARNING: SIGCHLD received when child_count < 1");
+    }
 }
 
 
@@ -171,7 +171,7 @@ int read_config(char *configFileName)
  lp=sp=mc=kf=sf=df=FALSE;
 
  main_opt.num_servers=0;
- if ((configFileHandle=fopen(configFileName,"rb"))!=NULL) 
+ if ((configFileHandle=fopen(configFileName,"rb"))!=NULL)
  {
       fseek(configFileHandle,0,SEEK_END);
       configFileLength=ftell(configFileHandle);
@@ -180,60 +180,60 @@ int read_config(char *configFileName)
       while (ftell(configFileHandle)<configFileLength)
       {
          fscanf (configFileHandle,"%s",tmpString);
-         if (tmpString[0]=='#') 
+         if (tmpString[0]=='#')
          {
              do {
-		  fscanf(configFileHandle,"%c",&tmpChar);
-	       } 
+          fscanf(configFileHandle,"%c",&tmpChar);
+           }
               while ((tmpChar!='\r')&&(tmpChar!='\n')&&(ftell(configFileHandle)<configFileLength));
-		tmpString[0]=0;	   
+        tmpString[0]=0;
          }
-         if (strcasecmp(tmpString,"keyfile")==0) 
+         if (strcasecmp(tmpString,"keyfile")==0)
          {
            bzero(tmpString, 500);
            bzero(main_opt.keyfile, KEYFILE_LENGTH);
            fscanf(configFileHandle,"%s",tmpString);
            strncpy(main_opt.keyfile,tmpString,KEYFILE_LENGTH);
            kf=TRUE;
-  	 }
-        if (strcasecmp(tmpString,"dhfile")==0) 
+     }
+        if (strcasecmp(tmpString,"dhfile")==0)
          {
            bzero(tmpString, 500);
            bzero(main_opt.dhfile, KEYFILE_LENGTH);
            fscanf(configFileHandle,"%s",tmpString);
            strncpy(main_opt.dhfile,tmpString,KEYFILE_LENGTH);
            df=TRUE;
-  	 }
-        if (strcasecmp(tmpString,"sslflag")==0) 
+     }
+        if (strcasecmp(tmpString,"sslflag")==0)
          {
            fscanf(configFileHandle,"%s",tmpString);
-	   main_opt.sslflag=atoi(tmpString);
+       main_opt.sslflag=atoi(tmpString);
            sf=TRUE;
-  	 }
-         if (strcasecmp(tmpString,"localport")==0) 
+     }
+         if (strcasecmp(tmpString,"localport")==0)
          {
            fscanf(configFileHandle,"%s",tmpString);
-	   main_opt.localport=atoi(tmpString);
+       main_opt.localport=atoi(tmpString);
            lp=TRUE;
-  	 }
-         if (strcasecmp(tmpString,"serverport")==0) 
+     }
+         if (strcasecmp(tmpString,"serverport")==0)
          {
            fscanf(configFileHandle,"%s",tmpString);
-	   main_opt.serverport=atoi(tmpString);
+       main_opt.serverport=atoi(tmpString);
            sp=TRUE;
-  	 }
-         if (strcasecmp(tmpString,"maxclients")==0) 
+     }
+         if (strcasecmp(tmpString,"maxclients")==0)
          {
            fscanf(configFileHandle,"%s",tmpString);
-	   main_opt.max_clients=atoi(tmpString);  
+       main_opt.max_clients=atoi(tmpString);
            mc=TRUE;
-  	 }
-         if (strcasecmp(tmpString,"server")==0) 
+     }
+         if (strcasecmp(tmpString,"server")==0)
          {
            fscanf(configFileHandle,"%s",tmpString);
-	   strcpy(main_opt.serverhost[main_opt.num_servers],tmpString);     
+       strcpy(main_opt.serverhost[main_opt.num_servers],tmpString);
            main_opt.num_servers++;
-  	 }
+     }
        }
         if (!lp) return 2;
         if (!sp) return 3;
@@ -246,18 +246,18 @@ int read_config(char *configFileName)
  else
  {
    return 1;
- } 
+ }
  fclose(configFileHandle);
  return 0;
 }
 
 
-/* 
+/*
  * Get the configuration parameters
  * and set the main_opt struct
  *
  * Returns: 0 if success, or error number on error with the .conf file
- * 	
+ *
  */
 
 
@@ -282,59 +282,59 @@ int set_config()
    return i;
 }
 
-/* 
+/*
  * Create a new local socket, turn it into a listenning socket
  * and return its file descriptor.
  * This socket will listen for incoming connections.
  *
  * Returns: A new file descriptor, or a negative value on error.
- * 	
+ *
  */
 int local_socket(int portno){
-	int newfd;
-	struct sockaddr_in servaddr;
-	
-	if ( (newfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		return(-1);
+    int newfd;
+    struct sockaddr_in servaddr;
 
-	memset(&servaddr, 0, sizeof(servaddr));
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servaddr.sin_port = htons(portno);
+    if ( (newfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        return(-1);
 
-	if ( (bind(newfd, (struct sockaddr *) &servaddr, sizeof(servaddr))) < 0)
-		return(-1);
+    memset(&servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    servaddr.sin_port = htons(portno);
 
-	if ( (listen(newfd, MAX_BACKLOG)) < 0)
-		return(-1);
+    if ( (bind(newfd, (struct sockaddr *) &servaddr, sizeof(servaddr))) < 0)
+        return(-1);
 
-	return(newfd);
+    if ( (listen(newfd, MAX_BACKLOG)) < 0)
+        return(-1);
+
+    return(newfd);
 }
 
 
 /*
  * Connect to the server.
  * All arriving data will be redirected to it.
- * 
- * Returns:	A file descriptor, or a negative value on error.
- * 	
+ *
+ * Returns: A file descriptor, or a negative value on error.
+ *
  */
 
 int connect_to(char *address, int *portno){
-	int newfd;
-	struct sockaddr_in servaddr;
-	
-	if ( (newfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
-		return(-1); 
-	memset(&servaddr, 0, sizeof(servaddr));
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(*portno);
-	if ( (inet_pton(AF_INET, address, &servaddr.sin_addr) ) <= 0 )
-		return(-1);
-	if (connect(newfd, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0 )
-		return(-1);
+    int newfd;
+    struct sockaddr_in servaddr;
 
-	return(newfd);
+    if ( (newfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
+        return(-1);
+    memset(&servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(*portno);
+    if ( (inet_pton(AF_INET, address, &servaddr.sin_addr) ) <= 0 )
+        return(-1);
+    if (connect(newfd, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0 )
+        return(-1);
+
+    return(newfd);
 }
 
 /*
@@ -345,89 +345,74 @@ int connect_to(char *address, int *portno){
  * Returns: 0 if OK. A negative value on errors.
  *
  */
-int secureRedirect(int client_sockfd, char *serv_address, int 
-*serv_portno, char* password){
-
-	BIO* sbio;
-	SSL_CTX* ctx;
-	SSL* ssl;
-	int r;
-	fd_set frwd_fds;
-	char frwd_buffer[BUFFER_SIZE]; // Buffer to forward data 
-	int server_sockfd, nbytes;
-
-	if ( (server_sockfd = connect_to(serv_address, serv_portno)) < 0 )
-		return(server_sockfd);
-
-	nbytes = 0;
-	memset (&frwd_buffer, 0, BUFFER_SIZE);
-
-	initialize_SSL(main_opt.keyfile,password,client_sockfd,&ssl,&ctx);
-	
-	if((r = SSL_accept(ssl))<=0)
-		return r;
-    //io=BIO_new(BIO_f_buffer());
-    //ssl_bio=BIO_new(BIO_f_ssl());
-    //BIO_set_ssl(ssl_bio,ssl,BIO_CLOSE);
-    //BIO_push(io,ssl_bio);
-
-	while(TRUE){
-		FD_ZERO(&frwd_fds);
-		FD_SET(server_sockfd, &frwd_fds);
-		FD_SET(client_sockfd, &frwd_fds);
-		select(FD_SETSIZE, &frwd_fds, NULL, NULL, NULL);
-		
-		if (FD_ISSET(client_sockfd, &frwd_fds)) {
-            printf("TCPSG: sto per leggere dal client\n");		
-            // Read from client and write to server... 
-            //r = BIO_gets(io,frwd_buffer,BUFFER_SIZE);
-            nbytes = SSL_read(ssl,frwd_buffer,BUFFER_SIZE);
-            if(SSL_get_error(ssl,nbytes) != SSL_ERROR_NONE){
-                if(SSL_get_error(ssl,nbytes) == SSL_ERROR_ZERO_RETURN)  //client socket closed
-                    break;
-                else {
-                      printf("TCPSG: SSL read problem, error: %i",SSL_get_error(ssl,nbytes));
+int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char* password)
+{
+    SSLSocket* secureSocket;
+    int error;
+    fd_set fileDescriptors;
+    char buffer[BUFFER_SIZE];
+    int serverSocket, nbytes;
+    if((serverSocket = connect_to(serverAddress, serverPort)) < 0)
+        return(serverSocket);
+    nbytes = 0;
+    memset(&buffer, 0, BUFFER_SIZE);
+    secureSocket = SSL_socket(clientSocket, main_opt.keyfile, main_opt.password);
+    if((error = SSL_accept(secureSocket->ssl)) <= 0) return error;
+    while(TRUE)
+    {
+        FD_ZERO(&fileDescriptors);
+        FD_SET(serverSocket, &fileDescriptors);
+        FD_SET(clientSocket, &fileDescriptors);
+        select(FD_SETSIZE, &fileDescriptors, NULL, NULL, NULL);
+        if(FD_ISSET(clientSocket, &fileDescriptors))
+        {
+            printf("TCPSG: sto per leggere dal client\n");
+            nbytes = SSL_read(secureSocket->ssl, buffer, BUFFER_SIZE);
+            error = SSL_get_error(secureSocket->ssl,nbytes)
+            if(error != SSL_ERROR_NONE)
+            {
+                if(error == SSL_ERROR_ZERO_RETURN) break;
+                else
+                {
+                      printf("TCPSG: SSL read problem, error: %i", error);
                       exit(1);
                 }
             }
-            printf("TCPSG: ho letto dal client: %s\n",frwd_buffer);		
-            if ( (nbytes = send(server_sockfd, frwd_buffer, nbytes, 0)) < 1 ){
-                printf("TCPSG: ho scritto al server: %s per %i byte\n",frwd_buffer,nbytes);		
+            printf("TCPSG: ho letto dal client: %s\n", buffer);
+            if((nbytes = send(serverSocket, buffer, nbytes, 0)) < 1 )
+            {
+                printf("TCPSG: ho scritto al server: %s per %i byte\n", buffer, nbytes);
                 return(nbytes);
             }
-             printf("TCPSG: ho mandato al server: %s\n",frwd_buffer);		
-			
-		}
-		printf("TECPSG: Ho scritto al server\n");
-		if (FD_ISSET(server_sockfd, &frwd_fds)) {
-			// Read from server and write to client... 
-			if ( (nbytes = recv(server_sockfd, frwd_buffer, BUFFER_SIZE, 0)) < 1 )
-				return(nbytes);
-             printf("TCPSG: ho letto dal server: %s\n",frwd_buffer);		
-            //r=BIO_puts(io,frwd_buffer);
-            r=SSL_write(ssl,frwd_buffer,nbytes);
-            printf("TCPSG: Ho scritto al client: %s\n",frwd_buffer);
-			if(SSL_get_error(ssl,nbytes) != SSL_ERROR_NONE){
-                if(SSL_get_error(ssl,nbytes) == SSL_ERROR_ZERO_RETURN) //client socket closed
+             printf("TCPSG: ho mandato al server: %s\n", buffer);
+        }
+        printf("TECPSG: Ho scritto al server\n");
+        if (FD_ISSET(serverSocket, &fileDescriptors))
+        {
+            // Read from server and write to client...
+            if( (nbytes = recv(serverSocket, buffer, BUFFER_SIZE, 0)) < 1)
+                return(nbytes);
+            printf("TCPSG: ho letto dal server: %s\n", buffer);
+            error = SSL_write(secureSocket->ssl, buffer, nbytes);
+            printf("TCPSG: Ho scritto al client: %s\n", buffer);
+            error = SSL_get_error(secureSocket->ssl, error);
+            if(error != SSL_ERROR_NONE)
+            {
+                if(error == SSL_ERROR_ZERO_RETURN) //client socket closed
                     break;
-                else {
-                      printf("TCPSG: SSL write problem, error: %i",SSL_get_error(ssl,nbytes));
+                else
+                {
+                      printf("TCPSG: SSL write problem, error: %i", error);
                       exit(1);
                 }
             }
-            //if((r=BIO_flush(io))<0)
-              //  return -1;//TODO
-		}
-		
-		bzero (frwd_buffer, BUFFER_SIZE);
-	}
-
-    SSL_shutdown(ssl);
-    SSL_free(ssl);
-	close(client_sockfd);
-    destroy_ctx(ctx);
-	close(server_sockfd);
-	return(0);
+        }
+        bzero (frwd_buffer, BUFFER_SIZE);
+    }
+    SSL_close(secureSocket);
+    close(client_sockfd);
+    close(server_sockfd);
+    return 0;
 }
 /*
  * Redirect all arriving data to the real server.
@@ -438,64 +423,64 @@ int secureRedirect(int client_sockfd, char *serv_address, int
  *
  */
 int redirect(int client_sockfd, char *serv_address, int *serv_portno){
-	fd_set frwd_fds;
-	char frwd_buffer[BUFFER_SIZE]; /* Buffer to forward data */
-	int server_sockfd, nbytes;
+    fd_set frwd_fds;
+    char frwd_buffer[BUFFER_SIZE]; /* Buffer to forward data */
+    int server_sockfd, nbytes;
 
-	if ( (server_sockfd = connect_to(serv_address, serv_portno)) < 0 )
-		return(server_sockfd);
+    if ( (server_sockfd = connect_to(serv_address, serv_portno)) < 0 )
+        return(server_sockfd);
 
-	nbytes = 0;
-	memset (&frwd_buffer, 0, BUFFER_SIZE);
-	while(TRUE){
-		FD_ZERO(&frwd_fds);
-		FD_SET(server_sockfd, &frwd_fds);
-		FD_SET(client_sockfd, &frwd_fds);
-		select(FD_SETSIZE, &frwd_fds, NULL, NULL, NULL);
-		
-		if (FD_ISSET(client_sockfd, &frwd_fds)) {
-			/* Read from client and write to server... */
-			if ( (nbytes = recv(client_sockfd, frwd_buffer, BUFFER_SIZE, 0)) < 1 )
-				return(nbytes);
+    nbytes = 0;
+    memset (&frwd_buffer, 0, BUFFER_SIZE);
+    while(TRUE){
+        FD_ZERO(&frwd_fds);
+        FD_SET(server_sockfd, &frwd_fds);
+        FD_SET(client_sockfd, &frwd_fds);
+        select(FD_SETSIZE, &frwd_fds, NULL, NULL, NULL);
 
-			if ( (nbytes = send(server_sockfd, frwd_buffer, nbytes, 0)) < 1 )
-				return(nbytes);
-		}
-		
-		if (FD_ISSET(server_sockfd, &frwd_fds)) {
-			/* Read from server and write to client... */
-			if ( (nbytes = recv(server_sockfd, frwd_buffer, BUFFER_SIZE, 0)) < 1 )
-				return(nbytes);
-		
-			if ( (nbytes = send(client_sockfd, frwd_buffer, nbytes, 0)) < 1 )
-				return(nbytes);
-		}
-		
-		bzero (frwd_buffer, BUFFER_SIZE);
-	} 
-	close(client_sockfd);
-	close(server_sockfd);
-	return(0);
+        if (FD_ISSET(client_sockfd, &frwd_fds)) {
+            /* Read from client and write to server... */
+            if ( (nbytes = recv(client_sockfd, frwd_buffer, BUFFER_SIZE, 0)) < 1 )
+                return(nbytes);
+
+            if ( (nbytes = send(server_sockfd, frwd_buffer, nbytes, 0)) < 1 )
+                return(nbytes);
+        }
+
+        if (FD_ISSET(server_sockfd, &frwd_fds)) {
+            /* Read from server and write to client... */
+            if ( (nbytes = recv(server_sockfd, frwd_buffer, BUFFER_SIZE, 0)) < 1 )
+                return(nbytes);
+
+            if ( (nbytes = send(client_sockfd, frwd_buffer, nbytes, 0)) < 1 )
+                return(nbytes);
+        }
+
+        bzero (frwd_buffer, BUFFER_SIZE);
+    }
+    close(client_sockfd);
+    close(server_sockfd);
+    return(0);
 }
 
-/* 
- * Select a server checking the state and 
+/*
+ * Select a server checking the state and
  * the server to use acording to the use ,
  * priority and availability
  *
  * Returns: The server id
- * 	
+ *
  */
 
 int select_server()
 {
  int id,i,found=FALSE;
- int server_sockfd; 
+ int server_sockfd;
  for (i=0;i<main_opt.num_servers && !found;i++)
  {
   if ((server_sockfd = connect_to(main_opt.serverhost[i], &main_opt.serverport )) < 0 )
   {
-     state[i]=DOWN;   
+     state[i]=DOWN;
   }
   else
   {
@@ -526,105 +511,105 @@ int select_server()
 /* main, finally */
 int main(int argc, char **argv)
 {
-	int listenfd, connfd;
+    int listenfd, connfd;
         int server_id;
-	pid_t pid;
+    pid_t pid;
         int shm_id,error;
         shm_id= shmget(IPC_PRIVATE,sizeof(int)*MAX_SERVERS,IPC_CREAT | SHM_R | SHM_W);
-        state=(int *) shmat(shm_id,0,0); 
+        state=(int *) shmat(shm_id,0,0);
         error=set_config();
     if(argc < 2){
         printf("Usage tcpsg keyfilepassword \n");
         exit(0);
     }
-	if (error==0)
+    if (error==0)
         {
-	/* Daemonize our process */
-	     if ( (pid = fork()) != 0 )
-		exit(0);						/* Parent terminates. 1st child continues */
-	     setsid();							/* 1st child becomes session leader */
-	     if ( (pid = fork()) != 0)
-		exit(0);						/* 1st child terminates. 2nd child continues */
-		/* if OK, now we're running as a daemon  */
+    /* Daemonize our process */
+         if ( (pid = fork()) != 0 )
+        exit(0);                        /* Parent terminates. 1st child continues */
+         setsid();                          /* 1st child becomes session leader */
+         if ( (pid = fork()) != 0)
+        exit(0);                        /* 1st child terminates. 2nd child continues */
+        /* if OK, now we're running as a daemon  */
 
 
-	/* Handler for SIGCHLD - to avoid zombie processes */
-	Signal(SIGCHLD, catch_sigchld);
-	
-	if ( ( listenfd = local_socket(main_opt.localport) ) < 0 ) {
-		writemsg("Error creating listenning socket");
-		exit(1);
-	}
+    /* Handler for SIGCHLD - to avoid zombie processes */
+    Signal(SIGCHLD, catch_sigchld);
 
-	/*
-	 * if the parent receives a SIGCHLD in a blocked accept, it forces accept
-	 * to return an "Interrupted system call" error (EINTR), and the program
-	 * aborts.
-	 * So, we must check for a possible EINTR error returned by accept() and,
-	 * in this case, force a loop in the while().
-	 */
-	while(TRUE){
+    if ( ( listenfd = local_socket(main_opt.localport) ) < 0 ) {
+        writemsg("Error creating listenning socket");
+        exit(1);
+    }
+
+    /*
+     * if the parent receives a SIGCHLD in a blocked accept, it forces accept
+     * to return an "Interrupted system call" error (EINTR), and the program
+     * aborts.
+     * So, we must check for a possible EINTR error returned by accept() and,
+     * in this case, force a loop in the while().
+     */
+    while(TRUE){
          printf("TCPSG: Faccio la ACCEPT\n");
-			if ( (connfd = accept( listenfd, (struct sockaddr *) NULL, NULL) ) < 0 ) 
-			{
-				if (errno == EINTR)
-					continue;
-				else{
-					writemsg("Error accepting connections");
-					exit(1);
-			}
-		}
+            if ( (connfd = accept( listenfd, (struct sockaddr *) NULL, NULL) ) < 0 )
+            {
+                if (errno == EINTR)
+                    continue;
+                else{
+                    writemsg("Error accepting connections");
+                    exit(1);
+            }
+        }
 
-		printf("TCPSG: Faccio il figlio e lui mi va nell'event loop\n");
-		/*
-		 * Create a child process to handle each new connection.
-		 * Each file descriptor will be shared (duplicated) with
-		 * parent and child processes.
-		 * 
-		 */
-		if (child_count < main_opt.max_clients){
-			if ( (pid = fork()) == 0) {
-			close (listenfd);		/* Child closes his listening socket */
-                              
-                    server_id=select_server(); 
+        printf("TCPSG: Faccio il figlio e lui mi va nell'event loop\n");
+        /*
+         * Create a child process to handle each new connection.
+         * Each file descriptor will be shared (duplicated) with
+         * parent and child processes.
+         *
+         */
+        if (child_count < main_opt.max_clients){
+            if ( (pid = fork()) == 0) {
+            close (listenfd);       /* Child closes his listening socket */
+
+                    server_id=select_server();
                     if (server_id==-1)
                     {
                       writemsg("All the servers are down");
                       close(connfd);
-                      exit(0); 
+                      exit(0);
                     }
-                    state[server_id]=WORKING; 
+                    state[server_id]=WORKING;
 
-		   if (main_opt.sslflag)
-	 	   {
-			if(secureRedirect(connfd, 
-			   main_opt.serverhost[server_id],
-		           &main_opt.serverport, argv[1]) < 0)
-				writemsg("Failed to attempt to redirect data");
-		   }
-		   else{
-                   	if (redirect(connfd, main_opt.serverhost[server_id], 
+           if (main_opt.sslflag)
+           {
+            if(secureRedirect(connfd,
+               main_opt.serverhost[server_id],
+                   &main_opt.serverport, argv[1]) < 0)
+                writemsg("Failed to attempt to redirect data");
+           }
+           else{
+                    if (redirect(connfd, main_opt.serverhost[server_id],
                                           &main_opt.serverport) < 0)
                          writemsg("Failed attempting to redirect data");
-		    }
-   		    close(connfd);			/* Child closes his connected socket */
-              
-	            state[server_id]=IDLE;  
+            }
+            close(connfd);          /* Child closes his connected socket */
 
-                    exit(0);				/* End of the child process */
-			}
-			if (pid > 0)
-                       child_count++;			/* Parent increments child counter */
+                state[server_id]=IDLE;
+
+                    exit(0);                /* End of the child process */
+            }
+            if (pid > 0)
+                       child_count++;           /* Parent increments child counter */
                     else
-				writemsg("Error forking");
-		}
-		close(connfd);				/* Parent closes his connected socket */
-	}
+                writemsg("Error forking");
+        }
+        close(connfd);              /* Parent closes his connected socket */
+    }
    }
        else
        {
-          printf("\n Configuration error: %s \n",errors[error]);  
+          printf("\n Configuration error: %s \n",errors[error]);
        }
   return 0;
 }
-		
+
