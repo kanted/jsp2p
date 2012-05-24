@@ -377,7 +377,7 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
         {
             printf("TCPSG: sto per leggere dal client\n");
             nbytes = SSL_read(secureSocket->ssl, buffer, BUFFER_SIZE);
-            error = SSL_get_error(secureSocket->ssl,nbytes)
+            error = SSL_get_error(secureSocket->ssl,nbytes);
             if(error != SSL_ERROR_NONE)
             {
                 if(error == SSL_ERROR_ZERO_RETURN) break;
@@ -416,11 +416,11 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
                 }
             }
         }
-        bzero (frwd_buffer, BUFFER_SIZE);
+        bzero (buffer, BUFFER_SIZE);
     }
     SSL_close(secureSocket);
-    close(client_sockfd);
-    close(server_sockfd);
+    close(clientSocket);
+    close(serverSocket);
     return 0;
 }
 /*

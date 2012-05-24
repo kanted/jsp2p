@@ -1,5 +1,7 @@
 #include "SSLSocket.h"
 
+static char* staticPassword;
+  
 static int passwordCopy(char* buffer, int n, int rwFlag,void* userData)
 {
     if(n < strlen(staticPassword) + 1) return 0;
