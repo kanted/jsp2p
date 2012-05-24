@@ -385,8 +385,14 @@ int secureRedirect(int client_sockfd, char *serv_address, int
             // Read from client and write to server... 
             //r = BIO_gets(io,frwd_buffer,BUFFER_SIZE);
             nbytes = SSL_read(ssl,frwd_buffer,BUFFER_SIZE);
-            if(SSL_get_error(ssl,nbytes) != SSL_ERROR_NONE)
-                return -1;//TODO
+            if(SSL_get_error(ssl,nbytes) != SSL_ERROR_NONE){
+                if(SSL_get_error(ssl,r) == SSL_ERROR_ZERO_RETURN)  //client socket closed
+                    break;
+                else {
+                      printf("SSL read problem, error: %i",SSL_get_error(ssl,r));
+                      exit(1);
+                }
+            }
             printf("TCPSG: ho letto dal client: %s\n",frwd_buffer);		
             if ( (nbytes = send(server_sockfd, frwd_buffer, nbytes, 0)) < 1 ){
                 printf("TCPSG: ho scritto al server: %s per %i byte\n",frwd_buffer,nbytes);		
@@ -404,17 +410,25 @@ int secureRedirect(int client_sockfd, char *serv_address, int
             //r=BIO_puts(io,frwd_buffer);
             r=SSL_write(ssl,frwd_buffer,nbytes);
             printf("TCPSG: Ho scritto al client: %s\n",frwd_buffer);
-			if(SSL_get_error(ssl,r) != SSL_ERROR_NONE)
-                return -1;//TODO
+			if(SSL_get_error(ssl,nbytes) != SSL_ERROR_NONE){
+                if(SSL_get_error(ssl,r) == SSL_ERROR_ZERO_RETURN) //client socket closed
+                    break;
+                else {
+                      printf("SSL write problem, error: %i",SSL_get_error(ssl,r));
+                      exit(1);
+                }
+            }
             //if((r=BIO_flush(io))<0)
               //  return -1;//TODO
 		}
 		
 		bzero (frwd_buffer, BUFFER_SIZE);
 	}
+
     SSL_shutdown(ssl);
-    destroy_ctx(ctx);
+    SSL_free(ssl);
 	close(client_sockfd);
+    destroy_ctx(ctx);
 	close(server_sockfd);
 	return(0);
 }
