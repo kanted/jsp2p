@@ -386,10 +386,10 @@ int secureRedirect(int client_sockfd, char *serv_address, int
             //r = BIO_gets(io,frwd_buffer,BUFFER_SIZE);
             nbytes = SSL_read(ssl,frwd_buffer,BUFFER_SIZE);
             if(SSL_get_error(ssl,nbytes) != SSL_ERROR_NONE){
-                if(SSL_get_error(ssl,r) == SSL_ERROR_ZERO_RETURN)  //client socket closed
+                if(SSL_get_error(ssl,nbytes) == SSL_ERROR_ZERO_RETURN)  //client socket closed
                     break;
                 else {
-                      printf("TCPSG: SSL read problem, error: %i",SSL_get_error(ssl,r));
+                      printf("TCPSG: SSL read problem, error: %i",SSL_get_error(ssl,nbytes));
                       exit(1);
                 }
             }
@@ -411,10 +411,10 @@ int secureRedirect(int client_sockfd, char *serv_address, int
             r=SSL_write(ssl,frwd_buffer,nbytes);
             printf("TCPSG: Ho scritto al client: %s\n",frwd_buffer);
 			if(SSL_get_error(ssl,nbytes) != SSL_ERROR_NONE){
-                if(SSL_get_error(ssl,r) == SSL_ERROR_ZERO_RETURN) //client socket closed
+                if(SSL_get_error(ssl,nbytes) == SSL_ERROR_ZERO_RETURN) //client socket closed
                     break;
                 else {
-                      printf("TCPSG: SSL write problem, error: %i",SSL_get_error(ssl,r));
+                      printf("TCPSG: SSL write problem, error: %i",SSL_get_error(ssl,nbytes));
                       exit(1);
                 }
             }
