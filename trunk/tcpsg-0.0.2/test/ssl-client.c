@@ -86,8 +86,8 @@ int main(int argc, char *argv[]) {
 
    /* Open 3 sockets and send same message each time. */
 
-   //for (i = 0; i < 3; ++i)
-   //{
+   for (i = 0; i < 3; ++i)
+   {
       /* Open a socket --- not bound yet. */
       /* Internet TCP type. */
       if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
       /* Close this connection. */
       close(sock);
       printf("C: Per me il socket e' chiuso\n");
-   //}
+   }
 
    exit(0);
 
