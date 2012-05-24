@@ -128,23 +128,36 @@ int main(int argc, char *argv[]) {
       printf("Client socket has port %hu\n", ntohs(client.sin_port));
 
       /* Write out message. */
-      if (SSL_write(ssl, DATA, sizeof(DATA)) < 0)
-         pdie("Writing on stream socket");
+      r = SSL_write(ssl, DATA, sizeof(DATA));
+      switch(SSL_get_error(ssl,r)){      
+      case SSL_ERROR_NONE:
+        if(request_len!=r)
+          err_exit("Incomplete write!");
+        break;
+        default:
+          berr_exit("SSL write problem");
+      }
+    
 
-	printf("C: Ho scritto al TCPSG %s\n", DATA);
+	  printf("C: Ho scritto al TCPSG %s\n", DATA);
       /* Prepare our buffer for a read and then read. */
       bzero(buf, sizeof(buf));
-      printf("C: Aspetto di leggere dal TCPSG\n");
-      int g; 
-      if ((g = SSL_read(ssl, buf, BUFFER_SIZE)) < 0)
-         pdie("Reading stream message");
+      printf("C: Aspetto di leggere dal TCPSG\n"); 
+      r = SSL_read(ssl, buf, BUFFER_SIZE);
+      switch(SSL_get_error(ssl,r)){
+        case SSL_ERROR_NONE:
+          len=r;
+          break;
+        default:
+          berr_exit("SSL read problem");
+      }
       
-      printf("C: Ho letto dal TCPSG %i\n", g);
+      printf("C: Ho letto dal TCPSG %s\n", buf);
       SSL_shutdown(ssl);
       SSL_free(ssl);
 
-    /* Shutdown the socket */
-    destroy_ctx(ctx);
+      /* Shutdown the socket */
+      destroy_ctx(ctx);
       
        
       /* Close this connection. */
