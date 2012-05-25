@@ -48,8 +48,6 @@ int main(int argc, char *argv[])
     int clientLen;
     struct hostent *hp;
     char buf[BUFFER_SIZE]; 
-    int i;
-    char *request=0;
     int r;
     SSLSocket* secureSocket;
 
