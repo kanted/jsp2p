@@ -12,7 +12,7 @@
 #define SERVER_ADDR "127.0.0.1"
 #define SERVER_PORT 2300
 #define BUFFER_SIZE 1024
-#define KEYFILE "client.pem"
+#define KEYFILE "../client.pem"
 #define PASSWORD "abcd"
 
 //TODO MAKEFILE
