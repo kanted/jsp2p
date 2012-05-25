@@ -73,12 +73,12 @@ int main(int argc, char *argv[])
     secureSocket = SSL_socket(clientSocket, KEYFILE, PASSWORD);
     if(secureSocket == NULL)
         return -1;
-    if(SSL_connect(clientSocket->ssl)<=0)
+    if(SSL_connect(secureSocket->ssl)<=0)
     {
         printf("CLIENT: SSL connect error\n");
         goto exceptionHandler;
     }
-    if(checkCertificate(clientSocket->ssl)<0){
+    if(checkCertificate(secureSocket->ssl)<0){
         goto exceptionHandler; 
     }
     if (getsockname(sock, (struct sockaddr *) &client, &clientLen))
