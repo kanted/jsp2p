@@ -81,11 +81,11 @@ int main(int argc, char *argv[])
     if(checkCertificate(secureSocket->ssl)<0){
         goto exceptionHandler; 
     }
-    if (getsockname(clientSocket, (struct sockaddr *) &client, &clientLen)) //TODO ??
+    /*if (getsockname(clientSocket, (struct sockaddr *) &client, &clientLen)) //TODO ??
     {
         printf("CLIENT: Getting socket name\n");
         goto exceptionHandler;
-    }
+    }*/
     printf("CLIENT: Client socket has port %hu\n", ntohs(client.sin_port));
     r = SSL_write(secureSocket->ssl, DATA, sizeof(DATA));
     if((r = SSL_get_error(secureSocket->ssl,r)) != SSL_ERROR_NONE){      
