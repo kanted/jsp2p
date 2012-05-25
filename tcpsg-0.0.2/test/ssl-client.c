@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     printf("CLIENT: reading\n"); 
     r = SSL_read(secureSocket->ssl, buf, BUFFER_SIZE);
     if((r = SSL_get_error(secureSocket->ssl,r)) != SSL_ERROR_NONE){
-      printf("CLIENT: SSL write problem error: %i\n",r);
+      printf("CLIENT: SSL write problem, error: %i\n",r);
       goto exceptionHandler;
     }
     printf("CLIENT: read %s\n", buf);
