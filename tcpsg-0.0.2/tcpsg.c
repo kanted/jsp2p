@@ -71,6 +71,7 @@
 #define DOWN 2
 
 #define KEYFILE_LENGTH 256
+#define PASSWORD_LENGTH 256
 #define PWD_LENGTH 128
 
 
@@ -87,7 +88,7 @@
 /* Errors when getting configuration from file /etc/tcpsg.conf */
 
 char *errors[]={"No error","Unable to open file","undefined localport",
-                "undefined serverport","undefined maxclients","undefined servers","undefined keyfile","undefined dhfile","undefined password"};
+                "undefined serverport","undefined maxclients","undefined servers","undefined keyfile","undefined password"};
 
 
 static int child_count;
@@ -100,8 +101,7 @@ struct options {
         int num_servers;
     int sslflag;
     char keyfile[KEYFILE_LENGTH];
-    char dhfile[KEYFILE_LENGTH];
-    char password[KEYFILE_LENGTH];//TODO 
+    char password[PASSWORD_LENGTH]; 
 } main_opt;
 
 
@@ -168,8 +168,8 @@ int read_config(char *configFileName)
  char tmpString[500];
  char tmpChar;
  unsigned long configFileLength;
- int lp,sp,mc,kf,sf,df,pw;
- lp=sp=mc=kf=sf=df=pw=FALSE;
+ int lp,sp,mc,kf,sf,pw;
+ lp=sp=mc=kf=sf=pw=FALSE;
 
  main_opt.num_servers=0;
  if ((configFileHandle=fopen(configFileName,"rb"))!=NULL)
@@ -196,14 +196,6 @@ int read_config(char *configFileName)
            fscanf(configFileHandle,"%s",tmpString);
            strncpy(main_opt.keyfile,tmpString,KEYFILE_LENGTH);
            kf=TRUE;
-     }
-        if (strcasecmp(tmpString,"dhfile")==0)
-         {
-           bzero(tmpString, 500);
-           bzero(main_opt.dhfile, KEYFILE_LENGTH);
-           fscanf(configFileHandle,"%s",tmpString);
-           strncpy(main_opt.dhfile,tmpString,KEYFILE_LENGTH);
-           df=TRUE;
      }
          if (strcasecmp(tmpString,"password")==0)
              {
@@ -250,8 +242,7 @@ int read_config(char *configFileName)
         if (main_opt.num_servers==0) return 5;
         if (!sf) return 6;
         if (!kf) return 7;
-        if (!df) return 8;
-        if (!pw) return 9;
+        if (!pw) return 8;
   }
  else
  {
