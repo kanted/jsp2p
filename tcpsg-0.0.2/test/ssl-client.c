@@ -15,6 +15,7 @@
 #define KEYFILE "client.pem"
 #define PASSWORD "abcd"
 
+//TODO warnings
 //TODO MAKEFILE
 //TODO COMMENTI
 //TODO RELAZIONE
