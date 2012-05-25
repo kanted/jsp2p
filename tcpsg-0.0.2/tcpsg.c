@@ -366,7 +366,8 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
         return(serverSocket);
     nbytes = 0;
     memset(&buffer, 0, BUFFER_SIZE);
-    secureSocket = SSL_socket(clientSocket, main_opt.keyfile, password); //TODO errori??
+    secureSocket = SSL_socket(clientSocket, main_opt.keyfile, password);
+    if(secureSocket == NULL) return -1;
     if((error = SSL_accept(secureSocket->ssl)) <= 0) return error;
     while(TRUE)
     {
@@ -376,7 +377,7 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
         select(FD_SETSIZE, &fileDescriptors, NULL, NULL, NULL);
         if(FD_ISSET(clientSocket, &fileDescriptors))
         {
-            printf("TCPSG: sto per leggere dal client\n");
+            printf("TCPSG: reading\n");
             nbytes = SSL_read(secureSocket->ssl, buffer, BUFFER_SIZE);
             error = SSL_get_error(secureSocket->ssl,nbytes);
             if(error != SSL_ERROR_NONE)
@@ -385,26 +386,29 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
                 else
                 {
                       printf("TCPSG: SSL read problem, error: %i", error);
-                      exit(1);
+                      goto exceptionHandler;
                 }
             }
-            printf("TCPSG: ho letto dal client: %s\n", buffer);
+            printf("TCPSG: read from client %s\n", buffer);
             if((nbytes = send(serverSocket, buffer, nbytes, 0)) < 1 )
             {
-                printf("TCPSG: ho scritto al server: %s per %i byte\n", buffer, nbytes); //TODO exception handler per fare le free
-                return(nbytes);
+                printf("TCPSG: send error\n");
+                goto exceptionHandler;
             }
-             printf("TCPSG: ho mandato al server: %s\n", buffer);
+             printf("TCPSG: wrote to server: %s\n", buffer);
         }
-        printf("TECPSG: Ho scritto al server\n");
+ 
         if (FD_ISSET(serverSocket, &fileDescriptors))
         {
             // Read from server and write to client...
             if( (nbytes = recv(serverSocket, buffer, BUFFER_SIZE, 0)) < 1)
-                return(nbytes);
-            printf("TCPSG: ho letto dal server: %s\n", buffer);
+            {
+                printf("TCPSG: recv error\n");
+                goto exceptionHandler;
+            }
+            printf("TCPSG: read from server: %s\n", buffer);
             error = SSL_write(secureSocket->ssl, buffer, nbytes);
-            printf("TCPSG: Ho scritto al client: %s\n", buffer);
+            printf("TCPSG: wrote to client: %s\n", buffer);
             error = SSL_get_error(secureSocket->ssl, error);
             if(error != SSL_ERROR_NONE)
             {
@@ -412,8 +416,8 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
                     break;
                 else
                 {
-                      printf("TCPSG: SSL write problem, error: %i", error); //TODO exception handler per fare le free - vd. valgrind
-                      exit(1);
+                      printf("TCPSG: SSL write problem, error: %i", error);
+                      goto exceptionHandler;
                 }
             }
         }
@@ -423,6 +427,12 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
     close(clientSocket);
     close(serverSocket);
     return 0;
+
+exceptionHandler:
+    SSL_close(secureSocket);
+    close(clientSocket);
+    close(serverSocket);
+    return -1;  
 }
 /*
  * Redirect all arriving data to the real server.

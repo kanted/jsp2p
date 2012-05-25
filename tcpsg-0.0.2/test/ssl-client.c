@@ -15,107 +15,99 @@
 #define KEYFILE "client.pem"
 #define PASSWORD "abcd"
 
+//TODO MAKEFILE
+//TODO COMMENTI
+//TODO RELAZIONE
+//TODO COMMENTI PRIMO PROGETTO
+//TODO MAKEFILE PRIMO PROGETTO
+//TODO VALGRIND
 
-void checkCertificate(SSL* ssl)
+int checkCertificate(SSL* ssl)
   {
     X509 *peer;
-    char peer_CN[256];
-    
+    char peer_CN[256];    
     if(SSL_get_verify_result(ssl)!=X509_V_OK){
-         printf("Certificate doesn't verify"); //TODO
-        exit(1);
+         printf("CLIENT: Certificate doesn't verify\n");
+         return -1;
     }
-
     peer=SSL_get_peer_certificate(ssl);
     X509_NAME_get_text_by_NID(X509_get_subject_name(peer),NID_commonName, peer_CN, 256);
     if(strcasecmp(peer_CN,SERVER_ADDR)){
-        printf("Common name doesn't match host name"); //TODO
-        exit(1);
+        printf("CLIENT: Common name doesn't match host name\n");
+        return -1;
     }
+    return 0;
   }
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+  {
+    int clientSocket;
+    struct sockaddr_in server;
+    struct sockaddr_in client;
+    int clientLen;
+    struct hostent *hp;
+    char buf[BUFFER_SIZE]; 
+    int i;
+    char *request=0;
+    int r;
+    SSLSocket* secureSocket;
 
-   int clientSocket;
-   struct sockaddr_in server;
-   struct sockaddr_in client;
-   int clientLen;
-   struct hostent *hp;
-   char buf[BUFFER_SIZE]; 
-   int i;
-   char *request=0;
-   int r;
-   SSLSocket* secureSocket;
-
-   /* Open 3 sockets and send same message each time. */
-
-   for (i = 0; i < 3; ++i)
-   {
-      
-      if ((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0){
-         printf("Opening stream socket"); //TODO
-         return -1;
-     }
-      
-      bzero((char *) &server, sizeof(server));
-      server.sin_family = AF_INET;
-      if ((hp = gethostbyname(SERVER_ADDR)) == NULL) {
-         printf("Unknown host"); //TODO
-         return -1;
-      }
-      bcopy(hp->h_addr, &server.sin_addr, hp->h_length);
-      server.sin_port = htons((u_short) SERVER_PORT);
-
-      if (connect(clientSocket, (struct sockaddr *) &server, sizeof(server)) < 0)
-      {
-         printf("Connect failed"); //TODO
-         return -1;
-      }
-
-      SSL_socket(clientSocket, KEYFILE, PASSWORD);//TODO errori??
-       
-      if(SSL_connect(clientSocket->ssl)<=0)
-      {
-            printf("SSL connect error");//TODO
-            return -1;
-      }
-
-      checkCertificate(clientSocket->ssl); //TODO controllo errori
-      
-      if (getsockname(sock, (struct sockaddr *) &client, &clientLen))
-      {
-            printf("Getting socket name");//TODO
-            return -1;
-      }
-      printf("Client socket has port %hu\n", ntohs(client.sin_port));
-
-      r = SSL_write(secureSocket->ssl, DATA, sizeof(DATA));
-      switch(SSL_get_error(secureSocket->ssl,r)){      
-      case SSL_ERROR_NONE:
-        if(sizeof(DATA)!=r)
-          printf("Incomplete write!");
-        return -1; //TODO + farlo anche nel tcpsg??
-        default:
-          printf("SSL write problem");
-          return -1; //TODO
-      }
-      
-	  printf("C: Ho scritto al TCPSG %s\n", DATA);
-      bzero(buf, sizeof(buf));
-      printf("C: Aspetto di leggere dal TCPSG\n"); 
-      r = SSL_read(secureSocket->ssl, buf, BUFFER_SIZE);
-      if(SSL_get_error(secureSocket->ssl,r) != SSL_ERROR_NONE){
-          printf("SSL write problem");
-          return -1; //TODO
-      }
-      printf("C: Ho letto dal TCPSG %s\n", buf);
-      SSL_close(secureSocket);
-
-      close(sock);
-      printf("C: Per me il socket e' chiuso\n");
-   }
-
-   return 0;
-
+    if ((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+     printf("CLIENT: Failed opening socket\n");
+     return -1;
+    }
+    bzero((char *) &server, sizeof(server));
+    server.sin_family = AF_INET;
+    if ((hp = gethostbyname(SERVER_ADDR)) == NULL) {
+     printf("CLIENT: Unknown host\n");
+     return -1;
+    }
+    bcopy(hp->h_addr, &server.sin_addr, hp->h_length);
+    server.sin_port = htons((u_short) SERVER_PORT); //TODO ???
+    if (connect(clientSocket, (struct sockaddr *) &server, sizeof(server)) < 0)
+    {
+     printf("CLIENT: Connect failed\n");
+     return -1;
+    }    
+    secureSocket = SSL_socket(clientSocket, KEYFILE, PASSWORD);
+    if(secureSocket == NULL)
+        return -1;
+    if(SSL_connect(clientSocket->ssl)<=0)
+    {
+        printf("CLIENT: SSL connect error\n");
+        goto exceptionHandler;
+    }
+    if(checkCertificate(clientSocket->ssl)<0){
+        goto exceptionHandler; 
+    }
+    if (getsockname(sock, (struct sockaddr *) &client, &clientLen))
+    {
+        printf("CLIENT: Getting socket name\n");
+        goto exceptionHandler;
+    }
+    printf("CLIENT: Client socket has port %hu\n", ntohs(client.sin_port));
+    r = SSL_write(secureSocket->ssl, DATA, sizeof(DATA));
+    if((r = SSL_get_error(secureSocket->ssl,r)) != SSL_ERROR_NONE){      
+                printf("CLIENT: SSL write problem, error: %i\n",r);
+                goto exceptionHandler;
+    }
+    printf("CLIENT: wrote %s\n", DATA);
+    bzero(buf, sizeof(buf));
+    printf("CLIENT: reading\n"); 
+    r = SSL_read(secureSocket->ssl, buf, BUFFER_SIZE);
+    if((r = SSL_get_error(secureSocket->ssl,r)) != SSL_ERROR_NONE){
+      printf("CLIENT: SSL write problem error: %i\n",r);
+      goto exceptionHandler;
+    }
+    printf("CLIENT: read %s\n", buf);
+    SSL_close(secureSocket);
+    close(sock);
+    printf("CLIENT: socket closed\n");
+    return 0;
+    
+exceptionHandler:
+    SSL_close(secureSocket);
+    close(sock);
+    return -1;    
 }
