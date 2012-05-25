@@ -348,7 +348,8 @@ int connect_to(char *address, int *portno){
 }
 
 /*
- * Secure redirect of all arriving data to the real server.
+ * Secure transfers with clients establishing an SSL connection.
+ * Redirect of all decyphred data to the real server.
  * There is a separate instance of this function for
  * each connection.
  *
