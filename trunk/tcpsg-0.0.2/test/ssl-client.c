@@ -47,7 +47,6 @@ int main(int argc, char *argv[])
     int clientSocket;
     struct sockaddr_in server;
     struct sockaddr_in client;
-    int clientLen;
     struct hostent *hp;
     char buf[BUFFER_SIZE]; 
     int r;
