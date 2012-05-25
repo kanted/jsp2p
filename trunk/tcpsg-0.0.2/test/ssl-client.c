@@ -21,6 +21,8 @@
 //TODO COMMENTI PRIMO PROGETTO
 //TODO MAKEFILE PRIMO PROGETTO
 //TODO VALGRIND
+//TODO fare patch
+//TODO mettere il giusto file di conf
 
 int checkCertificate(SSL* ssl)
   {
