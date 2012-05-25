@@ -102,12 +102,12 @@ int main(int argc, char *argv[])
     }
     printf("CLIENT: read %s\n", buf);
     SSL_close(secureSocket);
-    close(sock);
+    close(clientSocket);
     printf("CLIENT: socket closed\n");
     return 0;
     
 exceptionHandler:
     SSL_close(secureSocket);
-    close(sock);
+    close(clientSocket);
     return -1;    
 }
