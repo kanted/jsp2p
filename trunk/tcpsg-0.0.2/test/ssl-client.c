@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
     if(checkCertificate(secureSocket->ssl)<0){
         goto exceptionHandler; 
     }
-    if (getsockname(clientSocket, (struct sockaddr *) &client, &clientLen))
+    if (getsockname(clientSocket, (struct sockaddr *) &client, &clientLen)) //TODO ??
     {
         printf("CLIENT: Getting socket name\n");
         goto exceptionHandler;
