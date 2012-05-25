@@ -19,7 +19,7 @@ SSLSocket* SSL_socket(int baseSocket, char* keyFile, char* password)
     SSLSocket* secureSocket = malloc(sizeof(SSLSocket));
     secureSocket->ctx = SSL_CTX_new(method);
     if(!(SSL_CTX_use_certificate_chain_file(secureSocket->ctx, keyFile))){
-        printf("SSL: Error reading certificate\n"); //TODO
+        printf("SSL: Error reading certificate in %s\n",keyFile);
         goto exceptionHandler;
     }
     staticPassword = password;
@@ -31,7 +31,7 @@ SSLSocket* SSL_socket(int baseSocket, char* keyFile, char* password)
         !(SSL_CTX_load_verify_locations(secureSocket->ctx, CA_LIST, 0))
     )
     {
-        printf("SSL: Error reading private key\n"); //TODO
+        printf("SSL: Error reading private key\n");
         goto exceptionHandler;
     }
     //load_dh_params(secureSocket->ctx, main_opt.dhfile);
