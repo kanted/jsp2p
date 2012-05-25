@@ -20,7 +20,7 @@ int main (int argc, char *argv[]){
    char buf[BUFFER_SIZE];
 
    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
-      printf("SERVER: Error opening socket");
+      printf("SERVER: Error opening socket\n");
       return -1;
    }
    bzero((char *) &server, sizeof(server));
@@ -28,14 +28,14 @@ int main (int argc, char *argv[]){
    server.sin_addr.s_addr = INADDR_ANY;
    server.sin_port = htons(SERVER_PORT);
    if (bind(sock, (struct sockaddr *) &server, sizeof(server))){
-      printf("SERVER: Erorr binding socket");
+      printf("SERVER: Erorr binding socket\n");
       return -1;
    }
    printf("SERVER: Socket has port %hu\n", ntohs(server.sin_port));
    listen(sock, 5);
    while (1) {
       if ((msgsock = accept(sock, (struct sockaddr *) &client, sizeof(client))) == -1){
-         printf("SERVER: Erorr in accept");
+         printf("SERVER: Erorr in accept\n");
          return -1;
       }
       else {
