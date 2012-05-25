@@ -34,9 +34,9 @@ int main (int argc, char *argv[]){
    printf("SERVER: Socket has port %hu\n", ntohs(server.sin_port));
    listen(sock, 5);
    while (1) {
-      if ((msgsock = accept(sock, (struct sockaddr *) &client, &clientLen)) == -1){
+      if ((msgsock = accept(sock, (struct sockaddr *) &client, sizeof(client))) == -1){
          printf("SERVER: Erorr in accept");
-         return -1;;
+         return -1;
       }
       else {
          printf("SERVER: Client IP: %s\n", inet_ntoa(client.sin_addr));
