@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in server;
     struct sockaddr_in client;
     int clientLen;
+    int serverLen = sizeof(server);
     struct hostent *hp;
     char buf[BUFFER_SIZE]; 
     int r;
@@ -63,7 +64,7 @@ int main(int argc, char *argv[])
     }
     bcopy(hp->h_addr, &server.sin_addr, hp->h_length);
     server.sin_port = htons((u_short) SERVER_PORT); //TODO ???
-    if (connect(clientSocket, (struct sockaddr *) &server, sizeof(server)) < 0)
+    if (connect(clientSocket, (struct sockaddr *) &server, &serverLen) < 0)
     {
      printf("CLIENT: Connect failed\n");
      return -1;
