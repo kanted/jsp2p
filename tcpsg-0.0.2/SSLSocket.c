@@ -24,17 +24,16 @@ SSLSocket* SSL_socket(int baseSocket, char* keyFile, char* password)
     }
     staticPassword = password;
     SSL_CTX_set_default_passwd_cb(secureSocket->ctx, passwordCopy);
-    if
-    (
-        !(SSL_CTX_use_PrivateKey_file(secureSocket->ctx, keyFile, SSL_FILETYPE_PEM))
-        ||
-        !(SSL_CTX_load_verify_locations(secureSocket->ctx, CA_LIST, 0))
-    )
+    if(!(SSL_CTX_use_PrivateKey_file(secureSocket->ctx, keyFile, SSL_FILETYPE_PEM)))
     {
         printf("SSL: Error reading private key\n");
         goto exceptionHandler;
     }
-    //load_dh_params(secureSocket->ctx, main_opt.dhfile);
+    if(!(SSL_CTX_load_verify_locations(secureSocket->ctx, CA_CERT, 0)))
+    {
+        printf("SSL: Error loading CA\n");
+        goto exceptionHandler;
+    }
     sbio = BIO_new_socket(baseSocket, BIO_NOCLOSE);
     secureSocket->ssl = SSL_new(secureSocket->ctx);
     SSL_set_bio(secureSocket->ssl, sbio, sbio);
