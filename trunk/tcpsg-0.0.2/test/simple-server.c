@@ -12,14 +12,15 @@
 
 int main (int argc, char *argv[]){
 
-   int sock;
-   int msgsock;
+   int serverSocket;
+   int clientSocket;
    struct sockaddr_in server;
    struct sockaddr_in client;
+   int addrLen = sizeof(client);
    int rval;
    char buf[BUFFER_SIZE];
 
-   if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+   if ((serverSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0){
       printf("SERVER: Error opening socket\n");
       return -1;
    }
@@ -27,15 +28,16 @@ int main (int argc, char *argv[]){
    server.sin_family = AF_INET;
    server.sin_addr.s_addr = INADDR_ANY;
    server.sin_port = htons(SERVER_PORT);
-   if (bind(sock, (struct sockaddr *) &server, sizeof(server))){
+   if (bind(serverSocket, (struct sockaddr *) &server, sizeof(server))){
       printf("SERVER: Erorr binding socket\n");
       return -1;
    }
    printf("SERVER: Socket has port %hu\n", ntohs(server.sin_port));
-   listen(sock, 5);
+   listen(serverSocket, 5);
    while (1) {
-      if ((msgsock = accept(sock, (struct sockaddr *) &client, sizeof(struct sockaddr_in))) == -1){
+      if ((clientSocket = accept(serverSocket, (struct sockaddr *) &client, &addrLen)) == -1){
          printf("SERVER: Erorr in accept\n");
+         close(serverSocket);
          return -1;
       }
       else {
@@ -44,7 +46,7 @@ int main (int argc, char *argv[]){
          do {   
             bzero(buf, sizeof(buf));
 
-            if ((rval = read(msgsock, buf, BUFFER_SIZE)) < 0){
+            if ((rval = read(clientSocket, buf, BUFFER_SIZE)) < 0){
                printf("SERVER: read error\n");
                break;
             }
@@ -54,14 +56,14 @@ int main (int argc, char *argv[]){
             }
             else
                printf("SERVER: read %s\n", buf);
-            if (write(msgsock, MSG, sizeof(MSG)) < 0){
+            if (write(clientSocket, MSG, sizeof(MSG)) < 0){
              printf("SERVER: Write error\n");
                break;
             }
             printf("SERVER: wrote %s\n", MSG);
          } while (rval != 0);
       }
-      close(msgsock);
+      close(clientSocket);
    }
    return 0;
 }
