@@ -15,6 +15,7 @@
 #define KEYFILE "client.pem"
 #define PASSWORD "abcd"
 
+//TODO todo sotto
 //TODO warnings
 //TODO MAKEFILE
 //TODO COMMENTI
@@ -53,13 +54,13 @@ int main(int argc, char *argv[])
     int r;
     SSLSocket* secureSocket;
 
-    if ((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+    if((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0){
      printf("CLIENT: Failed opening socket\n");
      return -1;
     }
     bzero((char *) &server, sizeof(server));
     server.sin_family = AF_INET;
-    if ((hp = gethostbyname(SERVER_ADDR)) == NULL) {
+    if((hp = gethostbyname(SERVER_ADDR)) == NULL) {
      printf("CLIENT: Unknown host\n");
      return -1;
     }
