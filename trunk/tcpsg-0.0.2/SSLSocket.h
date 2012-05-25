@@ -16,7 +16,7 @@
 
 #include <openssl/ssl.h>
 
-#define CA_LIST "root.pem"
+#define CA_CERT "root.pem"
 #define HOST    "localhost"
 #define RANDOM  "random.pem" //TODO ??
 #define PORT    4433
