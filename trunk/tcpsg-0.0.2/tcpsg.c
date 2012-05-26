@@ -87,7 +87,7 @@
 /* Errors when getting configuration from file /etc/tcpsg.conf */
 
 char *errors[]={"No error","Unable to open file","undefined localport",
-                "undefined serverport","undefined maxclients","undefined servers","undefined secure flag","undefined keyfile","undefined cafile","undefined password"};
+                "undefined serverport","undefined maxclients","undefined servers","undefined secure flag","undefined keyfile","undefined password"};
 
 
 static int child_count;
@@ -100,7 +100,6 @@ struct options {
         int num_servers;
     int sslflag;
     char keyfile[KEYFILE_LENGTH];
-    char cafile[KEYFILE_LENGTH];
     char password[PASSWORD_LENGTH]; 
 } main_opt;
 
@@ -168,8 +167,8 @@ int read_config(char *configFileName)
  char tmpString[500];
  char tmpChar;
  unsigned long configFileLength;
- int lp,sp,mc,kf,sf,cf,pw;
- lp=sp=mc=kf=sf=cf=pw=FALSE;
+ int lp,sp,mc,kf,sf,pw;
+ lp=sp=mc=kf=sf=pw=FALSE;
 
  main_opt.num_servers=0;
  if ((configFileHandle=fopen(configFileName,"rb"))!=NULL)
@@ -196,14 +195,6 @@ int read_config(char *configFileName)
            fscanf(configFileHandle,"%s",tmpString);
            strncpy(main_opt.keyfile,tmpString,KEYFILE_LENGTH);
            kf=TRUE;
-     }
-         if (strcasecmp(tmpString,"cafile")==0)
-         {
-           bzero(tmpString, 500);
-           bzero(main_opt.cafile, KEYFILE_LENGTH);
-           fscanf(configFileHandle,"%s",tmpString);
-           strncpy(main_opt.cafile,tmpString,KEYFILE_LENGTH);
-           cf=TRUE;
      }
          if (strcasecmp(tmpString,"password")==0)
              {
@@ -250,8 +241,7 @@ int read_config(char *configFileName)
         if (main_opt.num_servers==0) return 5;
         if (!sf) return 6;
         if (!kf) return 7;
-        if (!cf) return 8;
-        if (!pw) return 9;
+        if (!pw) return 8;
   }
  else
  {
@@ -282,6 +272,7 @@ int set_config()
     printf("\n localport %d",main_opt.localport);
     printf("\n serverport %d",main_opt.serverport);
     printf("\n maxclients %d",main_opt.max_clients);
+    printf("\n keyfile %s",main_opt.keyfile);
     printf("\n Servers: ");
     for (j=0;j<main_opt.num_servers;j++)
     printf("\n\t== %s ==",main_opt.serverhost[j]);
