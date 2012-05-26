@@ -8,25 +8,15 @@
 #include "../SSLSocket.h"
 
 
-#define DATA "Nel mezzo del cammin di nostra vita . . ."
+#define MSG "Nel mezzo del cammin di nostra vita . . ."
 #define SERVER_ADDR "127.0.0.1"
 #define SERVER_PORT 2300
 #define BUFFER_SIZE 1024
 #define KEYFILE "client.pem"
 #define PASSWORD "abcd"
 
-//TODO MAKEFILE
-//TODO fare patch
-//TODO mettere il giusto file di conf
-//TODO RELAZIONE
-
-//TODO COMMENTI PRIMO PROGETTO
-//TODO MAKEFILE PRIMO PROGETTO
-
-
-
 int checkCertificate(SSL* ssl)
-  {
+{
     X509 *peer;
     char peer_CN[256];    
     if(SSL_get_verify_result(ssl)!=X509_V_OK){
@@ -40,11 +30,10 @@ int checkCertificate(SSL* ssl)
         return -1;
     }
     return 0;
-  }
-
+}
 
 int main(int argc, char *argv[])
-  {
+{
     int clientSocket;
     struct sockaddr_in server;
     struct sockaddr_in client;
@@ -53,13 +42,15 @@ int main(int argc, char *argv[])
     int r;
     SSLSocket* secureSocket;
 
-    if((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+    if((clientSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
      printf("CLIENT: Failed opening socket\n");
      return -1;
     }
     bzero((char *) &server, sizeof(server));
     server.sin_family = AF_INET;
-    if((hp = gethostbyname(SERVER_ADDR)) == NULL) {
+    if((hp = gethostbyname(SERVER_ADDR)) == NULL)
+    {
      printf("CLIENT: Unknown host\n");
      return -1;
     }
@@ -82,12 +73,12 @@ int main(int argc, char *argv[])
         goto exceptionHandler; 
     }
     printf("CLIENT: Client socket has port %hu\n", ntohs(client.sin_port));
-    r = SSL_write(secureSocket->ssl, DATA, sizeof(DATA));
+    r = SSL_write(secureSocket->ssl, MSG, sizeof(MSG));
     if((r = SSL_get_error(secureSocket->ssl,r)) != SSL_ERROR_NONE){      
                 printf("CLIENT: SSL write problem, error: %i\n",r);
                 goto exceptionHandler;
     }
-    printf("CLIENT: wrote %s\n", DATA);
+    printf("CLIENT: wrote %s\n", MSG);
     bzero(buf, sizeof(buf));
     printf("CLIENT: reading\n"); 
     r = SSL_read(secureSocket->ssl, buf, BUFFER_SIZE);
