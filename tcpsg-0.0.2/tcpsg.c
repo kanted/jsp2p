@@ -87,7 +87,7 @@
 /* Errors when getting configuration from file /etc/tcpsg.conf */
 
 char *errors[]={"No error","Unable to open file","undefined localport",
-                "undefined serverport","undefined maxclients","undefined servers","undefined keyfile","undefined cafile","undefined password"};
+                "undefined serverport","undefined maxclients","undefined servers","undefined secure flag","undefined keyfile","undefined cafile","undefined password"};
 
 
 static int child_count;
