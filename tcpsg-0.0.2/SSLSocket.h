@@ -18,7 +18,11 @@
 
 #define CA_CERT "root.pem"
 
-struct SSLSocket;
+typedef struct
+{
+    SSL* ssl;
+    SSL_CTX* ctx;
+} SSLSocket;
 
 SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password);
 

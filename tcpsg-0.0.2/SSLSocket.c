@@ -1,11 +1,5 @@
 #include "SSLSocket.h"
 
-typedef struct
-{
-    SSL* ssl;
-    SSL_CTX* ctx;
-} SSLSocket;
-
 static char* staticPassword;
   
 static int passwordCopy(char* buffer, int n, int rwFlag, void* userData)
