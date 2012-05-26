@@ -39,15 +39,13 @@ int main (int argc, char *argv[]){
    while (1) {
       if ((clientSocket = accept(serverSocket, (struct sockaddr *) &client, &addrLen)) == -1){
          printf("SERVER: Erorr in accept\n");
-         close(serverSocket);
-         return -1;
+         break;
       }
       else {
          printf("SERVER: Client IP: %s\n", inet_ntoa(client.sin_addr));
          printf("SERVER: Client Port: %hu\n", ntohs(client.sin_port));
          do {   
             bzero(buf, sizeof(buf));
-
             if ((rval = read(clientSocket, buf, BUFFER_SIZE)) < 0){
                printf("SERVER: read error\n");
                break;
@@ -56,8 +54,7 @@ int main (int argc, char *argv[]){
                printf("SERVER: ending connection\n");
                break;
             }
-            else
-               printf("SERVER: read %s\n", buf);
+            printf("SERVER: read %s\n", buf);
             if (write(clientSocket, MSG, sizeof(MSG)) < 0){
              printf("SERVER: Write error\n");
                break;
@@ -67,6 +64,7 @@ int main (int argc, char *argv[]){
       }
       close(clientSocket);
    }
-   return 0;
+   close(serverSocket);
+   return -1;
 }
 
