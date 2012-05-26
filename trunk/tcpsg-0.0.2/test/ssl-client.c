@@ -15,15 +15,15 @@
 #define KEYFILE "client.pem"
 #define PASSWORD "abcd"
 
-//TODO warnings
 //TODO MAKEFILE
-//TODO COMMENTI
-//TODO RELAZIONE
-//TODO COMMENTI PRIMO PROGETTO
-//TODO MAKEFILE PRIMO PROGETTO
-//TODO VALGRIND
 //TODO fare patch
 //TODO mettere il giusto file di conf
+//TODO RELAZIONE
+
+//TODO COMMENTI PRIMO PROGETTO
+//TODO MAKEFILE PRIMO PROGETTO
+
+
 
 int checkCertificate(SSL* ssl)
   {
