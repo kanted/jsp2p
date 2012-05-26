@@ -34,7 +34,7 @@ inline int SSLGetError(SSLSocket* secureSocket, int err);
 
 inline int SSLWrite(SSLSocket* secureSocket, void* buffer, int bufferSize);
 
-int checkCertificate(SSLSocket* secureSocket, char* hostname, char* caFile);
+int checkCertificate(SSLSocket* secureSocket, char* hostname);
 
 void SSLClose(SSLSocket* secureSocket);
 
