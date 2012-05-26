@@ -34,7 +34,7 @@ int main (int argc, char *argv[]){
       printf("SERVER: Erorr binding socket\n");
       return -1;
    }
-   printf("SERVER: Socket has port %hu\n", ntohs(server.sin_port));
+   printf("SERVER: Socket has port %u\n", ntohs(server.sin_port));
    listen(serverSocket, 5);
    while (1) {
       if ((clientSocket = accept(serverSocket, (struct sockaddr *) &client, &addrLen)) == -1){
@@ -43,7 +43,7 @@ int main (int argc, char *argv[]){
       }
       else {
          printf("SERVER: Client IP: %s\n", inet_ntoa(client.sin_addr));
-         printf("SERVER: Client Port: %hu\n", ntohs(client.sin_port));
+         printf("SERVER: Client Port: %u\n", ntohs(client.sin_port));
          do {   
             bzero(buf, sizeof(buf));
             if ((rval = read(clientSocket, buf, BUFFER_SIZE)) < 0){
