@@ -72,7 +72,6 @@
 
 #define KEYFILE_LENGTH 256
 #define PASSWORD_LENGTH 256
-#define PWD_LENGTH 128
 
 
 /*
@@ -347,20 +346,20 @@ int connect_to(char *address, int *portno){
  * Returns: 0 if OK. A negative value on errors.
  *
  */
-int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char* password) //TODO perchè alcuni con main_opt altri per argomento?
+int secureRedirect(int clientSocket)
 {
     SSLSocket* secureSocket;
     int error;
     fd_set fileDescriptors;
-    char buffer[BUFFER_SIZE];
-    int serverSocket, nbytes;
-    if((serverSocket = connect_to(serverAddress, serverPort)) < 0)
-        return(serverSocket);
-    nbytes = 0;
+    char buffer[BUFFER_SIZE]; /* Buffer to forward data */
+    int serverSocket;
+    int nbytes = 0;
+    if((serverSocket = connect_to(main_opt.serverhost[server_id], &main_opt.serverPort)) < 0)
+        return serverSocket;
     memset(&buffer, 0, BUFFER_SIZE);
-    secureSocket = SSL_socket(clientSocket, main_opt.keyfile, password);
+    secureSocket = SSLOpen(clientSocket, main_opt.keyfile, main_opt.password);
     if(secureSocket == NULL) return -1;
-    if((error = SSL_accept(secureSocket->ssl)) <= 0) return error;
+    if((error = SSLAccept(secureSocket)) <= 0) return error;
     while(TRUE)
     {
         FD_ZERO(&fileDescriptors);
@@ -369,59 +368,53 @@ int secureRedirect(int clientSocket, char* serverAddress, int* serverPort, char*
         select(FD_SETSIZE, &fileDescriptors, NULL, NULL, NULL);
         if(FD_ISSET(clientSocket, &fileDescriptors))
         {
-            printf("TCPSG: reading\n");
-            nbytes = SSL_read(secureSocket->ssl, buffer, BUFFER_SIZE);
-            error = SSL_get_error(secureSocket->ssl,nbytes);
+            // Secure read from client and write to server...
+            nbytes = SSLRead(secureSocket, buffer, BUFFER_SIZE);
+            error = SSLGetError(secureSocket,nbytes);
             if(error != SSL_ERROR_NONE)
             {
-                if(error == SSL_ERROR_ZERO_RETURN) break;
+                if(error == SSL_ERROR_ZERO_RETURN) break; //client socket closed
                 else
                 {
-                      printf("TCPSG: SSL read problem, error: %i", error);
+                      writemsg("SSL read problem");
                       goto exceptionHandler;
                 }
             }
-            printf("TCPSG: read from client %s\n", buffer);
             if((nbytes = send(serverSocket, buffer, nbytes, 0)) < 1 )
             {
-                printf("TCPSG: send error\n");
+                writemsg("Send error");
                 goto exceptionHandler;
             }
-             printf("TCPSG: wrote to server: %s\n", buffer);
         }
- 
         if (FD_ISSET(serverSocket, &fileDescriptors))
         {
-            // Read from server and write to client...
+            // Read from server and secure write to client...
             if( (nbytes = recv(serverSocket, buffer, BUFFER_SIZE, 0)) < 1)
             {
-                printf("TCPSG: recv error\n");
+                writemsg("Recv error");
                 goto exceptionHandler;
             }
-            printf("TCPSG: read from server: %s\n", buffer);
-            error = SSL_write(secureSocket->ssl, buffer, nbytes);
-            printf("TCPSG: wrote to client: %s\n", buffer);
-            error = SSL_get_error(secureSocket->ssl, error);
+            error = SSLWrite(secureSocket, buffer, nbytes);
+            error = SSLGetError(secureSocket, error);
             if(error != SSL_ERROR_NONE)
             {
-                if(error == SSL_ERROR_ZERO_RETURN) //client socket closed
-                    break;
+                if(error == SSL_ERROR_ZERO_RETURN) break; //client socket closed
                 else
                 {
-                      printf("TCPSG: SSL write problem, error: %i", error);
+                      writemsg("SSL write problem");
                       goto exceptionHandler;
                 }
             }
         }
         bzero (buffer, BUFFER_SIZE);
     }
-    SSL_close(secureSocket);
+    SSLClose(secureSocket);
     close(clientSocket);
     close(serverSocket);
     return 0;
 
 exceptionHandler:
-    SSL_close(secureSocket);
+    SSLClose(secureSocket);
     close(clientSocket);
     close(serverSocket);
     return -1;  
@@ -591,9 +584,7 @@ int main(int argc, char **argv)
 
            if (main_opt.sslflag)
            {
-            if(secureRedirect(connfd,
-               main_opt.serverhost[server_id],
-                   &main_opt.serverport, main_opt.password) < 0)
+            if(secureRedirect(connfd) < 0)
                 writemsg("Failed to attempt to redirect data");
            }
            else{
