@@ -7,14 +7,14 @@ TARGET=		tcpsg
 INSTALL_PATH=	/usr/sbin
 
 .c.o:
-	$(CC) -c -Wall $(LDFLAGS) $(CFLAGS) -D$(STD) $<
+	$(CC) -c -Wall $(CFLAGS) -D$(STD) $<
 
 all:		$(TARGET)
 
 SSLSocket.o: SSLSocket.h
 
 $(TARGET):	$(OBJS)
-	$(CC) $(OBJS) $(LDFLAGS) -o $(TARGET)
+	$(CC) -Wall $(OBJS) $(LDFLAGS) -o $(TARGET)
 
 install: $(TARGET)
 	cp -i $(TARGET) $(INSTALL_PATH)
