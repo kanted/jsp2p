@@ -1,22 +1,23 @@
-CC=				gcc
-STD=				_GNU_SOURCE
-OBJS=				tcpsg.o common.o
-TARGET=			tcpsg
+CC=		gcc
+LDFLAGS = 	-lssl -lcrypto
+STD=		_GNU_SOURCE
+OBJS=		tcpsg.o SSLSocket.o
+TARGET=		tcpsg
 INSTALL_PATH=	/usr/sbin
 
 .c.o:
-	$(CC) -c -Wall -lssl -lcrypto $(CFLAGS) -D$(STD) $<
+	$(CC) -c -Wall $(CFLAGS) -D$(STD) $<
 
 all:		$(TARGET)
 
-common.o: common.h
+SSLSocket.o: SSLSocket.h
 
 $(TARGET):	$(OBJS)
 	$(CC) $(OBJS) -o $(TARGET)
 
 install: $(TARGET)
 	cp -i $(TARGET) $(INSTALL_PATH)
-	cp tcpsg.conf /etc/tcpsg.conf 
+	cp tcpsg.conf /usr/local/etc/tcpsg.conf 
 clean:
 	rm -f *.o core
 
@@ -25,7 +26,7 @@ distclean: clean
 
 uninstall:
 	rm -f $(INSTALL_PATH)/$(TARGET)
-	rm -f /etc/tcpsg.conf
+	rm -f /usr/local/etc/tcpsg.conf
 
 
 
