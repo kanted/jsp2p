@@ -346,7 +346,7 @@ int connect_to(char *address, int *portno){
  * Returns: 0 if OK. A negative value on errors.
  *
  */
-int secureRedirect(int clientSocket)
+int secureRedirect(int clientSocket, char* serv_address, int* serv_portno)
 {
     SSLSocket* secureSocket;
     int error;
@@ -354,7 +354,7 @@ int secureRedirect(int clientSocket)
     char buffer[BUFFER_SIZE]; /* Buffer to forward data */
     int serverSocket;
     int nbytes = 0;
-    if((serverSocket = connect_to(main_opt.serverhost[server_id], &main_opt.serverPort)) < 0)
+    if((serverSocket = connect_to(serv_address, serv_portno)) < 0)
         return serverSocket;
     memset(&buffer, 0, BUFFER_SIZE);
     secureSocket = SSLOpen(clientSocket, main_opt.keyfile, main_opt.password);
@@ -584,7 +584,8 @@ int main(int argc, char **argv)
 
            if (main_opt.sslflag)
            {
-            if(secureRedirect(connfd) < 0)
+            if(secureRedirect(connfd, main_opt.serverhost[server_id],
+                                          &main_opt.serverport) < 0)
                 writemsg("Failed to attempt to redirect data");
            }
            else{
