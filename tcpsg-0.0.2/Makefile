@@ -14,7 +14,7 @@ all:		$(TARGET)
 SSLSocket.o: SSLSocket.h
 
 $(TARGET):	$(OBJS)
-	$(CC) $(OBJS) -o $(TARGET)
+	$(CC) $(OBJS) $(LDFLAGS) -o $(TARGET)
 
 install: $(TARGET)
 	cp -i $(TARGET) $(INSTALL_PATH)
