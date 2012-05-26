@@ -11,7 +11,7 @@ static int passwordCopy(char* buffer, int n, int rwFlag, void* userData)
 }
 
 /* Initialize a secure socket*/
-SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password)
+SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password, char* caFile)
 {
     SSL_METHOD* method;
     BIO* sbio;
@@ -31,7 +31,7 @@ SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password)
         printf("SSL: Error reading private key\n");
         goto exceptionHandler;
     }
-    if(!(SSL_CTX_load_verify_locations(secureSocket->ctx, CA_CERT, 0)))
+    if(!(SSL_CTX_load_verify_locations(secureSocket->ctx, caFile, 0)))
     {
         printf("SSL: Error loading CA\n");
         goto exceptionHandler;

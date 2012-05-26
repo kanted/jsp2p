@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
      printf("CLIENT: Connect failed\n");
      return -1;
     }    
-    secureSocket = SSLOpen(clientSocket, KEYFILE, PASSWORD);
+    secureSocket = SSLOpen(clientSocket, KEYFILE, PASSWORD, CAFILE);
     if(secureSocket == NULL)
         return -1;
     if(SSLConnect(secureSocket)<=0)
