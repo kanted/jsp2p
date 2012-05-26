@@ -367,7 +367,7 @@ int secureRedirect(int clientSocket, char* serv_address, int* serv_portno)
     if((serverSocket = connect_to(serv_address, serv_portno)) < 0)
         return serverSocket;
     memset(&buffer, 0, BUFFER_SIZE);
-    secureSocket = SSLOpen(clientSocket, main_opt.keyfile, main_opt.password, main_opt.cafile);
+    secureSocket = SSLOpen(clientSocket, main_opt.keyfile, main_opt.password, NULL);
     if(secureSocket == NULL) return -1;
     if((error = SSLAccept(secureSocket)) <= 0) return error;
     while(TRUE)

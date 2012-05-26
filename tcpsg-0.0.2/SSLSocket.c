@@ -31,7 +31,7 @@ SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password, char* caFile)
         printf("SSL: Error reading private key\n");
         goto exceptionHandler;
     }
-    if(!(SSL_CTX_load_verify_locations(secureSocket->ctx, caFile, 0)))
+    if((caFile!=NULL) && !(SSL_CTX_load_verify_locations(secureSocket->ctx, caFile, 0)))
     {
         printf("SSL: Error loading CA\n");
         goto exceptionHandler;
