@@ -6,7 +6,7 @@ TARGET=		tcpsg
 INSTALL_PATH=	/usr/sbin
 
 .c.o:
-	$(CC) -c -Wall $(CFLAGS) $(LDFLAGS) -D$(STD) $<
+	$(CC) -c -Wall $(LDFLAGS) $(CFLAGS) -D$(STD) $<
 
 all:		$(TARGET)
 
