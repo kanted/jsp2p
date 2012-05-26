@@ -1,15 +1,23 @@
 #include "SSLSocket.h"
 
+typedef struct
+{
+    SSL* ssl;
+    SSL_CTX* ctx;
+} SSLSocket;
+
 static char* staticPassword;
   
-static int passwordCopy(char* buffer, int n, int rwFlag,void* userData)
+static int passwordCopy(char* buffer, int n, int rwFlag, void* userData)
 {
-    if(n < strlen(staticPassword) + 1) return 0;
+    int len = strlen(staticPassword);
+    if(n < len + 1) return 0;
     strcpy(buffer, staticPassword);
-    return(strlen(staticPassword));
+    return len;
 }
 
-SSLSocket* SSL_socket(int baseSocket, char* keyFile, char* password)
+/* Initialize a secure socket*/
+SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password)
 {
     SSL_METHOD* method;
     BIO* sbio;
@@ -36,15 +44,62 @@ SSLSocket* SSL_socket(int baseSocket, char* keyFile, char* password)
     }
     sbio = BIO_new_socket(baseSocket, BIO_NOCLOSE);
     secureSocket->ssl = SSL_new(secureSocket->ctx);
+    if(secureSocket->ssl == NULL){
+        printf("SSL: Error initializing secure socket\n");
+        goto exceptionHandler;
+    }
     SSL_set_bio(secureSocket->ssl, sbio, sbio);
     return secureSocket;
 
     exceptionHandler:
+        SSL_CTX_free(secureSocket->ctx);
         free(secureSocket);
         return NULL;
 }
 
-void SSL_close(SSLSocket* secureSocket)
+inline int SSLAccept(SSLSocket* secureSocket)
+{
+    return SSL_accept(secureSocket->ssl);
+}
+
+inline int SSLConnect(SSLSocket* secureSocket)
+{
+    return SSL_connect(secureSocket->ssl);
+}
+
+
+inline int SSLRead(SSLSocket* secureSocket, void* buffer, int bufferSize)
+{
+    return SSL_read(secureSocket->ssl, buffer, bufferSize);
+}
+
+inline int SSLGetError(SSLSocket* secureSocket, int err)
+{
+    return SSL_get_error(secureSocket->ssl, err);
+}
+
+inline int SSLWrite(SSLSocket* secureSocket, void* buffer, int bufferSize)
+{
+    return  SSL_write(secureSocket->ssl, buffer, bufferSize);
+}
+
+int checkCertificate(SSLSocket* secureSocket)
+{
+    X509 *peer;
+    char peer_CN[256];    
+    if(SSL_get_verify_result(secureSocket->ssl)!=X509_V_OK){
+         return -1;
+    }
+    peer=SSL_get_peer_certificate(secureSocket->ssl);
+    X509_NAME_get_text_by_NID(X509_get_subject_name(peer),NID_commonName, peer_CN, 256);
+    if(strcasecmp(peer_CN,SERVER_ADDR)){
+        return -1;
+    }
+    return 0;
+}
+
+/* Destroy a secure socket*/
+void SSLClose(SSLSocket* secureSocket)
 {
     SSL_shutdown(secureSocket->ssl);
     SSL_free(secureSocket->ssl);
