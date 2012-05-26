@@ -15,7 +15,6 @@
 #define KEYFILE "client.pem"
 #define PASSWORD "abcd"
 
-//TODO todo sotto
 //TODO warnings
 //TODO MAKEFILE
 //TODO COMMENTI
@@ -65,7 +64,7 @@ int main(int argc, char *argv[])
      return -1;
     }
     bcopy(hp->h_addr, &server.sin_addr, hp->h_length);
-    server.sin_port = htons((u_short) SERVER_PORT); //TODO ???
+    server.sin_port = htons((unsigned short) SERVER_PORT);
     if (connect(clientSocket, (struct sockaddr *) &server, sizeof(server)) < 0)
     {
      printf("CLIENT: Connect failed\n");

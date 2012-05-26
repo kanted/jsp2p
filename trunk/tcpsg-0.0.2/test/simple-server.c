@@ -16,7 +16,7 @@ int main (int argc, char *argv[]){
    int clientSocket;
    struct sockaddr_in server;
    struct sockaddr_in client;
-   int addrLen = sizeof(client);
+   unsigned int addrLen = sizeof(client);
    int rval;
    char buf[BUFFER_SIZE];
 
