@@ -16,8 +16,6 @@
 
 #include <openssl/ssl.h>
 
-#define CA_CERT "root.pem"
-
 typedef struct
 {
     SSL* ssl;
@@ -36,7 +34,7 @@ inline int SSLGetError(SSLSocket* secureSocket, int err);
 
 inline int SSLWrite(SSLSocket* secureSocket, void* buffer, int bufferSize);
 
-int checkCertificate(SSLSocket* secureSocket, char* hostname);
+int checkCertificate(SSLSocket* secureSocket, char* hostname, char* caFile);
 
 void SSLClose(SSLSocket* secureSocket);
 

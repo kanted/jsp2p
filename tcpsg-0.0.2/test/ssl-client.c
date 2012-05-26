@@ -14,7 +14,7 @@
 #define BUFFER_SIZE 1024
 #define KEYFILE "client.pem"
 #define PASSWORD "abcd"
-
+#define CAFILE "root.pem"
 
 
 int main(int argc, char *argv[])
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
         printf("CLIENT: SSL connect error\n");
         goto exceptionHandler;
     }
-    if(checkCertificate(secureSocket,SERVER_ADDR)<0){
+    if(checkCertificate(secureSocket,SERVER_ADDR,CA_FILE)<0){
         printf("CLIENT: Check Certificate error\n");
         goto exceptionHandler; 
     }
