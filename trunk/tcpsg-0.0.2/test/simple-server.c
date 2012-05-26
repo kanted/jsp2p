@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <unistd.h>
 
 #define MSG ". . . mi ritrovai per una selva oscura"
 #define SERVER_PORT 23
