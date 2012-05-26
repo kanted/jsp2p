@@ -77,7 +77,7 @@ inline int SSLWrite(SSLSocket* secureSocket, void* buffer, int bufferSize)
     return  SSL_write(secureSocket->ssl, buffer, bufferSize);
 }
 
-int checkCertificate(SSLSocket* secureSocket)
+int checkCertificate(SSLSocket* secureSocket, char* hostname)
 {
     X509 *peer;
     char peer_CN[256];    
@@ -86,7 +86,7 @@ int checkCertificate(SSLSocket* secureSocket)
     }
     peer=SSL_get_peer_certificate(secureSocket->ssl);
     X509_NAME_get_text_by_NID(X509_get_subject_name(peer),NID_commonName, peer_CN, 256);
-    if(strcasecmp(peer_CN,SERVER_ADDR)){
+    if(strcasecmp(peer_CN,hostname)){
         return -1;
     }
     return 0;
