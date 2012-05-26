@@ -22,7 +22,7 @@ typedef struct
     SSL_CTX* ctx;
 } SSLSocket;
 
-SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password);
+SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password, char* caFile);
 
 inline int SSLAccept(SSLSocket* secureSocket);
 
