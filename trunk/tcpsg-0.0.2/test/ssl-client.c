@@ -15,22 +15,7 @@
 #define KEYFILE "client.pem"
 #define PASSWORD "abcd"
 
-int checkCertificate(SSL* ssl)
-{
-    X509 *peer;
-    char peer_CN[256];    
-    if(SSL_get_verify_result(ssl)!=X509_V_OK){
-         printf("CLIENT: Certificate doesn't verify\n");
-         return -1;
-    }
-    peer=SSL_get_peer_certificate(ssl);
-    X509_NAME_get_text_by_NID(X509_get_subject_name(peer),NID_commonName, peer_CN, 256);
-    if(strcasecmp(peer_CN,SERVER_ADDR)){
-        printf("CLIENT: Common name doesn't match host name\n");
-        return -1;
-    }
-    return 0;
-}
+
 
 int main(int argc, char *argv[])
 {
@@ -61,39 +46,40 @@ int main(int argc, char *argv[])
      printf("CLIENT: Connect failed\n");
      return -1;
     }    
-    secureSocket = SSL_socket(clientSocket, KEYFILE, PASSWORD);
+    secureSocket = SSLOpen(clientSocket, KEYFILE, PASSWORD);
     if(secureSocket == NULL)
         return -1;
-    if(SSL_connect(secureSocket->ssl)<=0)
+    if(SSLConnect(secureSocket)<=0)
     {
         printf("CLIENT: SSL connect error\n");
         goto exceptionHandler;
     }
-    if(checkCertificate(secureSocket->ssl)<0){
+    if(checkCertificate(secureSocket)<0){
+        printf("CLIENT: Check Certificate error\n");
         goto exceptionHandler; 
     }
     printf("CLIENT: Client socket has port %hu\n", ntohs(client.sin_port));
-    r = SSL_write(secureSocket->ssl, MSG, sizeof(MSG));
-    if((r = SSL_get_error(secureSocket->ssl,r)) != SSL_ERROR_NONE){      
+    r = SSLWrite(secureSocket, MSG, sizeof(MSG));
+    if((r = SSLGetError(secureSocket,r)) != SSL_ERROR_NONE){      
                 printf("CLIENT: SSL write problem, error: %i\n",r);
                 goto exceptionHandler;
     }
     printf("CLIENT: wrote %s\n", MSG);
     bzero(buf, sizeof(buf));
     printf("CLIENT: reading\n"); 
-    r = SSL_read(secureSocket->ssl, buf, BUFFER_SIZE);
-    if((r = SSL_get_error(secureSocket->ssl,r)) != SSL_ERROR_NONE){
+    r = SSLRead(secureSocket, buf, BUFFER_SIZE);
+    if((r = SSLGetError(secureSocket,r)) != SSL_ERROR_NONE){
       printf("CLIENT: SSL write problem, error: %i\n",r);
       goto exceptionHandler;
     }
     printf("CLIENT: read %s\n", buf);
-    SSL_close(secureSocket);
+    SSLClose(secureSocket);
     close(clientSocket);
     printf("CLIENT: socket closed\n");
     return 0;
     
 exceptionHandler:
-    SSL_close(secureSocket);
+    SSLClose(secureSocket);
     close(clientSocket);
     return -1;    
 }
