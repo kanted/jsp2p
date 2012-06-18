@@ -1,5 +1,11 @@
 #include "SSLSocket.h"
 
+struct
+{
+    SSL* ssl;
+    SSL_CTX* ctx;
+} _SSLSocket;
+
 static char* staticPassword;
   
 static int passwordCopy(char* buffer, int n, int rwFlag, void* userData)
@@ -51,28 +57,28 @@ SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password, char* caFile)
         return NULL;
 }
 
-inline int SSLAccept(SSLSocket* secureSocket)
+int SSLAccept(SSLSocket* secureSocket)
 {
     return SSL_accept(secureSocket->ssl);
 }
 
-inline int SSLConnect(SSLSocket* secureSocket)
+int SSLConnect(SSLSocket* secureSocket)
 {
     return SSL_connect(secureSocket->ssl);
 }
 
 
-inline int SSLRead(SSLSocket* secureSocket, void* buffer, int bufferSize)
+int SSLRead(SSLSocket* secureSocket, void* buffer, int bufferSize)
 {
     return SSL_read(secureSocket->ssl, buffer, bufferSize);
 }
 
-inline int SSLGetError(SSLSocket* secureSocket, int err)
+int SSLGetError(SSLSocket* secureSocket, int err)
 {
     return SSL_get_error(secureSocket->ssl, err);
 }
 
-inline int SSLWrite(SSLSocket* secureSocket, void* buffer, int bufferSize)
+int SSLWrite(SSLSocket* secureSocket, void* buffer, int bufferSize)
 {
     return  SSL_write(secureSocket->ssl, buffer, bufferSize);
 }
