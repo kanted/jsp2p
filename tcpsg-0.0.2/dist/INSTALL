@@ -1,0 +1,13 @@
+Just do:
+
+make
+make install
+
+Then go to /etc/tcpsg.conf and adjust to your configuration, check comments
+in the file.
+
+Use the script tcpsg.ctl to start-stop the daemon.
+
+If you have a problem with the software then please send me an email.
+
+jfajardo@unillanos.edu.co
