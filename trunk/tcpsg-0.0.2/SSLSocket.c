@@ -24,7 +24,7 @@ struct SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password, char* c
     SSL_library_init();
     SSL_load_error_strings();
     method = SSLv23_method();
-    SSLSocket* secureSocket = malloc(sizeof(SSLSocket));
+    struct SSLSocket* secureSocket = malloc(sizeof(struct SSLSocket));
     secureSocket->ctx = SSL_CTX_new(method);
     if(!(SSL_CTX_use_certificate_chain_file(secureSocket->ctx, keyFile))){
         printf("SSL: Error reading certificate in %s\n",keyFile);
