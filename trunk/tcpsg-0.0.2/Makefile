@@ -18,7 +18,7 @@ $(TARGET):	$(OBJS)
 
 install: $(TARGET)
 	cp -i $(TARGET) $(INSTALL_PATH)
-	cp tcpsg.conf $(PREFIX)/etc/tcpsg.conf 
+	cp tcpsg.conf ${PREFIX}/etc/tcpsg.conf 
 clean:
 	rm -f *.o core
 
