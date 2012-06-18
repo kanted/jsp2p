@@ -27,7 +27,7 @@ distclean: clean
 
 uninstall:
 	rm -f $(INSTALL_PATH)/$(TARGET)
-	rm -f /usr/local/etc/tcpsg.conf
+	rm -f ${PREFIX}/etc/tcpsg.conf
 
 
 
