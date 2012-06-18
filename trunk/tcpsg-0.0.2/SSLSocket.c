@@ -4,7 +4,7 @@ struct
 {
     SSL* ssl;
     SSL_CTX* ctx;
-} _SSLSocket;
+} SSLSocket;
 
 static char* staticPassword;
   
@@ -17,7 +17,7 @@ static int passwordCopy(char* buffer, int n, int rwFlag, void* userData)
 }
 
 /* Initialize a secure socket*/
-SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password, char* caFile)
+struct SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password, char* caFile)
 {
     SSL_METHOD* method;
     BIO* sbio;
@@ -57,33 +57,33 @@ SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password, char* caFile)
         return NULL;
 }
 
-int SSLAccept(SSLSocket* secureSocket)
+int SSLAccept(struct SSLSocket* secureSocket)
 {
     return SSL_accept(secureSocket->ssl);
 }
 
-int SSLConnect(SSLSocket* secureSocket)
+int SSLConnect(struct SSLSocket* secureSocket)
 {
     return SSL_connect(secureSocket->ssl);
 }
 
 
-int SSLRead(SSLSocket* secureSocket, void* buffer, int bufferSize)
+int SSLRead(struct SSLSocket* secureSocket, void* buffer, int bufferSize)
 {
     return SSL_read(secureSocket->ssl, buffer, bufferSize);
 }
 
-int SSLGetError(SSLSocket* secureSocket, int err)
+int SSLGetError(struct SSLSocket* secureSocket, int err)
 {
     return SSL_get_error(secureSocket->ssl, err);
 }
 
-int SSLWrite(SSLSocket* secureSocket, void* buffer, int bufferSize)
+int SSLWrite(struct SSLSocket* secureSocket, void* buffer, int bufferSize)
 {
     return  SSL_write(secureSocket->ssl, buffer, bufferSize);
 }
 
-int checkCertificate(SSLSocket* secureSocket, char* hostname)
+int checkCertificate(struct SSLSocket* secureSocket, char* hostname)
 {
     X509 *peer;
     char peer_CN[256];    
@@ -99,7 +99,7 @@ int checkCertificate(SSLSocket* secureSocket, char* hostname)
 }
 
 /* Destroy a secure socket*/
-void SSLClose(SSLSocket* secureSocket)
+void SSLClose(struct SSLSocket* secureSocket)
 {
     SSL_shutdown(secureSocket->ssl);
     SSL_free(secureSocket->ssl);

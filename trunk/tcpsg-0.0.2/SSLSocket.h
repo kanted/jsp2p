@@ -16,23 +16,22 @@
 
 #include <openssl/ssl.h>
 
-struct _SSLSocket;
-typedef _SSLSocket SSLSocket;
+struct SSLSocket;
 
-SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password, char* caFile);
+struct SSLSocket* SSLOpen(int baseSocket, char* keyFile, char* password, char* caFile);
 
-int SSLAccept(SSLSocket* secureSocket);
+int SSLAccept(struct SSLSocket* secureSocket);
 
-int SSLConnect(SSLSocket* secureSocket);
+int SSLConnect(struct SSLSocket* secureSocket);
 
-int SSLRead(SSLSocket* secureSocket, void* buffer, int bufferSize);
+int SSLRead(struct SSLSocket* secureSocket, void* buffer, int bufferSize);
 
-int SSLGetError(SSLSocket* secureSocket, int err);
+int SSLGetError(struct SSLSocket* secureSocket, int err);
 
-int SSLWrite(SSLSocket* secureSocket, void* buffer, int bufferSize);
+int SSLWrite(struct SSLSocket* secureSocket, void* buffer, int bufferSize);
 
-int checkCertificate(SSLSocket* secureSocket, char* hostname);
+int checkCertificate(struct SSLSocket* secureSocket, char* hostname);
 
-void SSLClose(SSLSocket* secureSocket);
+void SSLClose(struct SSLSocket* secureSocket);
 
 #endif

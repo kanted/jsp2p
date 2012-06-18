@@ -349,7 +349,7 @@ int connect_to(char *address, int *portno){
  */
 int secureRedirect(int clientSocket, char* serv_address, int* serv_portno)
 {
-    SSLSocket* secureSocket;
+    struct SSLSocket* secureSocket;
     int error;
     fd_set fileDescriptors;
     char buffer[BUFFER_SIZE]; /* Buffer to forward data */
