@@ -1,10 +1,10 @@
 #include "SSLSocket.h"
 
-struct
+struct SSLSocket
 {
     SSL* ssl;
     SSL_CTX* ctx;
-} SSLSocket;
+};
 
 static char* staticPassword;
   
