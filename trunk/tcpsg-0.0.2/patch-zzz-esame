@@ -1,6 +1,6 @@
 diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/Makefile ./Makefile
 --- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/Makefile	2002-10-24 23:37:23.000000000 +0200
-+++ ./Makefile	2012-06-19 11:26:00.000000000 +0200
++++ ./Makefile	2012-06-19 11:42:15.000000000 +0200
 @@ -1,6 +1,7 @@
  CC=				gcc
 +LDFLAGS = 	-lssl -lcrypto
@@ -38,7 +38,7 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/Makefile ./Makefile
  
 diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.c ./SSLSocket.c
 --- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.c	1970-01-01 01:00:00.000000000 +0100
-+++ ./SSLSocket.c	2012-06-19 09:52:05.000000000 +0200
++++ ./SSLSocket.c	2012-06-19 11:42:15.000000000 +0200
 @@ -0,0 +1,108 @@
 +#include "SSLSocket.h"
 +
@@ -150,7 +150,7 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.c ./SSLSocket.c
 +}
 diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.h ./SSLSocket.h
 --- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.h	1970-01-01 01:00:00.000000000 +0100
-+++ ./SSLSocket.h	2012-06-19 09:52:05.000000000 +0200
++++ ./SSLSocket.h	2012-06-19 11:42:15.000000000 +0200
 @@ -0,0 +1,37 @@
 +#ifndef SSL_SOCKET_H
 +#define SSL_SOCKET_H
@@ -191,7 +191,7 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.h ./SSLSocket.h
 +#endif
 diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c ./tcpsg.c
 --- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c	2012-06-19 10:33:42.000000000 +0200
-+++ ./tcpsg.c	2012-06-19 09:52:05.000000000 +0200
++++ ./tcpsg.c	2012-06-19 11:42:15.000000000 +0200
 @@ -43,6 +43,10 @@
  #include <arpa/inet.h>
  #include <netdb.h>
@@ -400,7 +400,7 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c ./tcpsg.c
  
 diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.conf ./tcpsg.conf
 --- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.conf	2002-10-25 00:24:01.000000000 +0200
-+++ ./tcpsg.conf	2012-06-19 09:52:05.000000000 +0200
++++ ./tcpsg.conf	2012-06-19 11:42:15.000000000 +0200
 @@ -19,5 +19,16 @@
  # used to select each server. The first server in the list has the highest 
  # priority and the last has the lowest priority.
