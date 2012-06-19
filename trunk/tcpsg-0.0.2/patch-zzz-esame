@@ -1,9 +1,8 @@
 diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/Makefile ./Makefile
 --- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/Makefile	2002-10-24 23:37:23.000000000 +0200
-+++ ./Makefile	2012-06-19 09:52:05.000000000 +0200
-@@ -1,6 +1,8 @@
++++ ./Makefile	2012-06-19 11:26:00.000000000 +0200
+@@ -1,6 +1,7 @@
  CC=				gcc
-+LD=		gcc
 +LDFLAGS = 	-lssl -lcrypto
  STD=				_GNU_SOURCE
 -OBJS=				tcpsg.o
@@ -11,7 +10,7 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/Makefile ./Makefile
  TARGET=			tcpsg
  INSTALL_PATH=	/usr/sbin
  
-@@ -9,12 +11,14 @@
+@@ -9,12 +10,14 @@
  
  all:		$(TARGET)
  
@@ -28,7 +27,7 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/Makefile ./Makefile
  clean:
  	rm -f *.o core
  
-@@ -23,7 +27,7 @@
+@@ -23,7 +26,7 @@
  
  uninstall:
  	rm -f $(INSTALL_PATH)/$(TARGET)
