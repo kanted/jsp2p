@@ -1,5 +1,4 @@
 CC=		gcc
-LD=		gcc
 LDFLAGS = 	-lssl -lcrypto
 STD=		_GNU_SOURCE
 OBJS=		tcpsg.o SSLSocket.o
