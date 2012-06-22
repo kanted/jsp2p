@@ -70,10 +70,6 @@
 #define WORKING 1
 #define DOWN 2
 
-#define OPTION_STRING_BUFFER 500
-#define KEYFILE_LENGTH 256
-#define PASSWORD_LENGTH 256
-
 
 /*
  * *****************************************************************
@@ -100,8 +96,8 @@ struct options {
 	char serverhost[MAX_SERVERS][20];
     int num_servers;
     int sslflag;
-    char keyfile[KEYFILE_LENGTH];
-    char password[PASSWORD_LENGTH];         
+    char keyfile[256];
+    char password[256];         
 } main_opt;
 
 
@@ -165,7 +161,7 @@ static void catch_sigchld(int signo){
 int read_config(char *configFileName)
 {
  FILE *configFileHandle;
- char tmpString[OPTION_STRING_BUFFER];
+ char tmpString[500];
  char tmpChar;
  unsigned long configFileLength;
  int lp,sp,mc,kf,sf,pw;
@@ -215,18 +211,18 @@ int read_config(char *configFileName)
   	 }
         if (strcasecmp(tmpString, "keyfile") == 0)
         {
-            bzero(tmpString, OPTION_STRING_BUFFER);
-            bzero(main_opt.keyfile, KEYFILE_LENGTH);
+            bzero(tmpString, sizeof(tmpString));
+            bzero(main_opt.keyfile, sizeof(main_opt.keyfile));
             fscanf(configFileHandle, "%s", tmpString);
-            strncpy(main_opt.keyfile, tmpString, KEYFILE_LENGTH);
+            strncpy(main_opt.keyfile, tmpString, sizeof(main_opt.keyfile));
             kf = TRUE;
         }
         if (strcasecmp(tmpString, "password") == 0)
         {
-            bzero(tmpString, OPTION_STRING_BUFFER);
-            bzero(main_opt.password, PASSWORD_LENGTH);
+            bzero(tmpString, sizeof(tmpString));
+            bzero(main_opt.password, sizeof(main_opt.password));
             fscanf(configFileHandle, "%s", tmpString);
-            strncpy(main_opt.password, tmpString, PASSWORD_LENGTH);
+            strncpy(main_opt.password, tmpString, sizeof(main_opt.password));
             pw = TRUE;
         }
         if (strcasecmp(tmpString, "sslflag") == 0)
