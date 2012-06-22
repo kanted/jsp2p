@@ -1,6 +1,6 @@
-diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/Makefile ./Makefile
+diff -uwbrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/Makefile ./Makefile
 --- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/Makefile	2002-10-24 23:37:23.000000000 +0200
-+++ ./Makefile	2012-06-19 11:42:15.000000000 +0200
++++ ./Makefile	2012-06-22 15:27:20.000000000 +0200
 @@ -1,6 +1,7 @@
  CC=				gcc
 +LDFLAGS = 	-lssl -lcrypto
@@ -36,9 +36,9 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/Makefile ./Makefile
  
  
  
-diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.c ./SSLSocket.c
+diff -uwbrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.c ./SSLSocket.c
 --- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.c	1970-01-01 01:00:00.000000000 +0100
-+++ ./SSLSocket.c	2012-06-19 11:42:15.000000000 +0200
++++ ./SSLSocket.c	2012-06-22 15:27:20.000000000 +0200
 @@ -0,0 +1,108 @@
 +#include "SSLSocket.h"
 +
@@ -148,9 +148,9 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.c ./SSLSocket.c
 +    SSL_CTX_free(secureSocket->ctx);
 +    free(secureSocket);
 +}
-diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.h ./SSLSocket.h
+diff -uwbrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.h ./SSLSocket.h
 --- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.h	1970-01-01 01:00:00.000000000 +0100
-+++ ./SSLSocket.h	2012-06-19 11:42:15.000000000 +0200
++++ ./SSLSocket.h	2012-06-22 15:27:20.000000000 +0200
 @@ -0,0 +1,37 @@
 +#ifndef SSL_SOCKET_H
 +#define SSL_SOCKET_H
@@ -189,9 +189,9 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/SSLSocket.h ./SSLSocket.h
 +void SSLClose(struct SSLSocket* secureSocket);
 +
 +#endif
-diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c ./tcpsg.c
---- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c	2012-06-19 10:33:42.000000000 +0200
-+++ ./tcpsg.c	2012-06-19 11:42:15.000000000 +0200
+diff -uwbrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c ./tcpsg.c
+--- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c	2012-06-22 15:24:19.000000000 +0200
++++ ./tcpsg.c	2012-06-22 15:27:20.000000000 +0200
 @@ -43,6 +43,10 @@
  #include <arpa/inet.h>
  #include <netdb.h>
@@ -203,18 +203,7 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c ./tcpsg.c
  /* 
   * ****************************************************************
   * Define section
-@@ -66,6 +70,10 @@
- #define WORKING 1
- #define DOWN 2
- 
-+#define OPTION_STRING_BUFFER 500
-+#define KEYFILE_LENGTH 256
-+#define PASSWORD_LENGTH 256
-+
- 
- /*
-  * *****************************************************************
-@@ -80,7 +88,7 @@
+@@ -80,7 +84,7 @@
  /* Errors when getting configuration from file /etc/tcpsg.conf */
  
  char *errors[]={"No error","Unable to open file","undefined localport",
@@ -223,22 +212,18 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c ./tcpsg.c
  
  
  static int child_count;
-@@ -91,6 +99,9 @@
+@@ -91,6 +95,9 @@
  	int serverport;
  	char serverhost[MAX_SERVERS][20];
          int num_servers;        
 +    int sslflag;
-+    char keyfile[KEYFILE_LENGTH];
-+    char password[PASSWORD_LENGTH];         
++    char keyfile[256];
++    char password[256];         
  } main_opt;
  
  
-@@ -154,11 +165,11 @@
- int read_config(char *configFileName)
- {
-  FILE *configFileHandle;
-- char tmpString[500];
-+ char tmpString[OPTION_STRING_BUFFER];
+@@ -157,8 +164,8 @@
+  char tmpString[500];
   char tmpChar;
   unsigned long configFileLength;
 - int lp,sp,mc;
@@ -248,24 +233,24 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c ./tcpsg.c
  
   main_opt.num_servers=0;
   if ((configFileHandle=fopen(configFileName,"rb"))!=NULL) 
-@@ -202,11 +213,36 @@
+@@ -202,11 +209,36 @@
  	   strcpy(main_opt.serverhost[main_opt.num_servers],tmpString);     
             main_opt.num_servers++;
    	 }
 +        if (strcasecmp(tmpString, "keyfile") == 0)
 +        {
-+            bzero(tmpString, OPTION_STRING_BUFFER);
-+            bzero(main_opt.keyfile, KEYFILE_LENGTH);
++            bzero(tmpString, sizeof(tmpString));
++            bzero(main_opt.keyfile, sizeof(main_opt.keyfile));
 +            fscanf(configFileHandle, "%s", tmpString);
-+            strncpy(main_opt.keyfile, tmpString, KEYFILE_LENGTH);
++            strncpy(main_opt.keyfile, tmpString, sizeof(main_opt.keyfile));
 +            kf = TRUE;
 +        }
 +        if (strcasecmp(tmpString, "password") == 0)
 +        {
-+            bzero(tmpString, OPTION_STRING_BUFFER);
-+            bzero(main_opt.password, PASSWORD_LENGTH);
++            bzero(tmpString, sizeof(tmpString));
++            bzero(main_opt.password, sizeof(main_opt.password));
 +            fscanf(configFileHandle, "%s", tmpString);
-+            strncpy(main_opt.password, tmpString, PASSWORD_LENGTH);
++            strncpy(main_opt.password, tmpString, sizeof(main_opt.password));
 +            pw = TRUE;
 +        }
 +        if (strcasecmp(tmpString, "sslflag") == 0)
@@ -285,7 +270,7 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c ./tcpsg.c
    }
   else
   {
-@@ -303,6 +339,93 @@
+@@ -303,6 +335,93 @@
  }
  
  /*
@@ -379,7 +364,7 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c ./tcpsg.c
   * Redirect all arriving data to the real server.
   * There is a separate instance of this function for
   * each connection.
-@@ -463,9 +586,16 @@
+@@ -463,9 +582,16 @@
                      }
                      state[server_id]=WORKING; 
  
@@ -398,9 +383,9 @@ diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.c ./tcpsg.c
     				close(connfd);			/* Child closes his connected socket */
                      state[server_id]=IDLE;  
  
-diff -ubwrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.conf ./tcpsg.conf
+diff -uwbrN /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.conf ./tcpsg.conf
 --- /usr/ports/net/tcpsg/work/tcpsg-0.0.2/tcpsg.conf	2002-10-25 00:24:01.000000000 +0200
-+++ ./tcpsg.conf	2012-06-19 11:42:15.000000000 +0200
++++ ./tcpsg.conf	2012-06-22 15:27:20.000000000 +0200
 @@ -19,5 +19,16 @@
  # used to select each server. The first server in the list has the highest 
  # priority and the last has the lowest priority.
